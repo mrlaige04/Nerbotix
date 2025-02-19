@@ -1,0 +1,14 @@
+@import 'colors/colors';
+
+:root {
+  --sidebar-width: 18rem;
+
+  --border-radius-none: 0;
+  --border-radius-xs: 2px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+  --border-radius-xl: 14px;
+
+  --transition-duration: .2s;
+}

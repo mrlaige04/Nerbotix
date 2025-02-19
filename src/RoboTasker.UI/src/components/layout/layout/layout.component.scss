@@ -1,0 +1,13 @@
+.layout-container {
+  min-height: 100vh;
+}
+
+.layout-content-wrapper {
+  margin-left: 0;
+  transition: margin-left var(--transition-duration);
+  padding: 1.25rem 2rem;
+
+  &.opened {
+    margin-left: var(--sidebar-width);
+  }
+}

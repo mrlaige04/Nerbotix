@@ -1,0 +1,17 @@
+.sidebar {
+  height: 100vh;
+  width: var(--sidebar-width);
+  background: transparent;
+  padding: .75rem;
+  transition: transform var(--transition-duration);
+  z-index: 999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  transform: translateX(-100%);
+
+  &.opened {
+    transform: translateX(0);
+  }
+}
