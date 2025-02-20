@@ -15,7 +15,7 @@ export const appConfig: ApplicationConfig = {
       theme: {
         preset: MyPreset,
         options: {
-          //darkModeSelector: '.dark-theme'
+          darkModeSelector: '.dark-theme'
         }
       },
       ripple: true

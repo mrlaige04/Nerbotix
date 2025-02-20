@@ -1,7 +1,7 @@
-@import "styles/fonts";
-@import "styles/vars";
-@import 'primeicons/primeicons';
-@import 'primeflex/primeflex';
+@use "styles/fonts";
+@use "styles/vars";
+@use 'primeflex/primeflex';
+@use 'primeicons/primeicons';
 
 * {
   margin: 0;

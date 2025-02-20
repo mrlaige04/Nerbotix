@@ -4,7 +4,6 @@ import {LayoutService} from '../../../services/layout/layout.service';
 
 @Component({
   selector: 'rb-topbar',
-  standalone: true,
   imports: [
     Button
   ],

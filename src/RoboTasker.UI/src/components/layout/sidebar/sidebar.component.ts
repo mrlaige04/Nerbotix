@@ -3,7 +3,6 @@ import {LayoutService} from "../../../services/layout/layout.service";
 
 @Component({
   selector: 'rb-sidebar',
-  standalone: true,
   imports: [],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'

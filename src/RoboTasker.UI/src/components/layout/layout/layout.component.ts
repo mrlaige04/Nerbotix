@@ -6,7 +6,6 @@ import {LayoutService} from "../../../services/layout/layout.service";
 
 @Component({
   selector: 'rb-layout',
-  standalone: true,
   imports: [
     SidebarComponent,
     TopbarComponent,
