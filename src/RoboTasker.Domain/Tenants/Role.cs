@@ -1,6 +1,14 @@
-﻿namespace RoboTasker.Domain.Tenants;
+﻿using Microsoft.AspNetCore.Identity;
+using RoboTasker.Domain.Abstractions;
 
-public class Role
+namespace RoboTasker.Domain.Tenants;
+
+public class Role : IdentityRole<Guid>, ITenantEntity<Guid>, IAuditableEntity
 {
-    
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+
+    public IList<UserRole> UserRoles { get; set; } = [];
+    public Tenant Tenant { get; set; } = null!;
+    public Guid TenantId { get; set; }
 }

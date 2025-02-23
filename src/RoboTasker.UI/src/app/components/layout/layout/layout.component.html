@@ -1,0 +1,11 @@
+<div class="layout-container">
+  <rb-sidebar/>
+  <div class="layout-content-wrapper" [class.opened]="sidebarOpened()">
+    <rb-topbar/>
+    <div class="layout-content mt-4">
+      <p-card>
+        <router-outlet/>
+      </p-card>
+    </div>
+  </div>
+</div>

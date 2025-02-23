@@ -7,7 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Repositories\" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.13" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="9.0.3" />
     </ItemGroup>
 
 </Project>

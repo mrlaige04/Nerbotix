@@ -1,0 +1,30 @@
+<div class="login-wrapper my-2">
+  <div class="header">
+    <h2 class="text-center">Login</h2>
+  </div>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="content my-3">
+      <div class="error-message">
+        @if (errorMessage()) {
+          <p-message [text]="errorMessage()!" severity="error"/>
+        }
+      </div>
+      <div class="fields">
+        <div class="email mt-3">
+          <input type="text" class="w-full" pInputText placeholder="Enter email" formControlName="email">
+        </div>
+        <div class="password mt-3">
+          <input type="password" class="w-full" pInputText placeholder="Enter password" formControlName="password">
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="forgot w-full upper">
+        <a routerLink="/auth/forgot">Forgot your password?</a>
+      </div>
+      <div class="actions w-full mt-3">
+        <p-button [disabled]="!form.valid" type="submit" label="Log in" styleClass="w-full" class="flex-grow-1"/>
+      </div>
+    </div>
+  </form>
+</div>
