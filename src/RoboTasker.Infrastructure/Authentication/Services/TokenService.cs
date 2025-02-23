@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using RoboTasker.Domain.Tenants;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
@@ -12,29 +13,29 @@ public class TokenService(IOptions<JwtOptions> jwtOptions)
 {
     public AccessTokenResponse GenerateToken(User user)
     {
-        var claims = new List<Claim>
-        {
-            new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new(JwtRegisteredClaimNames.Email, user.Email!),
-            new(CustomClaims.TenantId, user.TenantId.ToString())
-        };
-        
         var options = jwtOptions.Value;
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.JwtSecret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        
-        var token = new JwtSecurityToken(
-            issuer: options.ValidIssuer,
-            audience: options.ValidAudience,
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(options.ExpiresInMinutes),
-            signingCredentials: credentials);
-        
-        var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
 
+        var securityTokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity([
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
+                new Claim(CustomClaims.TenantId, user.TenantId.ToString())
+            ]),
+            Expires = DateTime.UtcNow.AddMinutes(60),
+            SigningCredentials = credentials,
+            Issuer = options.ValidIssuer,
+            Audience = options.ValidAudience
+        };
+
+        var handler = new JsonWebTokenHandler();
+        
+        var token = handler.CreateToken(securityTokenDescriptor);
         return new AccessTokenResponse
         {
-            AccessToken = accessToken,
+            AccessToken = token,
             TokenType = options.TokenType,
         };
     }

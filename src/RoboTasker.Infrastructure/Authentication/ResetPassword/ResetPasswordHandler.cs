@@ -23,6 +23,6 @@ public class ResetPasswordHandler(UserManager<User> userManager) : ICommandHandl
         var errors = result.Errors
             .ToDictionary(e => e.Code, object (e) => e.Description);
             
-        return Error.Failure(UserErrors.RegisterFailed, UserErrors.RegisterFailedDescription, errors);
+        return Error.Failure(UserErrors.ChangePasswordFailed, UserErrors.ChangePasswordFailedDescription, errors);
     }
 }

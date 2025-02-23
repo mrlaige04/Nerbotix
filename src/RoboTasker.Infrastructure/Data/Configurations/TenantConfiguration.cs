@@ -25,5 +25,11 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
             .WithOne(x => x.Tenant)
             .HasForeignKey(x => x.TenantId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.Property(x => x.Name).IsRequired();
+        builder.Property(x => x.Email).IsRequired();
+        
+        builder.HasIndex(x => x.Name).IsUnique();
+        builder.HasIndex(x => x.Email).IsUnique();
     }
 }

@@ -36,7 +36,19 @@ public class BaseController : ControllerBase
             _ => StatusCodes.Status500InternalServerError,
         };
         
-        return Problem(statusCode: statusCode, title: error.Code, detail: error.Description);
+        var problemDetails = new ProblemDetails
+        {
+            Status = statusCode,
+            Title = error.Code,
+            Detail = error.Description
+        };
+
+        if (error.Metadata is { Count: > 0 })
+        {
+            problemDetails.Extensions.Add("errors", error.Metadata);
+        }
+
+        return StatusCode(statusCode, problemDetails);
     }
 
     private ActionResult ValidationProblem(List<Error> errors)

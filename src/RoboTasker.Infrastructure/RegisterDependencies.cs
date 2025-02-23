@@ -1,10 +1,15 @@
-﻿using System.Net;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Net.Mail;
+using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using RoboTasker.Application.Services;
 using RoboTasker.Domain.Repositories;
 using RoboTasker.Domain.Repositories.Abstractions;
@@ -19,14 +24,12 @@ namespace RoboTasker.Infrastructure;
 
 public static class RegisterDependencies
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAppAuthentication(configuration);
         services.AddDatabase(configuration);
 
         services.AddEmailing(configuration);
-        
-        return services;
     }
 
     private static void AddEmailing(this IServiceCollection services, IConfiguration configuration)
@@ -70,32 +73,31 @@ public static class RegisterDependencies
     
     private static void AddAppAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
         var jwtOptions = configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>();
         ArgumentNullException.ThrowIfNull(jwtOptions);
-        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
 
-        services.AddIdentity<User, Role>()
+        services.AddAuthorization();
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = jwtOptions.ToTokenValidationParameters();
+            });
+        
+        services.AddIdentityCore<User>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Tokens.PasswordResetTokenProvider = "NumericEmail";
+            })
+            .AddRoles<Role>()
             .AddDefaultTokenProviders()
             .AddTokenProvider<NumericEmailTokenProvider<User>>("NumericEmail")
             .AddEntityFrameworkStores<RoboTaskerDbContext>();
 
         services.AddScoped<TokenService>();
-
-        services.Configure<IdentityOptions>(options =>
-        {
-            options.Password.RequireDigit = true;
-            options.Password.RequireUppercase = true;
-            options.Password.RequireLowercase = true;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Tokens.PasswordResetTokenProvider = "NumericEmail";
-        });
-        
-        services.AddAuthorization();
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(opt =>
-            {
-                opt.SaveToken = true;
-                opt.TokenValidationParameters = jwtOptions.ToTokenValidationParameters();
-            });
     }
 }

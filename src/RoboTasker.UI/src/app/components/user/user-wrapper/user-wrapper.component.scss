@@ -1,0 +1,21 @@
+.p-tabs {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+
+  &:last-child {
+    width: 100%;
+  }
+}
+
+
+
+.p-tab {
+  border-color: transparent;
+
+  &.p-tab-active {
+
+  }
+}
+
+

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Tenants;
 using RoboTasker.Infrastructure.Data;
 
@@ -19,22 +20,36 @@ public static class DatabaseExtensions
         }
     }
 
-    public static async Task EnsureSeedData(this WebApplication app)
+    public static async Task EnsureSuperAdminCreated(this WebApplication app)
     {
         await using var scope = app.Services.CreateAsyncScope();
-        var context = scope.ServiceProvider.GetRequiredService<RoboTaskerDbContext>();
+        var tenantRepository = scope.ServiceProvider.GetRequiredService<IBaseRepository<Tenant>>();
         var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-
+        
         var superAdminEmail = configuration["SuperAdmin:Email"];
         var superAdminPassword = configuration["SuperAdmin:Password"];
+        var superTenantName = configuration["SuperAdmin:TenantName"];
         
         ArgumentNullException.ThrowIfNull(superAdminEmail, "SuperAdmin email");
         ArgumentNullException.ThrowIfNull(superAdminPassword, "SuperAdmin password");
+        ArgumentNullException.ThrowIfNull(superTenantName, "SuperAdmin tenant name");
         
-        var superAdmin = User.Create(superAdminEmail);
+        var existingTenant = await tenantRepository.GetAsync(t => t.Email == superAdminEmail);
+        if (existingTenant == null)
+        {
+            var superTenant = new Tenant
+            {
+                Email = superAdminEmail,
+                Name = superTenantName,
+            };
+            
+            existingTenant = await tenantRepository.AddAsync(superTenant);
+        }
         
         var superUser = await userManager.FindByEmailAsync(superAdminEmail);
+        var superAdmin = User.Create(superAdminEmail);
+        superAdmin.Tenant = existingTenant;
         if (superUser == null)
         {
             var result = await userManager.CreateAsync(superAdmin, superAdminPassword);

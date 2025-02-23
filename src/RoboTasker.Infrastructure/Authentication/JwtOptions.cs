@@ -18,13 +18,13 @@ public class JwtOptions
         var bytes = Encoding.UTF8.GetBytes(JwtSecret);
         return new TokenValidationParameters
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(bytes),
-            ValidAudience = ValidAudience,
-            ValidIssuer = ValidIssuer,
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidAudience = ValidAudience,
+            ValidIssuer = ValidIssuer,
+            IssuerSigningKey = new SymmetricSecurityKey(bytes),
             ClockSkew = TimeSpan.Zero
         };
     }

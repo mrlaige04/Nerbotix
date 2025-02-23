@@ -2,5 +2,5 @@
 
 public class CustomClaims
 {
-    public const string TenantId = "tenantId";
+    public const string TenantId = "tenant-id";
 }
