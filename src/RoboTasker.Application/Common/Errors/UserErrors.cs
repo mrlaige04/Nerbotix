@@ -2,8 +2,8 @@
 
 public static class UserErrors
 {
-    public const string RegisterFailed = "Register.Failed";
-    public const string RegisterFailedDescription = "Error while registering user. See details.";
+    public const string ChangePasswordFailed = "ChangePassword.Failed";
+    public const string ChangePasswordFailedDescription = "Error while changing the password. See details.";
 
     public const string NotFound = "User.NotFound";
     public const string NotFoundDescription = "User was not found.";

@@ -8,6 +8,7 @@ import {MyPreset} from '../mytheme';
 import {apiConfigProvider} from './config/http.config';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {passTokenInterceptor} from './utils/interceptors/pass-token.interceptor';
+import {MessageService} from 'primeng/api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,6 +25,7 @@ export const appConfig: ApplicationConfig = {
       ripple: true
     }),
     apiConfigProvider,
-    provideHttpClient(withInterceptors([ passTokenInterceptor ]))
+    provideHttpClient(withInterceptors([ passTokenInterceptor ])),
+    MessageService
   ]
 };

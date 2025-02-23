@@ -8,9 +8,9 @@ using RoboTasker.Infrastructure.Authentication.Services;
 namespace RoboTasker.Infrastructure.Authentication.Login;
 
 public class LoginHandler(UserManager<User> userManager, TokenService tokenService) 
-    : ICommandHandler<LoginCommand, AccessTokenResponse>
+    : ICommandHandler<LoginCommand, LoginResponse>
 {
-    public async Task<ErrorOr<AccessTokenResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var user = await userManager.FindByEmailAsync(request.Email);
         if (user is null)
@@ -23,6 +23,18 @@ public class LoginHandler(UserManager<User> userManager, TokenService tokenServi
             return Error.Unauthorized(UserErrors.InvalidPassword, UserErrors.InvalidPasswordDescription);
         }
         
-        return tokenService.GenerateToken(user);
+        var token = tokenService.GenerateToken(user);
+        var currentUser = new CurrentUserResponse
+        {
+            Id = user.Id,
+            TenantId = user.TenantId,
+            Email = user.Email!
+        };
+
+        return new LoginResponse
+        {
+            AccessToken = token,
+            User = currentUser
+        };
     }
 }

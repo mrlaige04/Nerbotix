@@ -5,15 +5,14 @@ using RoboTasker.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .AddApplication()
-    .AddInfrastructure(builder.Configuration)
-    .AddUi();
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddUi();
 
 var app = builder.Build();
 
 await app.MigrateDatabase();
-await app.EnsureSeedData();
+await app.EnsureSuperAdminCreated();
 
 if (app.Environment.IsDevelopment())
 {
@@ -25,6 +24,10 @@ app.UseHttpsRedirection();
 app.UseCors();
 
 app.UseExceptionHandler(options => {});
+
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

@@ -49,9 +49,9 @@ export class LoginComponent extends BaseComponent {
         this.errorMessage.set(error.error.detail);
         return of(null);
       }),
-      tap(async (token) => {
-        if (token) {
-          this.authService.handleSuccessLogin(token);
+      tap(async (response) => {
+        if (response) {
+          this.authService.handleSuccessLogin(response);
           await this.router.navigate(['/']);
         }
       }),

@@ -1,6 +1,6 @@
 ﻿namespace RoboTasker.Domain.Services;
 
-public interface ICurrentStateProvider
+public interface ICurrentUser
 {
     Guid? GetTenantId();
     Guid? GetUserId();

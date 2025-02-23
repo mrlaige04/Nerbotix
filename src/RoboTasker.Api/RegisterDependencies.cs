@@ -1,4 +1,7 @@
-﻿using RoboTasker.Api.Infrastructure;
+﻿using Microsoft.OpenApi.Models;
+using RoboTasker.Api.Infrastructure;
+using RoboTasker.Api.Services;
+using RoboTasker.Domain.Services;
 
 namespace RoboTasker.Api;
 
@@ -7,7 +10,31 @@ public static class RegisterDependencies
     public static IServiceCollection AddUi(this IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
+        services.AddSwaggerGen(opt =>
+        {
+            opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer"
+            });
+            
+            opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                       Reference = new OpenApiReference
+                       {
+                           Type = ReferenceType.SecurityScheme,
+                           Id = "Bearer"
+                       }
+                    }, []
+                }
+            });
+        });
+        
         services.AddControllers();
 
         services.AddCors(cors =>
@@ -25,6 +52,8 @@ public static class RegisterDependencies
         services.AddHttpContextAccessor();
 
         services.AddExceptionHandler<RoboExceptionHandler>();
+
+        services.AddScoped<ICurrentUser, CurrentUser>();
         
         return services;
     }

@@ -19,6 +19,7 @@
     "@angular/platform-browser-dynamic": "^19.1.6",
     "@angular/router": "^19.1.6",
     "@primeng/themes": "^19.0.6",
+    "guid-typescript": "^1.0.9",
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",
     "primeng": "^19.0.6",

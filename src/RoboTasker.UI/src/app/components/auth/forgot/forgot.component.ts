@@ -104,7 +104,7 @@ export class ForgotComponent extends BaseComponent {
     this.showLoader();
     this.authService.resetPassword(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        console.log(error.error);
+        this.errorMessage.set(error.error.detail);
         return of(null);
       }),
       tap(async (res) => {
