@@ -1,0 +1,51 @@
+:host {
+  position: absolute;
+  z-index: 99999;
+  inset: 0;
+  backdrop-filter: opacity(0.4);
+}
+
+.global-loader {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.25);
+    z-index: 1;
+  }
+
+  & .loader {
+    width: 70px;
+    height: 26px;
+    background: var(--p-primary-700);
+    border-radius: 50px;
+    --c:no-repeat radial-gradient(farthest-side,#000 92%,#0000);
+    --s:18px 18px;
+    -webkit-mask:
+      var(--c) left  4px top 50%,
+      var(--c) center,
+      var(--c) right 4px top 50%,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    animation: l1 1.5s infinite;
+  }
+}
+
+
+@keyframes l1 {
+  0%    {-webkit-mask-size:0    0  ,0    0  ,0    0  ,auto}
+  16.67%{-webkit-mask-size:var(--s),0    0  ,0    0  ,auto}
+  33.33%{-webkit-mask-size:var(--s),var(--s),0    0  ,auto}
+  50%   {-webkit-mask-size:var(--s),var(--s),var(--s),auto}
+  66.67%{-webkit-mask-size:0    0  ,var(--s),var(--s),auto}
+  83.33%{-webkit-mask-size:0    0  ,0    0  ,var(--s),auto}
+  100%  {-webkit-mask-size:0    0  ,0    0  ,0    0  ,auto}
+}

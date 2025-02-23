@@ -1,7 +1,8 @@
-@use "styles/fonts";
-@use "styles/vars";
+@use "app/styles/fonts";
+@use "app/styles/vars";
 @use 'primeflex/primeflex';
 @use 'primeicons/primeicons';
+@use 'app/styles/overrides/overrides';
 
 * {
   margin: 0;
@@ -15,6 +16,8 @@ html, body {
   font-family: "Exo 2", sans-serif;
 }
 
-h1 {
+h1, h2, h3, h4, h5, hgroup {
   font-family: "Deta Gothic One", sans-serif;
+  font-weight: normal;
 }
+

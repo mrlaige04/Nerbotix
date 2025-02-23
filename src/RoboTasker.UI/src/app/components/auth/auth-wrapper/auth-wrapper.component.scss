@@ -1,0 +1,22 @@
+:host {
+  width: 100%;
+  min-height: 100vh !important;
+
+  & .auth-page {
+    //background: var(--p-surface-900);
+
+    & .auth-wrapper {
+      margin: auto;
+      min-width: 30%;
+      width: max-content;
+      min-height: 100vh !important;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      @media screen and (max-width: 900px) {
+        min-width: 80%;
+      }
+    }
+  }
+}

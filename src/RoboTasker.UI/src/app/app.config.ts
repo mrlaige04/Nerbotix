@@ -5,6 +5,9 @@ import { routes } from './app.routes';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {providePrimeNG} from 'primeng/config';
 import {MyPreset} from '../mytheme';
+import {apiConfigProvider} from './config/http.config';
+import {provideHttpClient, withInterceptors} from '@angular/common/http';
+import {passTokenInterceptor} from './utils/interceptors/pass-token.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,6 +22,8 @@ export const appConfig: ApplicationConfig = {
         }
       },
       ripple: true
-    })
+    }),
+    apiConfigProvider,
+    provideHttpClient(withInterceptors([ passTokenInterceptor ]))
   ]
 };
