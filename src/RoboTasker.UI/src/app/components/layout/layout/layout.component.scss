@@ -11,3 +11,10 @@
     margin-left: var(--sidebar-width);
   }
 }
+
+@media (max-width: 1024px) {
+  .layout-content-wrapper, .layout-content-wrapper.opened {
+    margin-left: 0 !important;
+    z-index: 997;
+  }
+}

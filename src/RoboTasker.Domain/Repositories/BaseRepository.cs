@@ -11,7 +11,7 @@ public class BaseRepository<T>(DbContext dbContext) : IBaseRepository<T> where T
     
     public async Task<List<T>> GetAllAsync(
         Expression<Func<T, bool>>? filter = null, 
-        Func<IQueryable<T>, IOrderedQueryable<T>>? include = null, 
+        Func<IQueryable<T>, IQueryable<T>>? include = null, 
         CancellationToken cancellationToken = default)
     {
         var query = await GetQuery(cancellationToken);
@@ -25,7 +25,7 @@ public class BaseRepository<T>(DbContext dbContext) : IBaseRepository<T> where T
     public async Task<PaginatedList<T>> GetAllPaginatedAsync(
         int pageNumber, int pageSize, 
         Expression<Func<T, bool>>? filter = null, 
-        Func<IQueryable<T>, IOrderedQueryable<T>>? include = null,
+        Func<IQueryable<T>, IQueryable<T>>? include = null,
         CancellationToken cancellationToken = default)
     {
         var query = await GetQuery(cancellationToken);
@@ -39,7 +39,7 @@ public class BaseRepository<T>(DbContext dbContext) : IBaseRepository<T> where T
     public async Task<List<TResult>> GetAllWithSelectorAsync<TResult>(
         Expression<Func<T, TResult>> selector, 
         Expression<Func<T, bool>>? filter = null, 
-        Func<IQueryable<T>, IOrderedQueryable<T>>? include = null,
+        Func<IQueryable<T>, IQueryable<T>>? include = null,
         CancellationToken cancellationToken = default)
     {
         var query = await GetQuery(cancellationToken);
@@ -56,7 +56,7 @@ public class BaseRepository<T>(DbContext dbContext) : IBaseRepository<T> where T
         int pageNumber, int pageSize, 
         Expression<Func<T, TResult>> selector,
         Expression<Func<T, bool>>? filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? include = null,
+        Func<IQueryable<T>, IQueryable<T>>? include = null,
         CancellationToken cancellationToken = default)
     {
         var query = await GetQuery(cancellationToken);
@@ -71,7 +71,7 @@ public class BaseRepository<T>(DbContext dbContext) : IBaseRepository<T> where T
 
     public async Task<T?> GetAsync(
         Expression<Func<T, bool>>? filter = null, 
-        Func<IQueryable<T>, IOrderedQueryable<T>>? include = null, 
+        Func<IQueryable<T>, IQueryable<T>>? include = null, 
         CancellationToken cancellationToken = default)
     {
         var query = await GetQuery(cancellationToken);
@@ -85,7 +85,7 @@ public class BaseRepository<T>(DbContext dbContext) : IBaseRepository<T> where T
     public async Task<TResult?> GetWithSelectorAsync<TResult>(
         Expression<Func<T, TResult>> selector, 
         Expression<Func<T, bool>>? filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? include = null,
+        Func<IQueryable<T>, IQueryable<T>>? include = null,
         CancellationToken cancellationToken = default)
     {
         var query = await GetQuery(cancellationToken);

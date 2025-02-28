@@ -27,7 +27,10 @@ export class NotificationService {
     this.messageService.add({
       severity,
       summary: title,
-      detail: message
+      detail: message,
+      closable: true,
+      life: 3000,
+      styleClass: 'z-100'
     });
   }
 }

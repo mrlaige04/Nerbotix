@@ -1,3 +1,9 @@
 <div class="settings-wrapper">
-
+  <div class="ui-settings mt-2 flex flex-column gap-1">
+    <h4>UI</h4>
+    <div class="theme flex gap-2">
+      <p-toggle-switch [ngModel]="theme() === 'dark'" (onChange)="toggleTheme()"/>
+      <label>Theme ({{theme()}})</label>
+    </div>
+  </div>
 </div>

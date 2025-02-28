@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RoboTasker.Domain.Tenants;
 
-namespace RoboTasker.Infrastructure.Data.Configurations;
+namespace RoboTasker.Infrastructure.Data.Configurations.Identity;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {

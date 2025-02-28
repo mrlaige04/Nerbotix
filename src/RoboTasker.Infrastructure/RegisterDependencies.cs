@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,7 @@ using RoboTasker.Infrastructure.Authentication;
 using RoboTasker.Infrastructure.Authentication.Providers;
 using RoboTasker.Infrastructure.Authentication.Services;
 using RoboTasker.Infrastructure.Data;
+using RoboTasker.Infrastructure.Data.Interceptors;
 using RoboTasker.Infrastructure.Emailing;
 
 namespace RoboTasker.Infrastructure;
@@ -56,8 +58,13 @@ public static class RegisterDependencies
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
+        services.AddScoped<ISaveChangesInterceptor, AssignTenantInterceptor>();
+        services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+        
         services.AddDbContext<RoboTaskerDbContext>((sp, options) =>
         {
+            options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+            
             options.UseNpgsql(connectionString, npgsqlOptions =>
                 npgsqlOptions
                     .UseNetTopologySuite()

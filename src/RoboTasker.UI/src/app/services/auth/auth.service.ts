@@ -46,9 +46,9 @@ export class AuthService {
   }
 
   handleSuccessLogin(result: LoginResponse) {
-    localStorage.setItem(this.storageKey, JSON.stringify(result.accessToken));
+    localStorage.setItem(this.storageKey, JSON.stringify(result.token));
 
-    this._accessToken.set(result.accessToken);
+    this._accessToken.set(result.token);
     this._isAuthenticated.set(true);
 
     this.currentUserService.setCurrentUser(result.user);

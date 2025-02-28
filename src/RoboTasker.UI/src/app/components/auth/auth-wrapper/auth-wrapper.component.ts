@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {Card} from 'primeng/card';
 import {BaseComponent} from '../../common/base/base.component';
+import {DialogService} from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'rb-auth-wrapper',
@@ -10,7 +11,8 @@ import {BaseComponent} from '../../common/base/base.component';
     Card,
   ],
   templateUrl: './auth-wrapper.component.html',
-  styleUrl: './auth-wrapper.component.scss'
+  styleUrl: './auth-wrapper.component.scss',
+  providers: [DialogService]
 })
 export class AuthWrapperComponent extends BaseComponent {
 

@@ -7,37 +7,37 @@ public interface IBaseRepository<T> where T : class, IEntity<Guid>
 {
     Task<List<T>> GetAllAsync(
         Expression<Func<T, bool>>? filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? include = null,
+        Func<IQueryable<T>, IQueryable<T>>? include = null,
         CancellationToken cancellationToken = default);
     
     Task<PaginatedList<T>> GetAllPaginatedAsync(
         int pageNumber, int pageSize, 
         Expression<Func<T, bool>>? filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? include = null,
+        Func<IQueryable<T>, IQueryable<T>>? include = null,
         CancellationToken cancellationToken = default);
 
     Task<List<TResult>> GetAllWithSelectorAsync<TResult>(
         Expression<Func<T, TResult>> selector,
         Expression<Func<T, bool>>? filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? include = null,
+        Func<IQueryable<T>, IQueryable<T>>? include = null,
         CancellationToken cancellationToken = default);
     
     Task<PaginatedList<TResult>> GetAllWithSelectorPaginatedAsync<TResult>(
         int pageNumber, int pageSize,
         Expression<Func<T, TResult>> selector,
         Expression<Func<T, bool>>? filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? include = null,
+        Func<IQueryable<T>, IQueryable<T>>? include = null,
         CancellationToken cancellationToken = default);
     
     Task<T?> GetAsync(
         Expression<Func<T, bool>>? filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? include = null,
+        Func<IQueryable<T>, IQueryable<T>>? include = null,
         CancellationToken cancellationToken = default);
     
     Task<TResult?> GetWithSelectorAsync<TResult>(
         Expression<Func<T, TResult>> selector,
         Expression<Func<T, bool>>? filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? include = null,
+        Func<IQueryable<T>, IQueryable<T>>? include = null,
         CancellationToken cancellationToken = default);
     
     Task<T> AddAsync(T entity, CancellationToken cancellationToken = default);

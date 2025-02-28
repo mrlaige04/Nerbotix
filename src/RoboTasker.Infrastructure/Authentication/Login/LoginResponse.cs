@@ -2,6 +2,6 @@
 
 public class LoginResponse
 {
-    public AccessTokenResponse AccessToken { get; set; } = null!;
+    public AccessTokenResponse Token { get; set; } = null!;
     public CurrentUserResponse User { get; set; } = null!;
 }
