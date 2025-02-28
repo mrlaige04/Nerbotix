@@ -1,6 +1,6 @@
 <div class="user-wrapper">
   <div class="tabs">
-    <p-tabs [value]="activeMenu().routerLink" (valueChange)="onTabSelect($event)">
+    <p-tabs [value]="activeMenu().routerLink" (valueChange)="onTabSelect($event)" scrollable>
       <p-tablist class="override">
         @for (tab of routes; track tab.routerLink) {
           <p-tab [value]="tab.routerLink!" [routerLink]="tab.routerLink" class="override">
@@ -9,11 +9,10 @@
           </p-tab>
         }
       </p-tablist>
-      <div class="content w-full">
+      <div class="content w-full p-2">
         <h2>{{activeMenu().label}}</h2>
         <router-outlet/>
       </div>
-
     </p-tabs>
   </div>
 </div>

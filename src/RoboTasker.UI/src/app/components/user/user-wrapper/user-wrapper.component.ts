@@ -1,7 +1,6 @@
 import {Component, OnInit, signal} from '@angular/core';
 import {RouterLink, RouterOutlet} from '@angular/router';
 import {TabsModule} from 'primeng/tabs';
-import {TabMenu} from 'primeng/tabmenu';
 import {MenuItem} from 'primeng/api';
 import {BaseComponent} from '../../common/base/base.component';
 
@@ -10,7 +9,6 @@ import {BaseComponent} from '../../common/base/base.component';
   imports: [
     RouterOutlet,
     TabsModule,
-    TabMenu,
     RouterLink
   ],
   templateUrl: './user-wrapper.component.html',

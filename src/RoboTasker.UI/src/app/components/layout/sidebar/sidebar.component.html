@@ -1,10 +1,29 @@
 <div class="sidebar" [class.opened]="sidebarOpened()">
   <div class="sidebar-content">
-    <div class="top">
-      <img src="sidebar_logo.png" alt="logo">
+    <div class="top flex gap-5 align-items-center">
+      <a routerLink="/">
+        <img src="sidebar_logo.png" alt="logo">
+      </a>
+      @if (!isDesktop) {
+        <div class="close">
+          <p-button icon="pi pi-times" text (onClick)="closeSidebar()"/>
+        </div>
+      }
     </div>
     <div class="menu">
-
+      <p-menu [model]="menu" class="w-full" styleClass="border-none bg-transparent">
+        <ng-template #submenuheader let-item>
+          <span class="text-primary font-bold text-md">{{ item.label }}</span>
+        </ng-template>
+        <ng-template #item let-item>
+          <a class="flex align-items-center p-2 px-3"
+             (click)="onNavigate(item.routerLink)"
+             [routerLink]="item.routerLink" routerLinkActive="routerLinkActive">
+            <span [class]="item.icon"></span>
+            <span class="ml-2 text-lg">{{ item.label }}</span>
+          </a>
+        </ng-template>
+      </p-menu>
     </div>
     <div class="footer">
       <p-divider/>

@@ -33,7 +33,7 @@ public class LoginHandler(UserManager<User> userManager, TokenService tokenServi
 
         return new LoginResponse
         {
-            AccessToken = token,
+            Token = token,
             User = currentUser
         };
     }

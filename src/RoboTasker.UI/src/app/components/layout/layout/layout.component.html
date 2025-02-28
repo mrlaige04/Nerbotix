@@ -1,8 +1,9 @@
 <div class="layout-container">
   <rb-sidebar/>
-  <div class="layout-content-wrapper" [class.opened]="sidebarOpened()">
+  <div class="layout-content-wrapper min-h-screen" [class.opened]="sidebarOpened()">
     <rb-topbar/>
     <div class="layout-content mt-4">
+      <h3 class="page-title my-2 text-3xl font-bold"></h3>
       <p-card>
         <router-outlet/>
       </p-card>

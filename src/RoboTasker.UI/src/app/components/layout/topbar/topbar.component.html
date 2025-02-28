@@ -4,6 +4,6 @@
   </div>
   <div class="topbar-end">
     <p-avatar icon="pi pi-user" class="user-avatar cursor-pointer" (click)="userMenu.toggle($event)"/>
-    <p-menu #userMenu popup [model]="userMenuItems()"/>
+    <p-menu appendTo="body" autoZIndex #userMenu popup [model]="userMenuItems()"/>
   </div>
 </div>

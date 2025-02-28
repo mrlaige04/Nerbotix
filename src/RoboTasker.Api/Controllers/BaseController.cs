@@ -62,4 +62,9 @@ public class BaseController : ControllerBase
         
         return ValidationProblem(modelState);
     }
+
+    protected OkObjectResult Ok(Success success)
+    {
+        return new OkObjectResult(success);
+    }
 }

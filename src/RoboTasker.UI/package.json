@@ -20,6 +20,7 @@
     "@angular/router": "^19.1.6",
     "@primeng/themes": "^19.0.6",
     "guid-typescript": "^1.0.9",
+    "ngx-device-detector": "^9.0.0",
     "primeflex": "^4.0.0",
     "primeicons": "^7.0.0",
     "primeng": "^19.0.6",
