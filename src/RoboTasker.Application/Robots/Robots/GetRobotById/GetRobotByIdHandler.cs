@@ -44,6 +44,12 @@ public class GetRobotByIdHandler(
                         CreatedAt = cp.CreatedAt,
                         UpdatedAt = cp.UpdatedAt,
                     }).ToList(),
+                Capabilities = r.Capabilities
+                    .Select(c => new RobotCapabilityResponse
+                    {
+                        Id = c.CapabilityId,
+                        GroupId = c.Capability.GroupId,
+                    }).ToList(),
                 CreatedAt = r.CreatedAt,
                 UpdatedAt = r.UpdatedAt,
             },
@@ -52,7 +58,9 @@ public class GetRobotByIdHandler(
                 .Include(r => r.Properties)
                     .ThenInclude(p => p.Property)
                 .Include(r => r.CustomProperties)
-                .Include(r => r.Category),
+                .Include(r => r.Category)
+                .Include(r => r.Capabilities)
+                    .ThenInclude(c => c.Capability),
             cancellationToken);
 
         if (robot == null)

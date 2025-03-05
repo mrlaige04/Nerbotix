@@ -16,7 +16,6 @@ import {Button} from 'primeng/button';
 import {CommonModule, NgTemplateOutlet} from '@angular/common';
 import {ProgressBar} from 'primeng/progressbar';
 import {FormsModule} from '@angular/forms';
-import {Guid} from 'guid-typescript';
 
 @Component({
   selector: 'rb-table',

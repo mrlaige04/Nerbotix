@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectorRef, Component, inject} from '@angular/core';
 import {GlobalLoaderService} from '../../../services/common/global-loader.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {NotificationService} from '../../../services/common/notification.service';
@@ -19,6 +19,7 @@ export class BaseComponent {
   protected notificationService = inject(NotificationService);
   protected dialogService = inject(DialogService);
   protected confirmationService = inject(ConfirmationService);
+  protected changeDetectorRef = inject(ChangeDetectorRef);
 
   showLoader() {
     this.globalLoader.showLoader();

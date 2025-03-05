@@ -10,4 +10,6 @@ public class UpdateRobotRequest
     public IList<UpdateRobotCommandPropertyValue>? UpdatedProperties { get; set; }
     public IList<Guid>? DeletedCustomProperties { get; set; }
     public IList<CreateRobotCommandCustomPropertyItem>? NewCustomProperties { get; set; }
+    public IList<UpdateRobotCapabilityItem>? DeletedCapabilities { get; set; }
+    public IList<UpdateRobotCapabilityItem>? NewCapabilities { get; set; }
 }

@@ -7,7 +7,8 @@
           <p-tab value="0">Main Info</p-tab>
           <p-tab value="1" [disabled]="properties() === null && !currentRobotId()">Properties</p-tab>
           <p-tab value="2">Custom Properties</p-tab>
-          <p-tab value="3" disabled>Communication</p-tab>
+          <p-tab value="3">Capabilities</p-tab>
+          <p-tab value="4" disabled>Communication</p-tab>
         </p-tablist>
         <p-tabpanels>
           <p-tabpanel value="0">
@@ -85,6 +86,26 @@
             </div>
           </p-tabpanel>
           <p-tabpanel value="3">
+            <div class="capabilities w-full mt-1" formArrayName="capabilities">
+              @for (capabilityGroup of capabilities(); track capabilityGroup.id) {
+                <div class="capability-group mb-3">
+                  <h3>{{capabilityGroup.groupName}}</h3>
+                  @for (capabilityItem of capabilityGroup.capabilities; track capabilityItem.id) {
+                    @let isSelected = getIsSelectedItem(capabilityGroup.id, capabilityItem.id);
+                    <div class="capability-item flex align-items-center gap-2 mt-2 mb-2">
+                      <p-checkbox binary [ngModel]="isSelected" [ngModelOptions]="{ standalone: true }"
+                                  (onChange)="onCapabilityItemSelect($event, capabilityGroup.id, capabilityItem.id)"/>
+                      <span>{{capabilityItem.name}}</span>
+                      @if (capabilityItem.description) {
+                        ({{capabilityItem.description}})
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </p-tabpanel>
+          <p-tabpanel value="4">
             Communication
           </p-tabpanel>
         </p-tabpanels>

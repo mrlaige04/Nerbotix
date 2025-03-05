@@ -126,6 +126,92 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("RoboTasker.Domain.Capabilities.Capability", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("capabilities", (string)null);
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Capabilities.CapabilityGroup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("capability_groups", (string)null);
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Capabilities.RobotCapability", b =>
+                {
+                    b.Property<Guid>("RobotId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CapabilityId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("RobotId", "CapabilityId");
+
+                    b.HasIndex("CapabilityId");
+
+                    b.ToTable("robots_capabilities", (string)null);
+                });
+
             modelBuilder.Entity("RoboTasker.Domain.Robots.Robot", b =>
                 {
                     b.Property<Guid>("Id")
@@ -138,9 +224,18 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("LastActivity")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("LocationId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uuid");
@@ -250,6 +345,41 @@ namespace RoboTasker.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("robot_custom_properties", (string)null);
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotLocation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("double precision");
+
+                    b.Property<Guid>("RobotId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RobotId")
+                        .IsUnique();
+
+                    b.ToTable("RobotLocation");
                 });
 
             modelBuilder.Entity("RoboTasker.Domain.Robots.RobotProperty", b =>
@@ -592,6 +722,36 @@ namespace RoboTasker.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RoboTasker.Domain.Capabilities.Capability", b =>
+                {
+                    b.HasOne("RoboTasker.Domain.Capabilities.CapabilityGroup", "Group")
+                        .WithMany("Capabilities")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Capabilities.RobotCapability", b =>
+                {
+                    b.HasOne("RoboTasker.Domain.Capabilities.Capability", "Capability")
+                        .WithMany("Robots")
+                        .HasForeignKey("CapabilityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RoboTasker.Domain.Robots.Robot", "Robot")
+                        .WithMany("Capabilities")
+                        .HasForeignKey("RobotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Capability");
+
+                    b.Navigation("Robot");
+                });
+
             modelBuilder.Entity("RoboTasker.Domain.Robots.Robot", b =>
                 {
                     b.HasOne("RoboTasker.Domain.Robots.RobotCategory", "Category")
@@ -619,6 +779,17 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.HasOne("RoboTasker.Domain.Robots.Robot", "Robot")
                         .WithMany("CustomProperties")
                         .HasForeignKey("RobotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Robot");
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotLocation", b =>
+                {
+                    b.HasOne("RoboTasker.Domain.Robots.Robot", "Robot")
+                        .WithOne("Location")
+                        .HasForeignKey("RoboTasker.Domain.Robots.RobotLocation", "RobotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -703,12 +874,27 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RoboTasker.Domain.Capabilities.Capability", b =>
+                {
+                    b.Navigation("Robots");
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Capabilities.CapabilityGroup", b =>
+                {
+                    b.Navigation("Capabilities");
+                });
+
             modelBuilder.Entity("RoboTasker.Domain.Robots.Robot", b =>
                 {
+                    b.Navigation("Capabilities");
+
                     b.Navigation("Communication")
                         .IsRequired();
 
                     b.Navigation("CustomProperties");
+
+                    b.Navigation("Location")
+                        .IsRequired();
 
                     b.Navigation("Properties");
                 });

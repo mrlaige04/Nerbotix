@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RoboTasker.Application.Common.Abstractions;
 using RoboTasker.Application.Common.Errors.Robots;
 using RoboTasker.Application.Robots.Categories;
+using RoboTasker.Domain.Capabilities;
 using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Robots;
 
@@ -10,7 +11,8 @@ namespace RoboTasker.Application.Robots.Robots.UpdateRobot;
 
 public class UpdateRobotHandler(
     ITenantRepository<Robot> robotRepository,
-    ITenantRepository<RobotCategory> categoryRepository) : ICommandHandler<UpdateRobotCommand, RobotBaseResponse>
+    ITenantRepository<RobotCategory> categoryRepository,
+    ITenantRepository<Capability> capabilityRepository) : ICommandHandler<UpdateRobotCommand, RobotBaseResponse>
 {
     public async Task<ErrorOr<RobotBaseResponse>> Handle(UpdateRobotCommand request, CancellationToken cancellationToken)
     {
@@ -18,7 +20,9 @@ public class UpdateRobotHandler(
             c => c.Id == request.Id,
             q => q
                 .Include(r => r.Properties)
-                .Include(r => r.CustomProperties),
+                .Include(r => r.CustomProperties)
+                .Include(r => r.Capabilities)
+                    .ThenInclude(c => c.Capability),
             cancellationToken: cancellationToken);
         
         if (robot == null)
@@ -121,6 +125,38 @@ public class UpdateRobotHandler(
                 };
                 robot.CustomProperties.Add(newProperty);
             }
+        }
+        
+        
+        foreach (var deletedCapability in request.DeletedCapabilities ?? [])
+        {
+            var capability = robot.Capabilities.FirstOrDefault(
+                c => c.Capability.Id == deletedCapability.Id && c.Capability.GroupId == deletedCapability.GroupId);
+
+            if (capability != null)
+            {
+                robot.Capabilities.Remove(capability);
+            }
+        }
+        
+        
+        foreach (var newCapabilityItem in request.NewCapabilities ?? [])
+        {
+            var capability = await capabilityRepository.GetAsync(
+                c => c.GroupId == newCapabilityItem.GroupId && c.Id == newCapabilityItem.Id,
+                cancellationToken: cancellationToken);
+
+            if (capability == null)
+            {
+                continue;
+            }
+            
+            var newCapability = new RobotCapability
+            {
+                CapabilityId = capability.Id
+            };
+                
+            robot.Capabilities.Add(newCapability);
         }
         
         var updatedRobot = await robotRepository.UpdateAsync(robot, cancellationToken);

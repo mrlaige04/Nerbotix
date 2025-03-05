@@ -1,12 +1,16 @@
 <div class="layout-container">
   <rb-sidebar/>
-  <div class="layout-content-wrapper min-h-screen" [class.opened]="sidebarOpened()">
+  <div class="layout-content-wrapper min-h-screen" [class.opened]="sidebarOpened()" (click)="closeSidebarIfMobile()">
     <rb-topbar/>
     <div class="layout-content mt-4">
-      <h3 class="page-title my-2 text-3xl font-bold"></h3>
-      <p-card>
+      <h3 class="page-title my-3 text-3xl font-bold"></h3>
+      @if (wrapToCard()) {
+        <p-card>
+          <router-outlet/>
+        </p-card>
+      } @else {
         <router-outlet/>
-      </p-card>
+      }
     </div>
   </div>
 </div>

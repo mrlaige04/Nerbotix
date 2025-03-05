@@ -20,6 +20,12 @@ public class GetRobotsHandler(
                 Id = r.Id,
                 Name = r.Name,
                 TenantId = r.TenantId,
+                Location = new RobotLocationResponse()
+                {
+                    Latitude = r.Location.Latitude,
+                    Longitude = r.Location.Longitude,
+                    Timestamp = r.Location.Timestamp.DateTime
+                },
                 Category = new CategoryBaseResponse
                 {
                     Id = r.CategoryId,
@@ -29,7 +35,9 @@ public class GetRobotsHandler(
                     UpdatedAt = r.UpdatedAt,
                 }
             },
-            include: q => q.Include(r => r.Category),
+            include: q => q
+                .Include(r => r.Category)
+                .Include(r => r.Location),
             cancellationToken: cancellationToken);
 
         return robots;

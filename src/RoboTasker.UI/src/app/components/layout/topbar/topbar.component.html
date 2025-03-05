@@ -1,6 +1,6 @@
 <div class="topbar flex justify-content-between align-items-center">
   <div class="topbar-start">
-    <p-button icon="pi pi-bars" text (onClick)="toggleSidebar()"/>
+    <p-button icon="pi pi-bars" text (onClick)="toggleSidebar($event)"/>
   </div>
   <div class="topbar-end">
     <p-avatar icon="pi pi-user" class="user-avatar cursor-pointer" (click)="userMenu.toggle($event)"/>

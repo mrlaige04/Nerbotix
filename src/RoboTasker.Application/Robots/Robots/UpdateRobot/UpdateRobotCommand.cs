@@ -11,10 +11,18 @@ public class UpdateRobotCommand : ICommand<RobotBaseResponse>
     public IList<UpdateRobotCommandPropertyValue>? UpdatedProperties { get; set; }
     public IList<Guid>? DeletedCustomProperties { get; set; }
     public IList<CreateRobotCommandCustomPropertyItem>? NewCustomProperties { get; set; }
+    public IList<UpdateRobotCapabilityItem>? DeletedCapabilities { get; set; }
+    public IList<UpdateRobotCapabilityItem>? NewCapabilities { get; set; }
 }
 
 public class UpdateRobotCommandPropertyValue
 {
     public Guid PropertyId { get; set; }
     public object Value { get; set; } = null!;
+}
+
+public class UpdateRobotCapabilityItem
+{
+    public Guid Id { get; set; }
+    public Guid GroupId { get; set; }
 }
