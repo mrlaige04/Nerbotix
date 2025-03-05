@@ -2,7 +2,7 @@ import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {BaseTableListComponent} from '../../../common/base-table-list/base-table-list.component';
 import {RobotBase} from '../../../../models/robots/robots/robot-base';
 import {RobotsService} from '../../../../services/robots/robots.service';
-import {catchError, finalize, Observable, of, tap} from 'rxjs';
+import { finalize, Observable, tap} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {Guid} from 'guid-typescript';
 import {Success} from '../../../../models/success';
@@ -11,10 +11,11 @@ import {TableModule} from 'primeng/table';
 import {PaginatorModule} from 'primeng/paginator';
 import {Toolbar} from 'primeng/toolbar';
 import {Button} from 'primeng/button';
-import {NgTemplateOutlet} from '@angular/common';
+import {DatePipe, NgTemplateOutlet} from '@angular/common';
 import {ProgressBar} from 'primeng/progressbar';
 import {FormsModule} from '@angular/forms';
-import {HttpErrorResponse} from '@angular/common/http';
+import {RobotStatus} from '../../../../models/robots/robots/robot-status';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'rb-robots-list',
@@ -27,6 +28,8 @@ import {HttpErrorResponse} from '@angular/common/http';
     ProgressBar,
     TableComponent,
     FormsModule,
+    RouterLink,
+    DatePipe,
   ],
   templateUrl: './robots-list.component.html',
   styleUrl: './robots-list.component.scss',
@@ -40,6 +43,10 @@ export class RobotsListComponent extends BaseTableListComponent<RobotBase> imple
     this.columns = [
       { label: 'Name', propName: 'name' },
       { label: 'Category', propName: (robot) => robot['category']['name'] },
+      { label: 'Status', propName: 'status' },
+      { label: 'Location', propName: 'location' },
+      { label: 'Location timestamp', propName: '' },
+      { label: 'Last activity', propName: 'lastActivity' }
     ];
   }
 
@@ -74,4 +81,6 @@ export class RobotsListComponent extends BaseTableListComponent<RobotBase> imple
   override deleteItem(id: Guid): Observable<Success> {
     return this.robotsService.deleteRobot(id);
   }
+
+  protected readonly RobotStatus = RobotStatus;
 }

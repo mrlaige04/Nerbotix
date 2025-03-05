@@ -29,6 +29,10 @@ export class SidebarComponent extends BaseComponent {
   public sidebarOpened = this.layoutService.sidebarOpened;
   public isDesktop = this.layoutService.isDesktop;
 
+  constructor() {
+    super();
+  }
+
   menu: MenuItem[] = [
     {
       label: 'Robots',
@@ -37,6 +41,11 @@ export class SidebarComponent extends BaseComponent {
           label: 'Categories',
           routerLink: 'categories',
           icon: 'pi pi-bars'
+        },
+        {
+          label: 'Capabilities',
+          routerLink: 'capabilities',
+          icon: 'pi pi-bolt'
         },
         {
           label: 'Robots',

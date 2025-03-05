@@ -1,10 +1,10 @@
 import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
 import {BaseComponent} from '../../../common/base/base.component';
-import {FormArray, FormBuilder, FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {RobotsService} from '../../../../services/robots/robots.service';
 import {CategoriesService} from '../../../../services/robots/categories.service';
 import {CategoryBase} from '../../../../models/robots/categories/category-base';
-import {catchError, debounceTime, finalize, of, tap} from 'rxjs';
+import {catchError, debounceTime, finalize, forkJoin, of, switchMap, tap} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {Button} from 'primeng/button';
 import {Tab, TabList, TabPanel, TabPanels, Tabs} from 'primeng/tabs';
@@ -13,11 +13,12 @@ import {Select, SelectChangeEvent} from 'primeng/select';
 import {Guid} from 'guid-typescript';
 import {CategoryProperty} from '../../../../models/robots/categories/category-property';
 import {CategoryPropertyType} from '../../../../models/robots/categories/category-property-type';
-import {Checkbox} from 'primeng/checkbox';
+import {Checkbox, CheckboxChangeEvent} from 'primeng/checkbox';
 import {InputNumber} from 'primeng/inputnumber';
 import {Textarea} from 'primeng/textarea';
 import {DatePicker} from 'primeng/datepicker';
 import {
+  CreateRobotCapabilityRequest,
   CreateRobotCustomPropertyRequest,
   CreateRobotPropertyRequest,
   CreateRobotRequest
@@ -25,8 +26,11 @@ import {
 import {HttpErrorResponse} from '@angular/common/http';
 import {Robot} from '../../../../models/robots/robots/robot';
 import {PropertyTypeHelper} from '../../../../utils/helpers/property-type-helper';
-import {JsonPipe} from '@angular/common';
+import {AsyncPipe, JsonPipe} from '@angular/common';
 import {Category} from '../../../../models/robots/categories/category';
+import {CapabilitiesService} from '../../../../services/robots/capabilities.service';
+import {Tree} from 'primeng/tree';
+import {Capability} from '../../../../models/robots/capabilities/capability';
 
 @Component({
   selector: 'rb-robot-add-or-update',
@@ -44,7 +48,10 @@ import {Category} from '../../../../models/robots/categories/category';
     InputNumber,
     Textarea,
     DatePicker,
-    JsonPipe
+    JsonPipe,
+    AsyncPipe,
+    Tree,
+    FormsModule
   ],
   templateUrl: './robot-add-or-update.component.html',
   styleUrl: './robot-add-or-update.component.scss'
@@ -54,19 +61,24 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private robotsService = inject(RobotsService);
   private categoriesService = inject(CategoriesService);
+  private capabilitiesService = inject(CapabilitiesService);
 
   categories = signal<CategoryBase[]>([]);
+  capabilities = signal<Capability[]>([]);
+  selectedCapabilityGroup = signal<Capability | null>(null);
 
   form = this.fb.group({
     name: this.fb.control('', Validators.required),
     categoryId: this.fb.control('', Validators.required),
     properties: this.fb.array([], [Validators.required]),
     customProperties: this.fb.array([]),
+    capabilities: this.fb.array([])
   });
 
   categoryIdControl = this.form.get('categoryId') as FormControl;
   propertiesArray = this.form.get('properties') as FormArray;
   customPropertiesArray = this.form.get('customProperties') as FormArray;
+  capabilitiesArray = this.form.get('capabilities') as FormArray;
 
   properties = signal<CategoryProperty[] | null>(null);
 
@@ -78,10 +90,13 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
   deletedCustomProperties = signal<Guid[] | undefined>(undefined);
   categoryChanged = signal<boolean | undefined>(undefined);
 
+  selectedCapabilityItems = signal<CreateRobotCapabilityRequest[]>([]);
+
   ngOnInit() {
     this.detectViewMode();
 
     this.getCategories();
+    this.getCapabilities();
     this.listenForCategoryIdChange();
   }
 
@@ -151,6 +166,8 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
       });
       this.customPropertiesArray.push(customProperty);
     });
+
+    this.selectedCapabilityItems.set(robot.capabilities ?? []);
   }
 
   private listenForCategoryIdChange() {
@@ -207,6 +224,39 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
         this.hideLoader();
       })
     ).subscribe();
+  }
+
+  private getCapabilities() {
+    this.showLoader();
+    this.capabilitiesService.getCapabilities({
+      pageNumber: 1,
+      pageSize: 999999
+    }).pipe(
+      switchMap(base => {
+        return forkJoin(base.items.map(c => this.capabilitiesService.getCapabilityById(c.id)))
+      }),
+      tap((result) => {
+        if (result.length > 0) {
+          this.selectedCapabilityGroup.set(result[0]);
+        }
+
+        this.capabilities.set(result.filter(c => !!c));
+      }),
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => {
+        this.hideLoader();
+      })
+    ).subscribe();
+  }
+
+  getIsSelectedItem(groupId: Guid, id: Guid) {
+    const items = this.selectedCapabilityItems();
+
+    const el = items.find(
+      i => i.groupId == groupId && i.id == id
+    );
+
+    return !!el;
   }
 
   private initializeCategoryProperties(id: Guid) {
@@ -273,11 +323,13 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
     const formValue = this.form.value;
     const properties = formValue.properties as CreateRobotPropertyRequest[];
     const customProperties = formValue.customProperties as CreateRobotCustomPropertyRequest[];
+
     const request: CreateRobotRequest = {
       name: formValue.name!,
       categoryId: Guid.parse(formValue.categoryId!).toString(),
       properties: properties,
-      customProperties: customProperties
+      customProperties: customProperties,
+      capabilities: this.selectedCapabilityItems()
     };
 
     return this.robotsService.createRobot(request);
@@ -291,13 +343,37 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
 
     const categoryId = formValue.categoryId!;
 
+    const currentCapabilities = this.selectedCapabilityItems();
+    const startCapabilities = this.currentRobot()?.capabilities ?? [];
+
+    const deletedCapabilities = startCapabilities.filter(c =>
+        !currentCapabilities.includes(c));
+    const newCapabilities = currentCapabilities.filter(c =>
+        !startCapabilities.includes(c),);
+
     return this.robotsService.updateRobot(this.currentRobotId()!, {
       name: formValue.name!,
       deletedCustomProperties: this.deletedCustomProperties(),
       categoryId,
       newCustomProperties,
-      updatedProperties
+      updatedProperties,
+      deletedCapabilities,
+      newCapabilities,
     });
+  }
+
+  onCapabilityItemSelect(event: CheckboxChangeEvent, groupId: Guid, id: Guid) {
+    const existingElement = this.selectedCapabilityItems()
+      .find(i => i.groupId === groupId && i.id == id);
+
+    if (event.checked && !existingElement) {
+      this.selectedCapabilityItems.update(i => [...i, {
+        groupId, id
+      }]);
+    } else if (!event.checked && existingElement) {
+      const items = this.selectedCapabilityItems();
+      this.selectedCapabilityItems.set(items.filter(i => i != existingElement));
+    }
   }
 
   getProperty(propertyId: Guid): CategoryProperty | undefined {

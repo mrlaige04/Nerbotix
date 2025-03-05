@@ -5,6 +5,7 @@ export interface CreateRobotRequest {
   categoryId: string; // GUID
   properties: CreateRobotPropertyRequest[];
   customProperties?: CreateRobotCustomPropertyRequest[] | undefined;
+  capabilities?: CreateRobotCapabilityRequest[] | undefined;
 }
 
 export interface CreateRobotPropertyRequest {
@@ -15,4 +16,9 @@ export interface CreateRobotPropertyRequest {
 export interface CreateRobotCustomPropertyRequest {
   name: string;
   value: any;
+}
+
+export interface CreateRobotCapabilityRequest {
+  groupId: Guid;
+  id: Guid;
 }

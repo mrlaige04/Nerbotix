@@ -9,6 +9,8 @@ import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {passTokenInterceptor} from './utils/interceptors/pass-token.interceptor';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {handleUnauthorizedInterceptor} from './utils/interceptors/handle-unauthorized.interceptor';
+import {handleServerNotRespondingInterceptor} from './utils/interceptors/handle-server-not-responding.interceptor';
+import {DialogService} from 'primeng/dynamicdialog';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,7 +27,12 @@ export const appConfig: ApplicationConfig = {
       ripple: true
     }),
     apiConfigProvider,
-    provideHttpClient(withInterceptors([ passTokenInterceptor, handleUnauthorizedInterceptor ])),
+    provideHttpClient(withInterceptors([
+      passTokenInterceptor,
+      handleServerNotRespondingInterceptor,
+      handleUnauthorizedInterceptor
+    ])),
+    DialogService,
     MessageService,
     ConfirmationService
   ]

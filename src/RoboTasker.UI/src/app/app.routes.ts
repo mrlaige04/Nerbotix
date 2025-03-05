@@ -8,6 +8,11 @@ import {
   CategoriesWrapperComponent
 } from './components/robots/categories/categories-wrapper/categories-wrapper.component';
 import {RobotsWrapperComponent} from './components/robots/robots/robots-wrapper/robots-wrapper.component';
+import {MaintenanceComponent} from './components/layout/maintenance/maintenance.component';
+import {
+  CapabilitiesWrapperComponent
+} from './components/robots/capabilities/capabilities-wrapper/capabilities-wrapper.component';
+import {HomeComponent} from './components/home/home.component';
 
 export const routes: Routes = [
   {
@@ -16,6 +21,10 @@ export const routes: Routes = [
     component: LayoutComponent,
     canActivate: [isAuthenticatedGuard],
     children: [
+      {
+        path: '',
+        component: HomeComponent
+      },
       {
         path: 'user',
         component: UserWrapperComponent,
@@ -35,7 +44,14 @@ export const routes: Routes = [
         component: RobotsWrapperComponent,
         loadChildren: () =>
           import('./components/robots/robots/robots.routes').then(r => r.ROBOTS_ROUTES)
-      }
+      },
+      {
+        path: 'capabilities',
+        data: { title: 'Capabilities' },
+        component: CapabilitiesWrapperComponent,
+        loadChildren: () =>
+          import('./components/robots/capabilities/capabilities.routes').then(r => r.CAPABILITIES_ROUTES)
+      },
     ]
   },
   {
@@ -44,5 +60,6 @@ export const routes: Routes = [
     component: AuthWrapperComponent,
     loadChildren: () =>
       import('./components/auth/auth.routes').then(r => r.AUTH_ROUTES)
-  }
+  },
+  { path: 'maintenance', component: MaintenanceComponent },
 ];

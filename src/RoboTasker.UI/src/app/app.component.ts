@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {GlobalLoaderComponent} from './components/common/global-loader/global-loader.component';
 import {Toast} from 'primeng/toast';
 import {ConfirmPopup} from 'primeng/confirmpopup';
 import {ConfirmDialog} from 'primeng/confirmdialog';
+import {UiSettingsService} from './services/layout/ui-settings.service';
 
 @Component({
   selector: 'app-root',
@@ -12,5 +13,6 @@ import {ConfirmDialog} from 'primeng/confirmdialog';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'RoboTasker.UI';
+  private settingsService = inject(UiSettingsService);
+  title = 'RoboTasker';
 }

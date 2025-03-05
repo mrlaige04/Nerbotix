@@ -1,5 +1,5 @@
 import {Guid} from 'guid-typescript';
-import {CreateRobotCustomPropertyRequest} from './create-robot-request';
+import {CreateRobotCapabilityRequest, CreateRobotCustomPropertyRequest} from './create-robot-request';
 
 export interface UpdateRobotRequest {
   name?: string | undefined;
@@ -7,6 +7,8 @@ export interface UpdateRobotRequest {
   updatedProperties?: UpdateRobotPropertyRequest[] | undefined;
   deletedCustomProperties?: Guid[] | undefined;
   newCustomProperties?: CreateRobotCustomPropertyRequest[] | undefined;
+  deletedCapabilities?: CreateRobotCapabilityRequest[] | undefined;
+  newCapabilities?: CreateRobotCapabilityRequest[] | undefined;
 }
 
 interface UpdateRobotPropertyRequest {

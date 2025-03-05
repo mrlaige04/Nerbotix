@@ -3,7 +3,7 @@ import {Button} from "primeng/button";
 import {LayoutService} from '../../../services/layout/layout.service';
 import {Avatar} from 'primeng/avatar';
 import {Menu} from 'primeng/menu';
-import {MenuItem, MenuItemCommandEvent} from 'primeng/api';
+import {MenuItem} from 'primeng/api';
 import {AuthService} from '../../../services/auth/auth.service';
 import {BaseComponent} from '../../common/base/base.component';
 
@@ -38,7 +38,8 @@ export class TopbarComponent extends BaseComponent {
     return this.notAuthenticatedUserMenu;
   });
 
-  toggleSidebar() {
+  toggleSidebar(event: Event) {
+    event.stopPropagation();
     this.layoutService.toggleSidebar();
   }
 }

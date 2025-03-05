@@ -4,6 +4,7 @@ using RoboTasker.Application.Common.Abstractions;
 using RoboTasker.Application.Common.Errors;
 using RoboTasker.Application.Common.Errors.Robots;
 using RoboTasker.Application.Robots.Categories;
+using RoboTasker.Domain.Capabilities;
 using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Robots;
 using RoboTasker.Domain.Services;
@@ -15,7 +16,8 @@ public class CreateRobotHandler(
     ICurrentUser currentUser,
     IBaseRepository<Tenant> tenantRepository,
     ITenantRepository<Robot> robotRepository,
-    ITenantRepository<RobotCategory> categoryRepository) : ICommandHandler<CreateRobotCommand, RobotBaseResponse>
+    ITenantRepository<RobotCategory> categoryRepository,
+    ITenantRepository<Capability> capabilityRepository) : ICommandHandler<CreateRobotCommand, RobotBaseResponse>
 {
     public async Task<ErrorOr<RobotBaseResponse>> Handle(CreateRobotCommand request, CancellationToken cancellationToken)
     {
@@ -59,7 +61,8 @@ public class CreateRobotHandler(
         {
             Name = request.Name,
             CategoryId = request.CategoryId,
-            Category = category
+            Category = category,
+            Location = RobotLocation.Empty
         };
 
         foreach (var prop in request.Properties)
@@ -83,6 +86,22 @@ public class CreateRobotHandler(
             };
             
             robot.CustomProperties.Add(customProp);
+        }
+        
+        foreach (var capability in request.Capabilities ?? [])
+        {
+            var foundCapability = await capabilityRepository.GetAsync(
+                c => c.Id == capability.Id && c.GroupId == capability.GroupId,
+                cancellationToken: cancellationToken);
+            
+            if (foundCapability == null) continue;
+
+            var robotCapability = new RobotCapability
+            {
+                CapabilityId = foundCapability.Id,
+            };
+            
+            robot.Capabilities.Add(robotCapability);
         }
         
         var createdRobot = await robotRepository.AddAsync(robot, cancellationToken);

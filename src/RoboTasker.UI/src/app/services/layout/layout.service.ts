@@ -9,6 +9,8 @@ export class LayoutService {
   private _sidebarOpened = signal(this.deviceDetectorService.isDesktop());
   public sidebarOpened = this._sidebarOpened.asReadonly();
 
+  public wrapToCard = signal(true);
+
   toggleSidebar() {
     this._sidebarOpened.update(o => !o);
   }

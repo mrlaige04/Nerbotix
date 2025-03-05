@@ -1,7 +1,7 @@
 .sidebar {
   height: 100vh;
   width: var(--sidebar-width);
-  background: transparent;
+  background: var(--p-menu-background);
   transition: transform var(--transition-duration);
   z-index: 999;
   position: fixed;

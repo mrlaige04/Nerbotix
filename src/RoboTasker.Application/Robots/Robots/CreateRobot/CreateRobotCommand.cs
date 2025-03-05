@@ -9,6 +9,7 @@ public class CreateRobotCommand : ICommand<RobotBaseResponse>
 
     public IList<CreateRobotCommandPropertyItem> Properties { get; set; } = null!;
     public IList<CreateRobotCommandCustomPropertyItem>? CustomProperties { get; set; }
+    public IList<CreateRobotCommandCapability>? Capabilities { get; set; }
 }
 
 public class CreateRobotCommandPropertyItem
@@ -21,4 +22,10 @@ public class CreateRobotCommandCustomPropertyItem
 {
     public string Name { get; set; } = null!;
     public object Value { get; set; } = null!;
+}
+
+public class CreateRobotCommandCapability
+{
+    public Guid GroupId { get; set; }
+    public Guid Id { get; set; }
 }

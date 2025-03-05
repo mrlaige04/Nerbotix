@@ -24,4 +24,11 @@ export class LayoutComponent extends BaseComponent {
   private layoutService = inject(LayoutService);
   private deviceDetector = inject(DeviceDetectorService);
   sidebarOpened = this.layoutService.sidebarOpened;
+  wrapToCard = this.layoutService.wrapToCard;
+
+  closeSidebarIfMobile() {
+    if (this.deviceDetector.isMobile() && this.sidebarOpened()) {
+      this.layoutService.closeSidebar();
+    }
+  }
 }

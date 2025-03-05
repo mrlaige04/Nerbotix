@@ -31,4 +31,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("ping", () => "Hello World!");
+
 app.Run();
