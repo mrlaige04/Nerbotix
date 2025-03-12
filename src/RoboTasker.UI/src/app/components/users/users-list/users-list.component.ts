@@ -34,7 +34,7 @@ export class UsersListComponent extends BaseTableListComponent<UserBase> impleme
     this.columns = [
       { label: 'Email', propName: 'email' },
       { label: 'Username', propName: 'username' },
-      { label: 'Verification', propName: 'emailVerified' },
+      { label: 'Verified', propName: 'emailVerified' },
     ];
   }
 
