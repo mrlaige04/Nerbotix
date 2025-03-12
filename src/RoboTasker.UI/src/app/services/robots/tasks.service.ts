@@ -8,6 +8,7 @@ import {Guid} from 'guid-typescript';
 import {Task} from '../../models/robots/tasks/task';
 import {CreateTaskRequest} from '../../models/robots/tasks/requests/create-task-request';
 import {Success} from '../../models/success';
+import {UpdateTaskRequest} from '../../models/robots/tasks/requests/update-task-request';
 
 @Injectable({
   providedIn: 'root'
@@ -45,6 +46,75 @@ export class TasksService {
     }
 
     return this.base.post<FormData, TaskBase>(url, formData);
+  }
+
+  updateTask(id:Guid, data: UpdateTaskRequest): Observable<TaskBase> {
+    const url = `${this.baseUrl}/${id}`;
+
+    const formData = new FormData();
+    if (data.name) {
+      formData.append('name', data.name);
+    }
+
+    if (data.description) {
+      formData.append('description', data.description);
+    }
+
+    if (data.estimatedDuration) {
+      formData.append('estimatedDuration', data.estimatedDuration);
+    }
+
+    if (data.priority) {
+      formData.append('priority', data.priority.toString());
+    }
+
+    if (data.complexity) {
+      formData.append('complexity', data.complexity.toString());
+    }
+
+    if (data.properties) {
+      formData.append('properties', JSON.stringify(data.properties));
+    }
+
+    if (data.requirements) {
+      formData.append('requirements', JSON.stringify(data.requirements));
+    }
+
+    if (data.data) {
+      formData.append('data', JSON.stringify(data.data));
+    }
+
+    if (data.files) {
+      data.files.forEach(file => {
+        formData.append('files', file, file.name);
+      });
+    }
+
+    if (data.deletedProperties && data.deletedProperties.length > 0) {
+      formData.append('deletedProperties', JSON.stringify({
+        ids: data.deletedProperties,
+      }));
+    }
+
+    if (data.deletedRequirements && data.deletedRequirements.length > 0) {
+      formData.append('deletedRequirements', JSON.stringify({
+        ids: data.deletedRequirements,
+      }));
+    }
+
+    if (data.deletedData && data.deletedData.length > 0) {
+      formData.append('deletedData', JSON.stringify({
+        ids: data.deletedData,
+      }));
+    }
+
+    if (data.deletedFiles && data.deletedFiles.length > 0) {
+      formData.append('deletedFiles', JSON.stringify({
+        names: data.deletedFiles,
+      }));
+    }
+
+    return this.base.put<FormData, TaskBase>(url, formData);
   }
 
   deleteTask(id: Guid): Observable<Success> {

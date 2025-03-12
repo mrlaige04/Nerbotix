@@ -26,12 +26,16 @@ public class CreateTaskPropertyCommand
 {
     public string Key { get; set; } = null!;
     public object Value { get; set; } = null!;
+    
+    public Guid? ExistingId { get; set; }
 }
 
 public class CreateTaskRequirementCommand
 {
     public Guid CapabilityId { get; set; }
     public RobotTaskRequirementLevel Level { get; set; }
+    
+    public Guid? ExistingId { get; set; }
 }
 
 public class CreateTaskDataCommand
@@ -40,4 +44,6 @@ public class CreateTaskDataCommand
     public RobotTaskDataType Type { get; set; }
     
     public object? Value { get; set; }
+    
+    public Guid? ExistingId { get; set; }
 }

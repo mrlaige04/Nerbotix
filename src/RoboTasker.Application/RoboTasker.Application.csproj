@@ -23,7 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Robots\Tasks\UpdateTask\" />
       <Folder Include="Users\GetUserById\" />
       <Folder Include="Users\UpdateUser\" />
     </ItemGroup>
