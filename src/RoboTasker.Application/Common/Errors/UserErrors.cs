@@ -19,4 +19,7 @@ public static class UserErrors
     
     public const string FailureWhileCreating = "User.CreationFailed";
     public const string FailureWhileCreatingDescription = "Cannot create a user. Please try again.";
+    
+    public const string SuperAdminDelete = "SuperAdmin.Delete";
+    public const string SuperAdminDeleteDescription = "You cannot delete a super admin user.";
 }
