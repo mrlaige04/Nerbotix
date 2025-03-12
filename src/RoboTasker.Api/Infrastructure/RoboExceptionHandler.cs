@@ -8,7 +8,8 @@ public class RoboExceptionHandler : IExceptionHandler
 {
     private readonly Dictionary<Type, Func<HttpContext, Exception, Task>> _handlers = new()
     {
-        { typeof(ValidationException), HandleValidationException }
+        { typeof(ValidationException), HandleValidationException },
+        { typeof(UnauthorizedAccessException), HandleUnauthorizedException }
     };
 
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
@@ -36,5 +37,12 @@ public class RoboExceptionHandler : IExceptionHandler
             Status = StatusCodes.Status400BadRequest,
             Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
         });
+    }
+    
+    private static Task HandleUnauthorizedException(HttpContext httpContext, Exception ex)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        
+        return Task.CompletedTask;
     }
 }

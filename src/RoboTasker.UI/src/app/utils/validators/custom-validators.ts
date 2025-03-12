@@ -43,4 +43,12 @@ export class CustomValidators {
       return control.value == compareControl.value ? null : { compare: true };
     };
   }
+
+  public static Duration(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      const regex = /^\d+:[0-5]\d$/;
+      return regex.test(value) ? null : { duration: true };
+    };
+  }
 }

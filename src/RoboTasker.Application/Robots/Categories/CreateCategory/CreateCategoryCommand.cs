@@ -3,7 +3,7 @@ using RoboTasker.Domain.Robots;
 
 namespace RoboTasker.Application.Robots.Categories.CreateCategory;
 
-public class CreateCategoryCommand : ICommand<CategoryBaseResponse>
+public class CreateCategoryCommand : ITenantCommand<CategoryBaseResponse>
 {
     public string Name { get; set; } = null!;
     public IList<CreateCategoryCommandPropertyItem> Properties { get; set; } = [];

@@ -17,6 +17,7 @@ public class GetCapabilitiesHandler(
             c => new CapabilityBaseResponse
             {
                 Id = c.Id,
+                Name = c.Name,
                 GroupName = c.Name,
                 Description = c.Description,
                 CapabilitiesCount = c.Capabilities.Count,

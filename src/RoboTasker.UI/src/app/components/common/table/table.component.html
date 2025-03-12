@@ -30,6 +30,7 @@
              (selectionChange)="onSelectionChange($event)"
              [dataKey]="dataKey()"
              [rowHover]="true"
+             (onSort)="onSort($event)"
              [columns]="columns()">
       @if (captionTemplate()) {
         <ng-template #caption>
@@ -44,7 +45,13 @@
           @if (columns && columns.length > 0) {
             <tr>
               @for (column of columns; track column.propName) {
-                <th>{{ column.label }}</th>
+                @let sortable = !!column.sortable;
+                <th [pSortableColumn]="sortable ? column.propName : ''">
+                  {{ column.label }}
+                  @if (sortable) {
+                    <p-sortIcon [field]="column.propName"/>
+                  }
+                </th>
               }
 
               @if (showRowActions()) {

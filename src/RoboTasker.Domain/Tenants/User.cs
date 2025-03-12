@@ -7,6 +7,9 @@ public sealed class User : IdentityUser<Guid>, ITenantEntity<Guid>, IAuditableEn
 {
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    
+    public string? RefreshToken { get; set; }
+    public DateTimeOffset? RefreshTokenExpiresAt { get; set; }
 
     public User() { } // For EF 
 

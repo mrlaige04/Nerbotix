@@ -2,7 +2,7 @@
 
 namespace RoboTasker.Application.Robots.Robots.CreateRobot;
 
-public class CreateRobotCommand : ICommand<RobotBaseResponse>
+public class CreateRobotCommand : ITenantCommand<RobotBaseResponse>
 {
     public string Name { get; set; } = null!;
     public Guid CategoryId { get; set; }

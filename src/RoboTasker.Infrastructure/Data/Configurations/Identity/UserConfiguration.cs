@@ -15,5 +15,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMany(u => u.Roles)
             .WithOne(r => r.User)
             .HasForeignKey(r => r.UserId);
+
+        builder.Property(u => u.RefreshToken).IsRequired(false);
     }
 }

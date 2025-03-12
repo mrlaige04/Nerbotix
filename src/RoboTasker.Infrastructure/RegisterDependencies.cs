@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using RoboTasker.Application.Common.Emails;
 using RoboTasker.Application.Services;
 using RoboTasker.Domain.Repositories;
 using RoboTasker.Domain.Repositories.Abstractions;
@@ -52,6 +53,7 @@ public static class RegisterDependencies
             });
 
         services.AddScoped<IEmailSender, EmailSender>();
+        services.AddScoped<TemplateService>();
     }
     
     private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
@@ -99,12 +101,20 @@ public static class RegisterDependencies
                 options.Password.RequireLowercase = true;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Tokens.PasswordResetTokenProvider = "NumericEmail";
+                options.ClaimsIdentity.EmailClaimType = JwtRegisteredClaimNames.Email;
+                options.ClaimsIdentity.UserNameClaimType = JwtRegisteredClaimNames.Name;
+                options.ClaimsIdentity.UserIdClaimType = JwtRegisteredClaimNames.Sub;
+                
+                options.Tokens.EmailConfirmationTokenProvider = "24LengthCode";
             })
             .AddRoles<Role>()
             .AddDefaultTokenProviders()
+            .AddTokenProvider<CodeConfirmationTokenProvider<User>>("24LengthCode")
             .AddTokenProvider<NumericEmailTokenProvider<User>>("NumericEmail")
             .AddEntityFrameworkStores<RoboTaskerDbContext>();
 
         services.AddScoped<TokenService>();
+
+        services.AddScoped<IUserEmailSender, UserEmailSender>();
     }
 }

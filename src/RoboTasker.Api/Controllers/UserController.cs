@@ -4,7 +4,7 @@ using RoboTasker.Domain.Services;
 
 namespace RoboTasker.Api.Controllers;
 
-[Route("[controller]")]
+[Route("[controller]"), Authorize]
 public class UserController(ICurrentUser currentUser) : BaseController
 {
     [HttpGet("profile"), Authorize]

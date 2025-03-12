@@ -18,12 +18,24 @@ public class LoginHandler(UserManager<User> userManager, TokenService tokenServi
             return Error.NotFound(UserErrors.NotFound, UserErrors.NotFoundDescription);
         }
 
+        if (!user.EmailConfirmed)
+        {
+            return Error.Unauthorized(UserErrors.EmailUnverified, UserErrors.EmailUnverifiedDescription);
+        }
+
         if (!await userManager.CheckPasswordAsync(user, request.Password))
         {
             return Error.Unauthorized(UserErrors.InvalidPassword, UserErrors.InvalidPasswordDescription);
         }
         
         var token = tokenService.GenerateToken(user);
+        token.RefreshToken = tokenService.GenerateRefreshToken();
+        
+        user.RefreshToken = token.RefreshToken;
+        user.RefreshTokenExpiresAt = DateTimeOffset.UtcNow.AddDays(2); // TODO: Move in settings
+        
+        await userManager.UpdateAsync(user);
+        
         var currentUser = new CurrentUserResponse
         {
             Id = user.Id,

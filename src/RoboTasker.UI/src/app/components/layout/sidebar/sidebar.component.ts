@@ -51,6 +51,11 @@ export class SidebarComponent extends BaseComponent {
           label: 'Robots',
           routerLink: 'robots',
           icon: 'pi pi-android'
+        },
+        {
+          label: 'Tasks',
+          routerLink: 'tasks',
+          icon: 'pi pi-check-square'
         }
       ]
     },

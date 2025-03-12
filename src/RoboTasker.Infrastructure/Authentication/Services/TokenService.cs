@@ -1,5 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -38,5 +38,30 @@ public class TokenService(IOptions<JwtOptions> jwtOptions)
             AccessToken = token,
             TokenType = options.TokenType,
         };
+    }
+
+    public string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(randomNumber);
+        }
+        return Convert.ToBase64String(randomNumber);
+    }
+
+    public string? GetEmailFromExpiredToken(string token)
+    {
+        var tokenHandler = new JsonWebTokenHandler();
+
+        try
+        {
+            var readToken = tokenHandler.ReadJsonWebToken(token);
+            return readToken.TryGetValue(JwtRegisteredClaimNames.Email, out string? email) ? email : null;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 }

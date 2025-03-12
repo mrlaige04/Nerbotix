@@ -2,4 +2,4 @@
 
 namespace RoboTasker.Application.Robots.Robots.DeleteRobot;
 
-public record DeleteRobotCommand(Guid Id) : ICommand;
+public record DeleteRobotCommand(Guid Id) : ITenantCommand;

@@ -16,9 +16,16 @@
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
       <PackageReference Include="Mapster" Version="7.4.0" />
       <PackageReference Include="MediatR" Version="12.4.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.2" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Robots\Tasks\UpdateTask\" />
+      <Folder Include="Users\GetUserById\" />
+      <Folder Include="Users\UpdateUser\" />
     </ItemGroup>
 
 </Project>

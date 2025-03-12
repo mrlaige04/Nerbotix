@@ -13,6 +13,8 @@ import {
   CapabilitiesWrapperComponent
 } from './components/robots/capabilities/capabilities-wrapper/capabilities-wrapper.component';
 import {HomeComponent} from './components/home/home.component';
+import {TasksWrapperComponent} from './components/robots/tasks/tasks-wrapper/tasks-wrapper.component';
+import {UsersWrapperComponent} from './components/users/users-wrapper/users-wrapper.component';
 
 export const routes: Routes = [
   {
@@ -52,6 +54,20 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./components/robots/capabilities/capabilities.routes').then(r => r.CAPABILITIES_ROUTES)
       },
+      {
+        path: 'tasks',
+        data: { title: 'Tasks' },
+        component: TasksWrapperComponent,
+        loadChildren: () =>
+          import('./components/robots/tasks/tasks.routes').then(r => r.TASKS_ROUTES)
+      },
+      {
+        path: 'users',
+        title: 'Users',
+        component: UsersWrapperComponent,
+        loadChildren: () =>
+          import('./components/users/users-routes').then(r => r.USERS_ROUTES)
+      }
     ]
   },
   {
