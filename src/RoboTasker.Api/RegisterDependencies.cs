@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.AspNetCore.Http.Features;
+using Microsoft.OpenApi.Models;
 using RoboTasker.Api.Infrastructure;
 using RoboTasker.Api.Services;
 using RoboTasker.Domain.Services;
@@ -9,6 +10,11 @@ public static class RegisterDependencies
 {
     public static IServiceCollection AddUi(this IServiceCollection services)
     {
+        services.Configure<FormOptions>(f =>
+        {
+            f.MultipartBodyLengthLimit = 200000000; // TODO: should move to appsettings
+        });
+        
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(opt =>
         {

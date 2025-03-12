@@ -1,0 +1,30 @@
+<div class="users-list-wrapper">
+  <rb-table [data]="items().items ?? []"
+            [columns]="columns"
+            [loading]="isLoading()"
+            [totalItems]="items().totalItems"
+            (pageChange)="onPageChange($event)"
+            (selectionChange)="onItemsSelect($event)"
+            (onAddClick)="openAddNew()"
+            dataKey="id"
+            [showRowActions]="true"
+            [showToolbar]="true">
+    <ng-template #body let-rowData="rowData">
+      <tr>
+        <td>{{ rowData['email'] }}</td>
+        <td>{{ rowData['username'] }}</td>
+        <td>
+          @let verified = rowData['emailVerified'] === true;
+          <i class="pi pi-check-circle text-{{verified ? 'green' : 'red'}}-500"></i>
+        </td>
+        <td>
+          <div class="actions flex gap-1">
+            @if (rowData['email'] !== currentUser()?.email) {
+              <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)"/>
+            }
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </rb-table>
+</div>

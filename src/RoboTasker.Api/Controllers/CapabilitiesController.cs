@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RoboTasker.Api.Models.Capabilities;
 using RoboTasker.Application.Robots.Capabilities.CreateCapability;
@@ -10,7 +11,7 @@ using RoboTasker.Application.Robots.Capabilities.UpdateCapability;
 
 namespace RoboTasker.Api.Controllers;
 
-[Route("[controller]")]
+[Route("[controller]"), Authorize]
 public class CapabilitiesController(IMediator mediator) : BaseController
 {
     [HttpPost("")]

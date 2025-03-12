@@ -2,4 +2,4 @@
 
 namespace RoboTasker.Application.Robots.Categories.GetCategoryById;
 
-public record GetCategoryByIdQuery(Guid Id) : IQuery<CategoryResponse>;
+public record GetCategoryByIdQuery(Guid Id) : ITenantQuery<CategoryResponse>;

@@ -13,6 +13,7 @@ public static class RegisterDependencies
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(TenantAuthBehaviour<,>));
             cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         });
     }

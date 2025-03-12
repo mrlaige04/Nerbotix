@@ -28,7 +28,7 @@ public class AssignTenantInterceptor(ICurrentUser currentUser) : SaveChangesInte
         var tenantId = currentUser.GetTenantId();
         if (!tenantId.HasValue) return;
         
-        foreach (var entry in context!.ChangeTracker.Entries<TenantEntity>())
+        foreach (var entry in context!.ChangeTracker.Entries<ITenantEntity<Guid>>())
         {
             if (entry.State == EntityState.Added)
             {

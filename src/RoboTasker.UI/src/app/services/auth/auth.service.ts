@@ -9,6 +9,7 @@ import {ResetPasswordRequest} from '../../models/auth/reset-password-request';
 import {ChangePasswordRequest} from '../../models/auth/change-password-request';
 import {CurrentUserService} from '../user/current-user.service';
 import {LoginResponse} from '../../models/auth/login-response';
+import {RegisterRequest} from '../../models/auth/register-request';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,11 @@ export class AuthService {
 
   private _isAuthenticated = signal(this.getSavedToken() !== null);
   public isAuthenticated = this._isAuthenticated.asReadonly();
+
+  register(data: RegisterRequest): Observable<Success> {
+    const url = `${this.baseUrl}/register`;
+    return this.base.post<RegisterRequest, Success>(url, data);
+  }
 
   login(data: LoginRequest): Observable<LoginResponse> {
     const url = `${this.baseUrl}/login`;
@@ -45,6 +51,16 @@ export class AuthService {
     return this.base.post<ChangePasswordRequest, Success>(url, data);
   }
 
+  refreshToken(): Observable<AccessToken> {
+    const token = this.accessToken();
+    const data = {
+      token: token?.accessToken,
+      refreshToken: token?.refreshToken
+    };
+    const url = `${this.baseUrl}/refresh-token`;
+    return this.base.post<any, AccessToken>(url, data);
+  }
+
   handleSuccessLogin(result: LoginResponse) {
     localStorage.setItem(this.storageKey, JSON.stringify(result.token));
 
@@ -52,6 +68,12 @@ export class AuthService {
     this._isAuthenticated.set(true);
 
     this.currentUserService.setCurrentUser(result.user);
+  }
+
+  updateToken(token: AccessToken) {
+    localStorage.setItem(this.storageKey, JSON.stringify(token));
+    this._accessToken.set(token);
+    this._isAuthenticated.set(true);
   }
 
   private getSavedToken() {

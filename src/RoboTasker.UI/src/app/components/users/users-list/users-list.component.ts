@@ -1,0 +1,86 @@
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
+import {BaseTableListComponent} from '../../common/base-table-list/base-table-list.component';
+import {UserBase} from '../../../models/users/user-base';
+import {UsersService} from '../../../services/users/users.service';
+import {finalize, tap} from 'rxjs';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {Guid} from 'guid-typescript';
+import {TableComponent} from '../../common/table/table.component';
+import {Button} from 'primeng/button';
+import { DynamicDialogRef} from 'primeng/dynamicdialog';
+import {UsersAddComponent} from '../users-add/users-add.component';
+import {CurrentUserService} from '../../../services/user/current-user.service';
+
+@Component({
+  selector: 'rb-users-list',
+  imports: [
+    TableComponent,
+    Button
+  ],
+  templateUrl: './users-list.component.html',
+  styleUrl: './users-list.component.scss'
+})
+export class UsersListComponent extends BaseTableListComponent<UserBase> implements OnInit {
+  private currentUserService = inject(CurrentUserService);
+  private usersService = inject(UsersService);
+  override destroyRef = inject(DestroyRef);
+  private dialogRef: DynamicDialogRef<UsersAddComponent> | undefined;
+
+  currentUser = this.currentUserService.currentUser;
+
+  constructor() {
+    super();
+
+    this.columns = [
+      { label: 'Email', propName: 'email' },
+      { label: 'Username', propName: 'username' },
+      { label: 'Verification', propName: 'emailVerified' },
+    ];
+  }
+
+  ngOnInit() {
+    this.getData();
+  }
+
+  openAddNew() {
+    this.dialogRef = this.dialogService.open(UsersAddComponent, {
+      modal: true,
+      header: 'Create user',
+      styleClass: 'w-100',
+      style: {
+        minWidth: '40%'
+      },
+      closable: true,
+      resizable: true
+    });
+
+    this.dialogRef.onClose.pipe(
+      tap((result) => {
+        if (result === true) {
+          this.getData();
+        }
+      }),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe();
+  }
+
+  override getData() {
+    this.isLoading.set(true);
+    this.usersService.getUsers({
+      pageNumber: this.pageNumber(),
+      pageSize: this.pageSize()
+    }).pipe(
+      tap((result) => {
+        this.items.set(result);
+      }),
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => {
+        this.isLoading.set(false);
+      })
+    ).subscribe();
+  }
+
+  override deleteItem(id: Guid) {
+    return this.usersService.deleteUser(id);
+  }
+}

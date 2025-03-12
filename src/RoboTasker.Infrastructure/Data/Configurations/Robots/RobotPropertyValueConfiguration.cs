@@ -11,8 +11,6 @@ public class RobotPropertyValueConfiguration : IEntityTypeConfiguration<RobotPro
         builder.ToTable("robot_properties_values");
         builder.HasKey(p => new { p.RobotId, p.PropertyId });
         
-        builder.Property(p => p.Value).IsRequired();
-
         builder.Property(p => p.Value)
             .IsRequired();
     }

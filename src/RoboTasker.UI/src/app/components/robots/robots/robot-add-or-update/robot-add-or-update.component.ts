@@ -78,7 +78,6 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
   categoryIdControl = this.form.get('categoryId') as FormControl;
   propertiesArray = this.form.get('properties') as FormArray;
   customPropertiesArray = this.form.get('customProperties') as FormArray;
-  capabilitiesArray = this.form.get('capabilities') as FormArray;
 
   properties = signal<CategoryProperty[] | null>(null);
 

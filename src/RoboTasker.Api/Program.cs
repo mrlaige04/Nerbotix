@@ -9,6 +9,8 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddUi();
 
+MapsterConfig.CreateConfig();
+
 var app = builder.Build();
 
 await app.MigrateDatabase();

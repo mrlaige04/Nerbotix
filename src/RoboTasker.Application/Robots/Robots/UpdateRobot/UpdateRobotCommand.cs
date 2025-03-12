@@ -3,7 +3,7 @@ using RoboTasker.Application.Robots.Robots.CreateRobot;
 
 namespace RoboTasker.Application.Robots.Robots.UpdateRobot;
 
-public class UpdateRobotCommand : ICommand<RobotBaseResponse>
+public class UpdateRobotCommand : ITenantCommand<RobotBaseResponse>
 {
     public Guid Id { get; set; }
     public string? Name { get; set; }

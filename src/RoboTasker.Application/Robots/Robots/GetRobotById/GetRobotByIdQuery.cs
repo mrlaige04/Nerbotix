@@ -2,4 +2,4 @@
 
 namespace RoboTasker.Application.Robots.Robots.GetRobotById;
 
-public record GetRobotByIdQuery(Guid Id) : IQuery<RobotResponse>;
+public record GetRobotByIdQuery(Guid Id) : ITenantQuery<RobotResponse>;

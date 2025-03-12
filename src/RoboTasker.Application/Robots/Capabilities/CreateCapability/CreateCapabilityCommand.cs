@@ -2,7 +2,7 @@
 
 namespace RoboTasker.Application.Robots.Capabilities.CreateCapability;
 
-public class CreateCapabilityCommand : ICommand<CapabilityBaseResponse>
+public class CreateCapabilityCommand : ITenantCommand<CapabilityBaseResponse>
 {
     public string Name { get; set; } = null!;
     public string? Description { get; set; }

@@ -1,6 +1,7 @@
 import {TenantEntity} from '../../common/base-tenant-entity';
 
 export class CapabilityBase extends TenantEntity {
+  name!: string;
   groupName!: string;
   description?: string;
   capabilitiesCount!: number;

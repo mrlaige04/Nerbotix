@@ -3,7 +3,7 @@ using RoboTasker.Application.Robots.Capabilities.CreateCapability;
 
 namespace RoboTasker.Application.Robots.Capabilities.UpdateCapability;
 
-public class UpdateCapabilityCommand : ICommand<CapabilityBaseResponse>
+public class UpdateCapabilityCommand : ITenantCommand<CapabilityBaseResponse>
 {
     public Guid Id { get; set; }
     public string? Name { get; set; }

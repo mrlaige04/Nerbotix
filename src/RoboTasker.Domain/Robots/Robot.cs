@@ -1,6 +1,7 @@
 ﻿using RoboTasker.Domain.Abstractions;
 using RoboTasker.Domain.Capabilities;
 using RoboTasker.Domain.Robots.Enums;
+using RoboTasker.Domain.Tasks;
 
 namespace RoboTasker.Domain.Robots;
 
@@ -19,6 +20,9 @@ public class Robot : TenantEntity
     
     public RobotCommunication Communication { get; set; } = null!;
 
+    public RobotTask? CurrentTask { get; set; }
+    public Guid? CurrentTaskId { get; set; }
+    
     public IList<RobotPropertyValue> Properties { get; set; } = [];
     public IList<RobotCustomProperty> CustomProperties { get; set; } = [];
     public IList<RobotCapability> Capabilities { get; set; } = [];

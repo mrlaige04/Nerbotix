@@ -103,6 +103,11 @@ export class TableComponent implements AfterViewInit, AfterContentChecked {
     })
   }
 
+  onSort(event: any) {
+    console.log(event)
+    // TODO: implement sorting
+  }
+
   onAddClick = output();
   selectionChange = output<any[]>();
 
@@ -121,4 +126,5 @@ export interface PageOptions {
 export interface TableColumn {
   label: string;
   propName: string | ((any: any) => any);
+  sortable?: boolean;
 }

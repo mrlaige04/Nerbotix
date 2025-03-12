@@ -55,7 +55,7 @@ export class RobotsListComponent extends BaseTableListComponent<RobotBase> imple
   }
 
   openAddNew() {
-    this.router.navigate(['robots', 'add'])
+    this.router.navigate(['robots', 'add']);
   }
 
   override getData() {
