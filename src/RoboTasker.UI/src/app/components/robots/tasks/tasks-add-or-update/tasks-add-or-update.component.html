@@ -30,7 +30,7 @@
                 <div class="p-1">
                   <div class="priority flex flex-column gap-1 mt-2">
                     <label>Priority</label>
-                    <p-select [options]="priorityRange"></p-select>
+                    <p-select [options]="priorityRange" formControlName="priority"></p-select>
                   </div>
                   <div class="complexity flex flex-column gap-1 mt-2">
                     <label>Complexity</label>
@@ -70,7 +70,7 @@
               <p-button [disabled]="allAdded()" (onClick)="addRequirement()" label="Add requirement" icon="pi pi-plus" outlined styleClass="mt-1 w-full"/>
               <div class="capabilities-list">
                 @for (requirementControl of requirementsArray.controls; track requirementControl; let i = $index) {
-                  <div class="requirement mt-3 flex flex-column lg:flex-row gap-1" [formGroupName]="i">
+                  <div class="requirement mt-3 flex flex-column lg:flex-row gap-1 align-items-end" [formGroupName]="i">
                     <div class="requirement-capability max-w-25rem flex-grow-1 flex flex-column gap-1">
                       <label for="requirement-cap-id">Capability</label>
                       <p-select [options]="groupedCapabilities()" group class="w-full md:w-56"
@@ -134,7 +134,28 @@
             </div>
           </p-tabpanel>
           <p-tabpanel value="4">
-            <div class="upload-files mt-2">
+            <div class="existing-files">
+              @for (file of existingFiles(); track file.fileName) {
+                @let isDeleted = isFileDeleted(file.fileName);
+                <div class="existing-file flex justify-content-between align-items-center">
+                  <div class="file">
+                    <span class="{{isDeleted ? 'line-through text-red-500' : ''}} transition-duration-300">
+                      {{file.fileName}} ({{file.size}} KB)
+                    </span>
+                  </div>
+                  <div class="file-action">
+                    @if (isDeleted) {
+                      <p-button (onClick)="undeleteFile(file.fileName)" icon="pi pi-undo" outlined severity="contrast"/>
+                    }
+                    @else {
+                      <p-button (onClick)="deleteFile(file.fileName)" icon="pi pi-trash" outlined severity="danger"/>
+                    }
+                  </div>
+                </div>
+                <p-divider/>
+              }
+            </div>
+            <div class="upload-files mt-3">
               <p-fileupload maxFileSize="209715200" multiple (onSelect)="onFilesSelect($event)" mode="advanced" [showCancelButton]="false" [showUploadButton]="false">
                 <ng-template #empty>
                   <div>Select or drag and drop files to here to upload.</div>

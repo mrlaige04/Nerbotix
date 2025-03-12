@@ -5,12 +5,12 @@ using RoboTasker.Domain.Abstractions;
 using RoboTasker.Domain.Capabilities;
 using RoboTasker.Domain.Repositories.Abstractions;
 
-namespace RoboTasker.Application.Robots.Capabilities.GetCapabilities;
+namespace RoboTasker.Application.Robots.Capabilities.GetCapabilitiesGroups;
 
-public class GetCapabilitiesHandler(
-    ITenantRepository<CapabilityGroup> capabilityGroupRepository) : IQueryHandler<GetCapabilitiesQuery, PaginatedList<CapabilityBaseResponse>>
+public class GetCapabilitiesGroupsHandler(
+    ITenantRepository<CapabilityGroup> capabilityGroupRepository) : IQueryHandler<GetCapabilitiesGroupQuery, PaginatedList<CapabilityBaseResponse>>
 {
-    public async Task<ErrorOr<PaginatedList<CapabilityBaseResponse>>> Handle(GetCapabilitiesQuery request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<PaginatedList<CapabilityBaseResponse>>> Handle(GetCapabilitiesGroupQuery request, CancellationToken cancellationToken)
     {
         var capabilities = await capabilityGroupRepository.GetAllWithSelectorPaginatedAsync(
             request.PageNumber, request.PageSize,
@@ -20,10 +20,7 @@ public class GetCapabilitiesHandler(
                 Name = c.Name,
                 GroupName = c.Name,
                 Description = c.Description,
-                CapabilitiesCount = c.Capabilities.Count,
-                TenantId = c.TenantId,
-                CreatedAt = c.CreatedAt,
-                UpdatedAt = c.UpdatedAt,
+                CapabilitiesCount = c.Capabilities.Count
             },
             include: q => q.Include(c => c.Capabilities),
             cancellationToken: cancellationToken);

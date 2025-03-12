@@ -43,7 +43,7 @@ export class CapabilitiesListComponent extends BaseTableListComponent<Capability
 
   override getData() {
     this.isLoading.set(true);
-    this.capabilitiesService.getCapabilities({
+    this.capabilitiesService.getCapabilitiesGroups({
       pageNumber: this.pageNumber(),
       pageSize: this.pageSize()
     }).pipe(

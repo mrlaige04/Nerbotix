@@ -5,10 +5,9 @@ import {TasksService} from '../../../../services/robots/tasks.service';
 import {CategoriesService} from '../../../../services/robots/categories.service';
 import {CapabilitiesService} from '../../../../services/robots/capabilities.service';
 import {CategoryBase} from '../../../../models/robots/categories/category-base';
-import {CapabilityBase} from '../../../../models/robots/capabilities/capability-base';
 import {Task} from '../../../../models/robots/tasks/task';
 import {Guid} from 'guid-typescript';
-import {catchError, finalize, of, tap} from 'rxjs';
+import {catchError, finalize, forkJoin, of, tap} from 'rxjs';
 import {HttpErrorResponse} from '@angular/common/http';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {
@@ -36,6 +35,7 @@ import {Checkbox} from 'primeng/checkbox';
 import {DatePicker} from 'primeng/datepicker';
 import {FileSelectEvent, FileUpload} from 'primeng/fileupload';
 import {Divider} from 'primeng/divider';
+import {TaskFile} from '../../../../models/robots/tasks/task-file';
 
 @Component({
   selector: 'rb-tasks-add-or-update',
@@ -85,7 +85,7 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
   dataArray = this.form.get('data') as FormArray;
 
   categories = signal<CategoryBase[]>([]);
-  capabilities = signal<CapabilityBase[]>([]);
+  capabilities = signal<CapabilityItem[]>([]);
   usedCapabilities = signal<Guid[]>([]);
   groupedCapabilities = computed(() =>  this.groupCapabilities(this.capabilities()));
   allAdded = computed(() => {
@@ -99,8 +99,8 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
 
   requirementsLevels = EnumHelper.toArray(TaskRequirementLevel);
 
-  groupCapabilities(items: CapabilityBase[]): SelectItemGroup<CapabilityBase>[] {
-    const groupedMap = new Map<string, CapabilityBase[]>();
+  groupCapabilities(items: CapabilityItem[]): SelectItemGroup<CapabilityItem>[] {
+    const groupedMap = new Map<string, CapabilityItem[]>();
 
     items.forEach(item => {
       if (!groupedMap.has(item.groupName)) {
@@ -121,7 +121,13 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
 
   dataTypes = EnumHelper.toArray(TaskDataType);
 
+  existingFiles = signal<TaskFile[]>([]);
   uploadedFiles = signal<File[]>([]);
+  deletedFiles = signal<string[]>([]);
+
+  deletedProperties = signal<Guid[]>([]);
+  deletedRequirements = signal<Guid[]>([]);
+  deletedData = signal<Guid[]>([]);
 
   isEdit = signal<boolean>(false);
 
@@ -129,27 +135,131 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
   currentTaskId = signal<Guid | null>(null);
 
   ngOnInit() {
-    this.detectViewMode();
-    this.getCapabilities();
+    const isEdit = this.detectViewMode();
+
+    if (isEdit) this.loadData();
+    else this.getCapabilities();
+  }
+
+  private loadData() {
+    forkJoin([this.getCapabilitiesSource(), this.loadExistingTaskSource()])
+      .pipe(
+        tap(([capabilities, task]) => {
+          this.capabilities.set(capabilities.items);
+          if (task) {
+            this.currentTask.set(task);
+            this.initializeFormFromTask(task!);
+          }
+        })
+      ).subscribe();
   }
 
   private detectViewMode() {
     const id = this.activatedRoute.snapshot.params['id'];
     if (id) {
+      this.currentTaskId.set(id);
       this.isEdit.set(true);
+      return true;
     }
+
+    return false;
   }
 
-  private getCapabilities() {
-    this.capabilitiesService.getCapabilities({
+  private loadExistingTaskSource() {
+    return this.tasksService.getTaskById(this.currentTaskId()!)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          const errorMessage = error.error?.detail;
+          this.notificationService.showError('Robot not found', errorMessage);
+          this.currentTaskId.set(null);
+          this.isEdit.set(false);
+          return of(null);
+        }),
+        tap((task) => {
+          if (task) {
+            this.isEdit.set(true);
+            this.currentTask.set(task);
+            this.initializeFormFromTask(task);
+          }
+        }),
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.hideLoader();
+        })
+      );
+  }
+
+  private initializeFormFromTask(task: Task) {
+    this.form.patchValue({
+      name: task.name,
+      description: task.description,
+      priority: task.priority,
+      complexity: task.complexity,
+    });
+
+    let estimatedDuration = task.estimatedDuration?.toString();
+    const parts = estimatedDuration?.split(':').map(n => parseInt(n, 10));
+
+    if (parts && parts.length === 3) {
+      let totalHours = parts[0]*24+parts[1];
+      estimatedDuration = `${totalHours < 100 ? `0${totalHours}` : totalHours}:${parts[2]}`;
+      this.form.patchValue({
+        estimatedDuration: estimatedDuration,
+      });
+    }
+
+    this.propertiesArray.clear();
+    task.properties?.forEach(p => {
+      const group = this.fb.group({
+        existingId: this.fb.control(p.id, Validators.required),
+        key: this.fb.control(p.key, [Validators.required]),
+        value: this.fb.control(p.value, [Validators.required])
+      });
+
+      this.propertiesArray.push(group);
+    });
+
+    this.dataArray.clear();
+    task.data?.forEach(d => {
+      const group = this.fb.group({
+        existingId: this.fb.control(d.id, Validators.required),
+        key: this.fb.control(d.key, [Validators.required]),
+        type: this.fb.control(d.type, [Validators.required]),
+        value: this.fb.control(d.value, [Validators.required])
+      });
+
+      this.dataArray.push(group);
+    });
+
+    this.existingFiles.set(task.files ?? []);
+
+    this.requirementsArray.clear();
+    task.requirements?.forEach(r => {
+      const capability = this.capabilities().find(c => c.id === r.capabilityId);
+      const group = this.fb.group({
+        existingId: this.fb.control(r.capabilityId, Validators.required),
+        capabilityId: this.fb.control(capability, [Validators.required]),
+        level: this.fb.control(r.level, [Validators.required])
+      });
+
+      this.requirementsArray.push(group);
+    });
+  }
+
+  private getCapabilitiesSource() {
+    return this.capabilitiesService.getCapabilitiesItems({
       pageNumber: 1,
-      pageSize: 99999
+      pageSize: 9999
     }).pipe(
       tap(result => {
         this.capabilities.set(result.items);
       }),
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe();
+    );
+  }
+
+  private getCapabilities() {
+    this.getCapabilitiesSource().subscribe();
   }
 
   addProperty() {
@@ -168,9 +278,12 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
   removeProperty(i: number) {
     const group = this.propertiesArray.at(i);
     const key = group.get('key')?.value;
+    const existingId = group.get('existingId')?.value;
     this.propertiesArray.removeAt(i);
 
-    // TODO: Add to delete array
+    if (existingId) {
+      this.deletedProperties.update(p => [...p, existingId]);
+    }
   }
 
   onCapabilitySelect(_: SelectChangeEvent) {
@@ -190,14 +303,18 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
   removeRequirement(i: number) {
     const group = this.requirementsArray.at(i);
     const key = group.get('capabilityId')?.value;
+
     const id = key['id'];
+    const existingId = group.get('existingId')?.value;
 
     if (id && this.capabilities().some(c => c.id === id)) {
       this.usedCapabilities.update(u => u.filter(c => c !== id));
     }
 
     this.requirementsArray.removeAt(i);
-    // TODO: remove from selected capabilities array
+    if (existingId) {
+      this.deletedRequirements.update(r => [...r, existingId])
+    }
   }
 
   addDataItem() {
@@ -212,11 +329,29 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
 
   removeDataItem(i: number) {
     const group = this.dataArray.at(i);
+    const existingId = group.get('existingId')?.value;
+
     this.dataArray.removeAt(i);
+
+    if (existingId) {
+      this.deletedData.update(d => [...d, existingId]);
+    }
   }
 
   onFilesSelect(event: FileSelectEvent) {
     this.uploadedFiles.set(event.currentFiles);
+  }
+
+  deleteFile(name: string) {
+    this.deletedFiles.update(f => [...f, name]);
+  }
+
+  undeleteFile(name: string) {
+    this.deletedFiles.update(f => f.filter(c => c !== name));
+  }
+
+  isFileDeleted(name: string) {
+    return this.deletedFiles().some(f => f === name);
   }
 
   submit() {
@@ -254,6 +389,7 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
       level: r.level
     }));
 
+
     const request: CreateTaskRequest = {
       name: formValue.name,
       priority: formValue.priority,
@@ -268,7 +404,30 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
   }
 
   private updateTask() {
-    return this.tasksService.deleteTask(Guid.create())
+    const formValue = this.form.value;
+    const properties = this.propertiesArray.value;
+    const requirements = this.requirementsArray.value.map((r: any) => ({
+      capabilityId: r.capabilityId.id,
+      existingId: r.existingId,
+      level: r.level
+    }));
+
+    const data = this.dataArray.value;
+    return this.tasksService.updateTask(this.currentTaskId()!, {
+      name: formValue.name!,
+      description: formValue.description!,
+      priority: formValue.priority!,
+      complexity: formValue.complexity!,
+      estimatedDuration: DateHelper.NormalizeDuration(formValue.estimatedDuration!),
+      deletedProperties: this.deletedProperties(),
+      deletedRequirements: this.deletedRequirements(),
+      deletedData: this.deletedData(),
+      deletedFiles: this.deletedFiles(),
+      properties,
+      requirements,
+      data,
+      files: this.uploadedFiles()
+    });
   }
 
   priorityRange = ArrayHelper.CreateRange(1, 10);

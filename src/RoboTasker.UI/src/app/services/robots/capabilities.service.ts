@@ -9,6 +9,7 @@ import {Capability} from '../../models/robots/capabilities/capability';
 import {CreateCapabilityRequest} from '../../models/robots/capabilities/requests/create-capability-request';
 import {UpdateCapabilityRequest} from '../../models/robots/capabilities/requests/update-capability-request';
 import {Success} from '../../models/success';
+import {CapabilityItem} from '../../models/robots/capabilities/capability-item';
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +18,14 @@ export class CapabilitiesService {
   private base = inject(BaseHttp);
   private readonly baseUrl = 'capabilities';
 
-  getCapabilities(data: PaginationRequest): Observable<PaginatedList<CapabilityBase>> {
-    const url = this.baseUrl;
+  getCapabilitiesGroups(data: PaginationRequest): Observable<PaginatedList<CapabilityBase>> {
+    const url = `${this.baseUrl}/groups`;
     return this.base.get<PaginatedList<CapabilityBase>>(url, { ...data });
+  }
+
+  getCapabilitiesItems(data: PaginationRequest): Observable<PaginatedList<CapabilityItem>> {
+    const url = this.baseUrl;
+    return this.base.get<PaginatedList<CapabilityItem>>(url, { ...data });
   }
 
   getCapabilityById(id: Guid): Observable<Capability | null> {

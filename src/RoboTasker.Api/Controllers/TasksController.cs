@@ -7,6 +7,7 @@ using RoboTasker.Application.Robots.Tasks.CreateTask;
 using RoboTasker.Application.Robots.Tasks.DeleteTask;
 using RoboTasker.Application.Robots.Tasks.GetTaskById;
 using RoboTasker.Application.Robots.Tasks.GetTasks;
+using RoboTasker.Application.Robots.Tasks.UpdateTask;
 
 namespace RoboTasker.Api.Controllers;
 
@@ -34,6 +35,16 @@ public class TasksController(IMediator mediator) : BaseController
     {
         var query = new GetTaskByIdQuery(id);
         var result = await mediator.Send(query);
+        return result.Match<IActionResult>(Ok, Problem);
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateTask(Guid id, [FromForm] UpdateTaskRequest request)
+    {
+        var command = request.Adapt<UpdateTaskCommand>();
+        command.Files = request.Files;
+        command.Id = id;
+        var result = await mediator.Send(command);
         return result.Match<IActionResult>(Ok, Problem);
     }
 

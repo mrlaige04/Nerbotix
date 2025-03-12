@@ -123,6 +123,7 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
           const errorMessage = error.error.detail;
           this.notificationService.showError('Robot not found', errorMessage);
           this.currentRobotId.set(null);
+          this.isEdit.set(false);
           return of(null);
         }),
         tap((robot) => {
@@ -227,7 +228,7 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
 
   private getCapabilities() {
     this.showLoader();
-    this.capabilitiesService.getCapabilities({
+    this.capabilitiesService.getCapabilitiesGroups({
       pageNumber: 1,
       pageSize: 999999
     }).pipe(
