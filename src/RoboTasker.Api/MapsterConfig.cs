@@ -18,8 +18,6 @@ public class MapsterConfig
             .NewConfig()
             .Map(dest => dest.DeletedFiles, src => 
                 src.DeletedFiles != null ? src.DeletedFiles.Names : new List<string>())
-            .Map(dest => dest.DeletedProperties, src => 
-                src.DeletedProperties != null ? src.DeletedProperties.Ids : new List<Guid>())
             .Map(dest => dest.DeletedRequirements, src =>
                 src.DeletedRequirements != null ? src.DeletedRequirements.Ids : new List<Guid>())
             .Map(dest => dest.DeletedData, src =>

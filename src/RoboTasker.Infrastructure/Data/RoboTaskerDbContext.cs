@@ -21,7 +21,6 @@ public class RoboTaskerDbContext(DbContextOptions<RoboTaskerDbContext> options)
     
     public DbSet<RobotTask> Tasks { get; set; } = null!;
     public DbSet<RobotTaskData> TasksData { get; set; } = null!;
-    public DbSet<RobotTaskProperty> TaskProperties { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder builder)
     {

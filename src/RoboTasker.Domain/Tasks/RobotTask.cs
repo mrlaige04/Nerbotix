@@ -21,7 +21,5 @@ public class RobotTask : TenantEntity
 
     public IList<RobotTaskData> TaskData { get; set; } = [];
     public IList<RobotTaskRequirement> Requirements { get; set; } = [];
-    public IList<RobotTaskProperty> Properties { get; set; } = [];
-    
     public RobotTaskFiles? Archive { get; set; }
 }

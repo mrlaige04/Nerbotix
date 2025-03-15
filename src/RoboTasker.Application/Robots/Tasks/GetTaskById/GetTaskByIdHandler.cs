@@ -23,13 +23,6 @@ public class GetTaskByIdHandler(
                 Description = t.Description,
                 TenantId = t.TenantId,
                 ArchivePath = t.Archive != null ? t.Archive.Url : null,
-                Properties = t.Properties
-                    .Select(p => new TaskPropertyResponse
-                    {
-                        Id = p.Id,
-                        Key = p.Key,
-                        Value = p.Value
-                    }).ToList(),
                 Requirements = t.Requirements
                     .Select(r => new TaskRequirementResponse
                     {
@@ -53,7 +46,6 @@ public class GetTaskByIdHandler(
             },
             r => r.Id == request.Id,
             q => q
-                .Include(r => r.Properties)
                 .Include(r => r.Requirements)
                 .Include(r => r.TaskData)
                 .Include(r => r.Archive),

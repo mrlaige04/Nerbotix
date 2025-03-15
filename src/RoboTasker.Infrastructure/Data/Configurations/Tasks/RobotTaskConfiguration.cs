@@ -27,11 +27,6 @@ public class RobotTaskConfiguration : IEntityTypeConfiguration<RobotTask>
             .HasForeignKey(t => t.TaskId)
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.HasMany(t => t.Properties)
-            .WithOne(p => p.Task)
-            .HasForeignKey(p => p.TaskId)
-            .OnDelete(DeleteBehavior.Cascade);
-        
         builder.HasOne(t => t.Archive)
             .WithOne(r => r.Task)
             .HasForeignKey<RobotTaskFiles>(r => r.TaskId)

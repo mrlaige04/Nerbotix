@@ -35,7 +35,6 @@ export class TasksService {
     formData.append('estimatedDuration', data.estimatedDuration);
     formData.append('priority', data.priority.toString());
     formData.append('complexity', data.complexity.toString());
-    formData.append('properties', JSON.stringify(data.properties));
     formData.append('requirements', JSON.stringify(data.requirements));
     formData.append('data', JSON.stringify(data.data));
 
@@ -72,10 +71,6 @@ export class TasksService {
       formData.append('complexity', data.complexity.toString());
     }
 
-    if (data.properties) {
-      formData.append('properties', JSON.stringify(data.properties));
-    }
-
     if (data.requirements) {
       formData.append('requirements', JSON.stringify(data.requirements));
     }
@@ -88,12 +83,6 @@ export class TasksService {
       data.files.forEach(file => {
         formData.append('files', file, file.name);
       });
-    }
-
-    if (data.deletedProperties && data.deletedProperties.length > 0) {
-      formData.append('deletedProperties', JSON.stringify({
-        ids: data.deletedProperties,
-      }));
     }
 
     if (data.deletedRequirements && data.deletedRequirements.length > 0) {

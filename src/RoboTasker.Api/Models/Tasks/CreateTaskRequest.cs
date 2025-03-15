@@ -13,19 +13,13 @@ public class CreateTaskRequest
     public TimeSpan EstimatedDuration { get; set; }
     public int Priority { get; set; }
     public double Complexity { get; set; }
-    
-    [FromForm(Name = "properties")]
-    public string? PropertiesJson { get; set; }
-    
+
     [FromForm(Name = "requirements")]
     public string? RequirementsJson { get; set; } 
     
     [FromForm(Name = "data")]
     public string? DataJson { get; set; } 
-
-    [JsonIgnore]
-    public IList<CreateTaskPropertyCommand>? Properties => JsonConvert.DeserializeObject<IList<CreateTaskPropertyCommand>>(PropertiesJson ?? "[]");
-
+    
     [JsonIgnore]
     public IList<CreateTaskRequirementCommand>? Requirements => JsonConvert.DeserializeObject<IList<CreateTaskRequirementCommand>>(RequirementsJson?? "[]");
 
@@ -42,4 +36,5 @@ public class CreateTaskDataRequest
     public RobotTaskDataType Type { get; set; }
     
     public object? Value { get; set; } 
+    public Guid? ExistingId { get; set; }
 }

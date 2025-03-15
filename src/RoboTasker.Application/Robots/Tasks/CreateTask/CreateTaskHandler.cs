@@ -34,17 +34,6 @@ public class CreateTaskHandler(
             Priority = request.Priority,
             Complexity = request.Complexity
         };
-
-        foreach (var property in request.Properties ?? [])
-        {
-            var newProperty = new RobotTaskProperty
-            {
-                Key = property.Key,
-                Value = property.Value.ToString()!,
-            };
-            
-            task.Properties.Add(newProperty);
-        }
         
         foreach (var requirement in request.Requirements ?? [])
         {
@@ -71,6 +60,7 @@ public class CreateTaskHandler(
             var newData = new RobotTaskData
             {
                 Key = data.Key,
+                Type = data.Type,
                 Value = data.Value?.ToString()!,
             };
             
