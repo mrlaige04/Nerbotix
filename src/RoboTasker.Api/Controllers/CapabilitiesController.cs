@@ -19,7 +19,7 @@ public class CapabilitiesController(IMediator mediator) : BaseController
     public async Task<IActionResult> CreateCapabilityGroup(CreateCapabilityCommand command)
     {
         var result = await mediator.Send(command);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 
     [HttpDelete("{id:guid}")]
@@ -27,21 +27,21 @@ public class CapabilitiesController(IMediator mediator) : BaseController
     {
         var command = new DeleteCapabilityCommand(id);
         var result = await mediator.Send(command);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 
     [HttpGet("groups")]
     public async Task<IActionResult> GetCapabilities([FromQuery] GetCapabilitiesGroupQuery groupQuery)
     {
         var result = await mediator.Send(groupQuery);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 
     [HttpGet("")]
     public async Task<IActionResult> GetAllCapabilities([FromQuery] GetCapabilitiesItemsQuery query)
     {
         var result = await mediator.Send(query);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 
     [HttpGet("{id:guid}")]
@@ -49,7 +49,7 @@ public class CapabilitiesController(IMediator mediator) : BaseController
     {
         var query = new GetCapabilityByIdQuery(id);
         var result = await mediator.Send(query);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 
     [HttpPut("{id:guid}")]
@@ -59,6 +59,6 @@ public class CapabilitiesController(IMediator mediator) : BaseController
         command.Id = id;
         
         var result = await mediator.Send(command);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 }

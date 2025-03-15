@@ -18,7 +18,7 @@ public class RobotsController(IMediator mediator) : BaseController
     public async Task<IActionResult> CreateRobot(CreateRobotCommand command)
     {
         var result = await mediator.Send(command);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 
     [HttpDelete("{id:guid}")]
@@ -26,14 +26,14 @@ public class RobotsController(IMediator mediator) : BaseController
     {
         var command = new DeleteRobotCommand(id);
         var result = await mediator.Send(command);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 
     [HttpGet("")]
     public async Task<IActionResult> GetAllRobots([FromQuery] GetRobotsQuery query)
     {
         var result = await mediator.Send(query);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 
     [HttpGet("{id:guid}")]
@@ -41,7 +41,7 @@ public class RobotsController(IMediator mediator) : BaseController
     {
         var query = new GetRobotByIdQuery(id);
         var result = await mediator.Send(query);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 
     [HttpPut("{id:guid}")]
@@ -51,6 +51,6 @@ public class RobotsController(IMediator mediator) : BaseController
         command.Id = id;
         
         var result = await mediator.Send(command);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 }

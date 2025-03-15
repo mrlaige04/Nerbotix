@@ -15,7 +15,7 @@ import {CurrentUserService} from '../../../services/user/current-user.service';
   selector: 'rb-users-list',
   imports: [
     TableComponent,
-    Button
+    Button,
   ],
   templateUrl: './users-list.component.html',
   styleUrl: './users-list.component.scss'
@@ -34,6 +34,7 @@ export class UsersListComponent extends BaseTableListComponent<UserBase> impleme
     this.columns = [
       { label: 'Email', propName: 'email' },
       { label: 'Username', propName: 'username' },
+      { label: 'Roles', propName: 'roles' },
       { label: 'Verified', propName: 'emailVerified' },
     ];
   }
@@ -62,6 +63,10 @@ export class UsersListComponent extends BaseTableListComponent<UserBase> impleme
       }),
       takeUntilDestroyed(this.destroyRef),
     ).subscribe();
+  }
+
+  openEditUser(id: Guid) {
+    this.router.navigate(['users', id]);
   }
 
   override getData() {

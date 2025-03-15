@@ -1,0 +1,37 @@
+<div class="user-edit-wrapper">
+  <h2>Editing: {{currentUser()?.email}}</h2>
+  <form [formGroup]="form" class="mt-4" (ngSubmit)="submit()">
+    <div class="fields mt-2">
+      <div class="main-info">
+        <h4>Main info</h4>
+        <div class="grid mt-2">
+          <div class="col-12 lg:col-6">
+            <div class="email flex flex-column gap-1">
+              <label for="email">Email</label>
+              <input pInputText type="email" id="email" formControlName="email">
+            </div>
+          </div>
+          <div class="col-12 lg:col-6">
+            <div class="username flex flex-column gap-1">
+              <label for="username">Username</label>
+              <input pInputText type="text" id="username" formControlName="username">
+            </div>
+          </div>
+        </div>
+      </div>
+      <p-divider/>
+      <div class="roles mt-2">
+        <h4>Roles</h4>
+        <div class="roles-picker mt-1">
+          <p-multi-select styleClass="w-full" dataKey="id" [options]="roles()"
+                          optionLabel="name" formControlName="roles"
+                          [filter]="false"/>
+        </div>
+      </div>
+      <p-divider/>
+    </div>
+    <div class="actions mt-3">
+      <p-button label="Submit" type="submit" [disabled]="!form.valid"/>
+    </div>
+  </form>
+</div>

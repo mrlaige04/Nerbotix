@@ -65,12 +65,17 @@ export class SidebarComponent extends BaseComponent {
         {
           label: 'Users',
           routerLink: 'users',
-          icon: 'pi pi-users'
+          icon: 'pi pi-users',
         },
         {
           label: 'Roles',
-          routerLink: 'roles',
+          routerLink: 'tenant/roles',
           icon: 'pi pi-crown'
+        },
+        {
+          label: 'Permissions',
+          routerLink: 'tenant/permissions',
+          icon: 'pi pi-key'
         }
       ]
     },
