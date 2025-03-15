@@ -9,6 +9,12 @@
         <label for="username">Username</label>
         <input pInputText id="username" type="text" formControlName="username">
       </div>
+      <div class="roles flex flex-column gap-1 mt-2">
+        <label for="roles">Roles</label>
+        <p-multi-select id="roles" [options]="roles()" optionLabel="name"
+                        appendTo="body"
+                        formControlName="roles" [filter]="false"/>
+      </div>
     </div>
     <div class="actions mt-2 w-100">
       <p-button [disabled]="!form.valid" type="submit" label="Submit" class="w-100" styleClass="w-100"/>

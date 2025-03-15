@@ -603,6 +603,65 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.ToTable("task_requirements", (string)null);
                 });
 
+            modelBuilder.Entity("RoboTasker.Domain.Tenants.Permission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("Name", "GroupId")
+                        .IsUnique();
+
+                    b.ToTable("permissions", (string)null);
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Tenants.PermissionGroup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("permission_groups", (string)null);
+                });
+
             modelBuilder.Entity("RoboTasker.Domain.Tenants.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -639,6 +698,21 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("roles", (string)null);
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Tenants.RolePermission", b =>
+                {
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PermissionId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("RoleId", "PermissionId");
+
+                    b.HasIndex("PermissionId");
+
+                    b.ToTable("roles_permissions", (string)null);
                 });
 
             modelBuilder.Entity("RoboTasker.Domain.Tenants.Tenant", b =>
@@ -1039,6 +1113,17 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Navigation("Task");
                 });
 
+            modelBuilder.Entity("RoboTasker.Domain.Tenants.Permission", b =>
+                {
+                    b.HasOne("RoboTasker.Domain.Tenants.PermissionGroup", "Group")
+                        .WithMany("Permissions")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+                });
+
             modelBuilder.Entity("RoboTasker.Domain.Tenants.Role", b =>
                 {
                     b.HasOne("RoboTasker.Domain.Tenants.Tenant", "Tenant")
@@ -1048,6 +1133,25 @@ namespace RoboTasker.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Tenants.RolePermission", b =>
+                {
+                    b.HasOne("RoboTasker.Domain.Tenants.Permission", "Permission")
+                        .WithMany("Roles")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RoboTasker.Domain.Tenants.Role", "Role")
+                        .WithMany("Permissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("RoboTasker.Domain.Tenants.User", b =>
@@ -1135,8 +1239,20 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Navigation("TaskData");
                 });
 
+            modelBuilder.Entity("RoboTasker.Domain.Tenants.Permission", b =>
+                {
+                    b.Navigation("Roles");
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Tenants.PermissionGroup", b =>
+                {
+                    b.Navigation("Permissions");
+                });
+
             modelBuilder.Entity("RoboTasker.Domain.Tenants.Role", b =>
                 {
+                    b.Navigation("Permissions");
+
                     b.Navigation("UserRoles");
                 });
 

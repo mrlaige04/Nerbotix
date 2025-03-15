@@ -15,6 +15,7 @@ import {
 import {HomeComponent} from './components/home/home.component';
 import {TasksWrapperComponent} from './components/robots/tasks/tasks-wrapper/tasks-wrapper.component';
 import {UsersWrapperComponent} from './components/users/users-wrapper/users-wrapper.component';
+import {TenantsWrapperComponent} from './components/tenants/tenants-wrapper/tenants-wrapper.component';
 
 export const routes: Routes = [
   {
@@ -67,6 +68,12 @@ export const routes: Routes = [
         component: UsersWrapperComponent,
         loadChildren: () =>
           import('./components/users/users-routes').then(r => r.USERS_ROUTES)
+      },
+      {
+        path: 'tenant',
+        component: TenantsWrapperComponent,
+        loadChildren: () =>
+          import('./components/tenants/tenants.routes').then(r => r.TENANTS_ROUTES)
       }
     ]
   },

@@ -20,14 +20,14 @@ public class TasksController(IMediator mediator) : BaseController
         var command = request.Adapt<CreateTaskCommand>();
         command.Files = request.Files;
         var result = await mediator.Send(command);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 
     [HttpGet("")]
     public async Task<IActionResult> GetAllTasks([FromQuery] GetTasksQuery query)
     {
         var result = await mediator.Send(query);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 
     [HttpGet("{id:guid}")]
@@ -35,7 +35,7 @@ public class TasksController(IMediator mediator) : BaseController
     {
         var query = new GetTaskByIdQuery(id);
         var result = await mediator.Send(query);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 
     [HttpPut("{id:guid}")]
@@ -45,7 +45,7 @@ public class TasksController(IMediator mediator) : BaseController
         command.Files = request.Files;
         command.Id = id;
         var result = await mediator.Send(command);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 
     [HttpDelete("{id:guid}")]
@@ -53,6 +53,6 @@ public class TasksController(IMediator mediator) : BaseController
     {
         var command = new DeleteTaskCommand(id);
         var result = await mediator.Send(command);
-        return result.Match<IActionResult>(Ok, Problem);
+        return result.Match(Ok, Problem);
     }
 }

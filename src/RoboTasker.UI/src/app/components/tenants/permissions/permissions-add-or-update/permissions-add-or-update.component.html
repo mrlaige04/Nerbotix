@@ -1,0 +1,29 @@
+<div class="create-or-update-permission-wrapper">
+  <h2>{{ isEdit() ? 'Editing' : 'Creating' }} a permission</h2>
+  <form class="my-2" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="fields mt-2">
+      <div class="name flex flex-column gap-1">
+        <label for="name">Group name</label>
+        <input pInputText id="name" formControlName="name">
+      </div>
+      <p-divider/>
+      <div class="permissions mt-2">
+        <p-button (onClick)="addNewPermission()" label="Add new permission" outlined icon="pi pi-plus" class="w-full" styleClass="w-full"/>
+        <div class="permissions-list" formArrayName="permissions">
+          @for (control of permissionsArray.controls; track control; let i = $index) {
+            <div class="permission-item flex align-items-end gap-2 mt-2" [formGroupName]="i">
+              <div class="permission flex flex-column flex-grow-1 gap-1">
+                <label for="perm-name">Name</label>
+                <input pInputText id="perm-name" formControlName="name">
+              </div>
+              <p-button severity="danger" (onClick)="removePermission(i)" outlined icon="pi pi-trash"/>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="actions mt-3">
+      <p-button label="Submit" type="submit" [disabled]="!form.valid"/>
+    </div>
+  </form>
+</div>
