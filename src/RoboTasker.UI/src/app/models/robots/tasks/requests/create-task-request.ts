@@ -1,5 +1,6 @@
 import {TaskRequirementLevel} from '../task-requirement-level';
 import {TaskDataType} from '../task-data-type';
+import {Guid} from 'guid-typescript';
 
 export interface CreateTaskRequest {
   name: string;
@@ -7,24 +8,20 @@ export interface CreateTaskRequest {
   estimatedDuration: string;
   priority: number;
   complexity: number;
-  properties?: CreateTaskPropertyRequest[];
   requirements?: CreateTaskRequirementRequest[];
   data?: CreateTaskDataRequest[];
   files?: File[];
 }
 
-export interface CreateTaskPropertyRequest {
-  key: string;
-  value: string;
-}
-
 export interface CreateTaskRequirementRequest {
   capabilityId: string;
   level: TaskRequirementLevel;
+  existingId?: Guid;
 }
 
 export interface CreateTaskDataRequest {
   key: string;
   type: TaskDataType;
   value?: any;
+  existingId?: Guid;
 }

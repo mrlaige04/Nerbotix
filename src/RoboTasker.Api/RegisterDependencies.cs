@@ -12,7 +12,7 @@ public static class RegisterDependencies
     {
         services.Configure<FormOptions>(f =>
         {
-            f.MultipartBodyLengthLimit = 200000000; // TODO: should move to appsettings
+            f.MultipartBodyLengthLimit = 100000000 * 2; // TODO: should move to appsettings
         });
         
         services.AddEndpointsApiExplorer();

@@ -10,11 +10,7 @@ import {Guid} from 'guid-typescript';
 import {catchError, finalize, forkJoin, of, tap} from 'rxjs';
 import {HttpErrorResponse} from '@angular/common/http';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {
-  CreateTaskDataRequest,
-  CreateTaskPropertyRequest,
-  CreateTaskRequest
-} from '../../../../models/robots/tasks/requests/create-task-request';
+import {CreateTaskDataRequest, CreateTaskRequest} from '../../../../models/robots/tasks/requests/create-task-request';
 import {Button} from 'primeng/button';
 import {TaskRequirementLevel} from '../../../../models/robots/tasks/task-requirement-level';
 import {TaskDataType} from '../../../../models/robots/tasks/task-data-type';
@@ -31,11 +27,13 @@ import {SelectItemGroup} from 'primeng/api';
 import {CapabilityItem} from '../../../../models/robots/capabilities/capability-item';
 import {EnumHelper} from '../../../../utils/helpers/enum-helper';
 import {JsonPipe} from '@angular/common';
-import {Checkbox} from 'primeng/checkbox';
 import {DatePicker} from 'primeng/datepicker';
 import {FileSelectEvent, FileUpload} from 'primeng/fileupload';
 import {Divider} from 'primeng/divider';
 import {TaskFile} from '../../../../models/robots/tasks/task-file';
+import {Message} from 'primeng/message';
+import {Checkbox} from 'primeng/checkbox';
+import {PropertyTypeHelper} from '../../../../utils/helpers/property-type-helper';
 
 @Component({
   selector: 'rb-tasks-add-or-update',
@@ -54,10 +52,11 @@ import {TaskFile} from '../../../../models/robots/tasks/task-file';
     InputMask,
     Select,
     JsonPipe,
-    Checkbox,
     DatePicker,
     FileUpload,
-    Divider
+    Divider,
+    Message,
+    Checkbox,
   ],
   templateUrl: './tasks-add-or-update.component.html',
   styleUrl: './tasks-add-or-update.component.scss'
@@ -70,28 +69,27 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
   private capabilitiesService = inject(CapabilitiesService);
 
   form = this.fb.group({
-    name: this.fb.control('', [Validators.required]),
+    name: this.fb.control('', [Validators.required, Validators.maxLength(50)]),
     description: this.fb.control(''),
     priority: this.fb.control(0, [Validators.required, Validators.min(1), Validators.max(10)]),
     complexity: this.fb.control(0, [Validators.required, Validators.min(1), Validators.max(5)]),
-    estimatedDuration: this.fb.control('00:00', [Validators.required, CustomValidators.Duration()]),
-    properties: this.fb.array([]),
+    estimatedDuration: this.fb.control('000:00', [Validators.required, CustomValidators.Duration()]),
     requirements: this.fb.array([]),
     data: this.fb.array([])
   });
 
-  propertiesArray = this.form.get('properties') as FormArray;
   requirementsArray = this.form.get('requirements') as FormArray;
   dataArray = this.form.get('data') as FormArray;
 
   categories = signal<CategoryBase[]>([]);
   capabilities = signal<CapabilityItem[]>([]);
   usedCapabilities = signal<Guid[]>([]);
-  groupedCapabilities = computed(() =>  this.groupCapabilities(this.capabilities()));
+  groupedCapabilities = computed(() =>
+    this.groupCapabilities(this.capabilities()));
+
   allAdded = computed(() => {
     const capabilities = this.capabilities().map(c => c.id).sort();
     const usedCapabilities = this.usedCapabilities().sort();
-
     return usedCapabilities.length === capabilities.length && capabilities.every(
       c => usedCapabilities.includes(c)
     );
@@ -125,7 +123,6 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
   uploadedFiles = signal<File[]>([]);
   deletedFiles = signal<string[]>([]);
 
-  deletedProperties = signal<Guid[]>([]);
   deletedRequirements = signal<Guid[]>([]);
   deletedData = signal<Guid[]>([]);
 
@@ -208,24 +205,14 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
       });
     }
 
-    this.propertiesArray.clear();
-    task.properties?.forEach(p => {
-      const group = this.fb.group({
-        existingId: this.fb.control(p.id, Validators.required),
-        key: this.fb.control(p.key, [Validators.required]),
-        value: this.fb.control(p.value, [Validators.required])
-      });
-
-      this.propertiesArray.push(group);
-    });
-
     this.dataArray.clear();
     task.data?.forEach(d => {
+      const val = d.type === TaskDataType.Boolean ? d.value?.toLowerCase() === 'true' : d.value;
       const group = this.fb.group({
         existingId: this.fb.control(d.id, Validators.required),
-        key: this.fb.control(d.key, [Validators.required]),
+        key: this.fb.control(d.key, [Validators.required, Validators.maxLength(20)]),
         type: this.fb.control(d.type, [Validators.required]),
-        value: this.fb.control(d.value, [Validators.required])
+        value: this.fb.control(val, [Validators.required])
       });
 
       this.dataArray.push(group);
@@ -262,33 +249,16 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
     this.getCapabilitiesSource().subscribe();
   }
 
-  addProperty() {
-    if (this.usedCapabilities().length === this.capabilities().length) {
-      return;
-    }
-
-    const prop = this.fb.group({
-      key: this.fb.control('', [Validators.required]),
-      value: this.fb.control('', [Validators.required])
-    });
-
-    this.propertiesArray.push(prop);
-  }
-
-  removeProperty(i: number) {
-    const group = this.propertiesArray.at(i);
-    const key = group.get('key')?.value;
-    const existingId = group.get('existingId')?.value;
-    this.propertiesArray.removeAt(i);
-
-    if (existingId) {
-      this.deletedProperties.update(p => [...p, existingId]);
-    }
-  }
-
   onCapabilitySelect(_: SelectChangeEvent) {
     this.usedCapabilities.set(
       this.requirementsArray.value.map((v: any) => v.capabilityId.id));
+  }
+
+  onDataTypeChange(i: number) {
+    const group = this.dataArray.at(i);
+    const valueControl = group.get('value');
+    const isBoolean = group.get('type')?.value === TaskDataType.Boolean;
+    valueControl?.setValue(!isBoolean ? null : false);
   }
 
   addRequirement() {
@@ -319,7 +289,7 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
 
   addDataItem() {
     const group = this.fb.group({
-      key: this.fb.control('', [Validators.required]),
+      key: this.fb.control('', [Validators.required, Validators.maxLength(20)]),
       type: this.fb.control(TaskDataType.String, [Validators.required]),
       value: this.fb.control('', [Validators.required])
     });
@@ -389,13 +359,12 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
       level: r.level
     }));
 
-
     const request: CreateTaskRequest = {
+      description: formValue.description,
       name: formValue.name,
       priority: formValue.priority,
       complexity: formValue.complexity,
       estimatedDuration: DateHelper.NormalizeDuration(formValue.estimatedDuration!),
-      properties: formValue.properties as CreateTaskPropertyRequest[],
       requirements: requirements,
       files: this.uploadedFiles(),
       data: formValue.data as CreateTaskDataRequest[],
@@ -405,7 +374,6 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
 
   private updateTask() {
     const formValue = this.form.value;
-    const properties = this.propertiesArray.value;
     const requirements = this.requirementsArray.value.map((r: any) => ({
       capabilityId: r.capabilityId.id,
       existingId: r.existingId,
@@ -419,11 +387,9 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
       priority: formValue.priority!,
       complexity: formValue.complexity!,
       estimatedDuration: DateHelper.NormalizeDuration(formValue.estimatedDuration!),
-      deletedProperties: this.deletedProperties(),
       deletedRequirements: this.deletedRequirements(),
       deletedData: this.deletedData(),
       deletedFiles: this.deletedFiles(),
-      properties,
       requirements,
       data,
       files: this.uploadedFiles()

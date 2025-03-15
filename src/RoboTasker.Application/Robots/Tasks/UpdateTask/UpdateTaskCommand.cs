@@ -13,12 +13,10 @@ public class UpdateTaskCommand : ITenantCommand<TaskBaseResponse>
     public double? Complexity { get; set; }
     public TimeSpan? EstimatedDuration { get; set; }
     
-    public IList<CreateTaskPropertyCommand>? Properties { get; set; } 
     public IList<CreateTaskRequirementCommand>? Requirements { get; set; }
     public IList<CreateTaskDataCommand>? Data { get; set; }
     public IFormFileCollection? Files { get; set; }
     
-    public IList<Guid>? DeletedProperties { get; set; }
     public IList<Guid>? DeletedRequirements { get; set; }
     public IList<Guid>? DeletedData { get; set; }
     public IList<string>? DeletedFiles { get; set; }

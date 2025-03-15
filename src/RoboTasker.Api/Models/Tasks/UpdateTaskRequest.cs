@@ -13,17 +13,11 @@ public class UpdateTaskRequest
     public double? Complexity { get; set; }
     public TimeSpan? EstimatedDuration { get; set; }
     
-    [FromForm(Name = "properties")]
-    public string? PropertiesJson { get; set; }
-    
     [FromForm(Name = "requirements")]
     public string? RequirementsJson { get; set; } 
     
     [FromForm(Name = "data")]
     public string? DataJson { get; set; } 
-    
-    [System.Text.Json.Serialization.JsonIgnore]
-    public IList<CreateTaskPropertyCommand>? Properties => JsonConvert.DeserializeObject<IList<CreateTaskPropertyCommand>>(PropertiesJson ?? "[]");
     
     [System.Text.Json.Serialization.JsonIgnore]
     public IList<CreateTaskRequirementCommand>? Requirements => JsonConvert.DeserializeObject<IList<CreateTaskRequirementCommand>>(RequirementsJson?? "[]");
@@ -34,8 +28,6 @@ public class UpdateTaskRequest
     [FromForm(Name = "files")]
     public IFormFileCollection? Files { get; set; }
     
-    [FromForm(Name = "deletedProperties")]
-    public string? DeletedPropertiesJson { get; set; }
     
     [FromForm(Name = "deletedRequirements")]
     public string? DeletedRequirementsJson { get; set; }
@@ -45,9 +37,6 @@ public class UpdateTaskRequest
     
     [FromForm(Name = "deletedFiles")]
     public string? DeletedFilesJson { get; set; }
-    
-    [JsonIgnore]
-    public IdList? DeletedProperties => ParseGuids(DeletedPropertiesJson);
     
     [JsonIgnore]
     public IdList? DeletedRequirements => ParseGuids(DeletedRequirementsJson);
@@ -89,13 +78,13 @@ public class UpdateTaskRequest
             var rawList = JsonConvert.DeserializeObject<IdList>(json);
             return rawList ?? list;
         }
-        catch (JsonException e)
+        catch (JsonException)
         {
             var singleId = Guid.Parse(json);
             list.Ids.Add(singleId);
             return list;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return list;
         }

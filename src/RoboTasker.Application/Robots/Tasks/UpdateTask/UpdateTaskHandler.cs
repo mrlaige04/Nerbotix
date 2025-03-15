@@ -22,7 +22,6 @@ public class UpdateTaskHandler(
         var task = await taskRepository.GetAsync(
             c => c.Id == request.Id,
             q => q
-                .Include(t => t.Properties)
                 .Include(t => t.Requirements)
                 .Include(t => t.TaskData)
                 .Include(t => t.Archive),
@@ -57,15 +56,6 @@ public class UpdateTaskHandler(
         }
         
         
-        foreach (var deleteProperty in request.DeletedProperties ?? [])
-        {
-            var property = task.Properties.FirstOrDefault(p => p.Id == deleteProperty);
-            if (property != null)
-            {
-                task.Properties.Remove(property);
-            }
-        }
-        
         foreach (var deleteRequirement in request.DeletedRequirements ?? [])
         {
             var requirement = task.Requirements.FirstOrDefault(p => p.CapabilityId == deleteRequirement);
@@ -81,29 +71,6 @@ public class UpdateTaskHandler(
             if (data != null)
             {
                 task.TaskData.Remove(data);
-            }
-        }
-        
-        foreach (var newProperty in request.Properties ?? [])
-        {
-            if (newProperty.ExistingId.HasValue)
-            {
-                var existingProp = task.Properties.FirstOrDefault(
-                    p => p.Id == newProperty.ExistingId.Value && p.Value != newProperty.Value.ToString());
-                if (existingProp != null)
-                {
-                    existingProp.Value = newProperty.Value.ToString() ?? string.Empty;
-                }
-            }
-            else
-            {
-                var property = new RobotTaskProperty
-                {
-                    Key = newProperty.Key,
-                    Value = newProperty.Value.ToString()!,
-                };
-
-                task.Properties.Add(property);
             }
         }
         
@@ -144,7 +111,7 @@ public class UpdateTaskHandler(
             if (data.ExistingId.HasValue)
             {
                 var existingData = task.TaskData.FirstOrDefault(
-                    p => p.Id == data.ExistingId.Value && (p.Type != data.Type || p.Value != data.Value));
+                    p => p.Id == data.ExistingId.Value && (p.Type != data.Type || p.Value != data.Value?.ToString()));
                 if (existingData != null)
                 {
                     existingData.Value = data.Value?.ToString() ?? string.Empty;
@@ -156,6 +123,7 @@ public class UpdateTaskHandler(
                 var newData = new RobotTaskData
                 {
                     Key = data.Key,
+                    Type = data.Type,
                     Value = data.Value?.ToString()!,
                 };
 
@@ -163,16 +131,15 @@ public class UpdateTaskHandler(
             }
         }
 
-        if ((request.DeletedFiles != null || request.Files != null) && task.Archive != null)
+        if (request.DeletedFiles != null || request.Files != null)
         {
-            var deletedFiles = request.DeletedFiles?.ToArray() ?? [];
-            var newArchive = await UpdateArchiveAsync(task.Archive.Url, deletedFiles, request.Files);
-
-            if (newArchive != null)
+            if (task.Archive == null)
             {
-                task.Archive.Url = newArchive.Url;
-                task.Archive.FileName = Path.GetFileName(newArchive.Url);
-                task.Archive.Size = new FileInfo(newArchive.Url).Length;
+                task.Archive = await CreateArchiveAsync(request.Files);
+            }
+            else
+            {
+                task.Archive = await UpdateArchiveAsync(task.Archive.Url, request.DeletedFiles?.ToArray(), request.Files);
             }
         }
         
@@ -182,6 +149,40 @@ public class UpdateTaskHandler(
         {
             Id = updatedTask.Id,
             TenantId = updatedTask.TenantId,
+        };
+    }
+
+    private async Task<RobotTaskFiles?> CreateArchiveAsync(IFormFileCollection? files)
+    {
+        if (files == null || files.Count == 0)
+        {
+            return null;
+        }
+        
+        var userId = currentUser.GetUserId();
+        var directory = Path.Combine(Path.GetTempPath(), "Archives", userId!.Value.ToString());
+        if (!Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+        
+        var id = Guid.NewGuid();
+        var path = Path.Combine(directory, $"{id}.zip");
+        await using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write); 
+        using var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true);
+
+        foreach (var file in files)
+        {
+            var entry = archive.CreateEntry(file.FileName, CompressionLevel.Optimal);
+            await using var entryStream = entry.Open();
+            await file.CopyToAsync(entryStream);
+        }
+
+        return new RobotTaskFiles
+        {
+            Url = path,
+            FileName = path,
+            Size = files.Sum(f => f.Length),
         };
     }
 
@@ -197,7 +198,7 @@ public class UpdateTaskHandler(
 
         if (!File.Exists(path))
         {
-            throw new FileNotFoundException($"Archive not found: {path}");
+            await File.Create(path).DisposeAsync();
         }
 
         var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
