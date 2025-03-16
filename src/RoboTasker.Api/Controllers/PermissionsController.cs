@@ -1,5 +1,6 @@
 ﻿using Mapster;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RoboTasker.Api.Models.Tenants;
 using RoboTasker.Application.Roles.Permissions.CreatePermissionGroup;
@@ -10,7 +11,7 @@ using RoboTasker.Application.Roles.Permissions.UpdatePermissionGroup;
 
 namespace RoboTasker.Api.Controllers;
 
-[Route("[controller]")]
+[Route("[controller]"), Authorize]
 public class PermissionsController(IMediator mediator) : BaseController
 {
     [HttpPost("")]

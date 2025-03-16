@@ -10,5 +10,6 @@ public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
     {
         builder.HasKey(ur => new { ur.UserId, ur.RoleId });
         builder.ToTable("users_roles");
+        builder.Ignore(ur => ur.Id);
     }
 }

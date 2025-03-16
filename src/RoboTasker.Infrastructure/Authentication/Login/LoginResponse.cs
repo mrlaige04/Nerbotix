@@ -1,4 +1,6 @@
-﻿namespace RoboTasker.Infrastructure.Authentication.Login;
+﻿using RoboTasker.Application.User;
+
+namespace RoboTasker.Infrastructure.Authentication.Login;
 
 public class LoginResponse
 {

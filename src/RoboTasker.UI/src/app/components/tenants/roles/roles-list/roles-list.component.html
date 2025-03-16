@@ -7,11 +7,14 @@
             (onAddClick)="openAddNew()"
             dataKey="id"
             [showRowActions]="true"
-            [showToolbar]="true">
+            [showToolbar]="true"
+            [addPermission]="PermissionsNames.RolesRead">
     <ng-template #rowActions let-rowData="rowData">
       <div class="actions flex gap-1">
-        <p-button icon="pi pi-pencil" (onClick)="openEditRole(rowData.id)"/>
-        <p-button (onClick)="openDeleteConfirmation(rowData.id, $event)" severity="danger" icon="pi pi-trash"/>
+        <p-button icon="pi pi-pencil" (onClick)="openEditRole(rowData.id)" *rbHasPermission="PermissionsNames.RolesUpdate"/>
+        @if (!rowData['isSystem']) {
+          <p-button (onClick)="openDeleteConfirmation(rowData.id, $event)" severity="danger" icon="pi pi-trash" *rbHasPermission="PermissionsNames.RolesDelete"/>
+        }
       </div>
     </ng-template>
   </rb-table>

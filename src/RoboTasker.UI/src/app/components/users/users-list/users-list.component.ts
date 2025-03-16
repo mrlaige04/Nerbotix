@@ -9,19 +9,20 @@ import {TableComponent} from '../../common/table/table.component';
 import {Button} from 'primeng/button';
 import { DynamicDialogRef} from 'primeng/dynamicdialog';
 import {UsersAddComponent} from '../users-add/users-add.component';
-import {CurrentUserService} from '../../../services/user/current-user.service';
+import {HasPermissionDirective} from '../../../utils/directives/has-permission.directive';
+import {PermissionsNames} from '../../../models/tenants/permissions/permissions-names';
 
 @Component({
   selector: 'rb-users-list',
   imports: [
     TableComponent,
     Button,
+    HasPermissionDirective,
   ],
   templateUrl: './users-list.component.html',
   styleUrl: './users-list.component.scss'
 })
 export class UsersListComponent extends BaseTableListComponent<UserBase> implements OnInit {
-  private currentUserService = inject(CurrentUserService);
   private usersService = inject(UsersService);
   override destroyRef = inject(DestroyRef);
   private dialogRef: DynamicDialogRef<UsersAddComponent> | undefined;
@@ -30,7 +31,6 @@ export class UsersListComponent extends BaseTableListComponent<UserBase> impleme
 
   constructor() {
     super();
-
     this.columns = [
       { label: 'Email', propName: 'email' },
       { label: 'Username', propName: 'username' },
@@ -66,7 +66,7 @@ export class UsersListComponent extends BaseTableListComponent<UserBase> impleme
   }
 
   openEditUser(id: Guid) {
-    this.router.navigate(['users', id]);
+    this.router.navigate(['tenant', 'users', id]);
   }
 
   override getData() {
@@ -88,4 +88,6 @@ export class UsersListComponent extends BaseTableListComponent<UserBase> impleme
   override deleteItem(id: Guid) {
     return this.usersService.deleteUser(id);
   }
+
+  protected readonly PermissionsNames = PermissionsNames;
 }

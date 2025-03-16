@@ -16,14 +16,17 @@ import {Button} from 'primeng/button';
 import {CommonModule, NgTemplateOutlet} from '@angular/common';
 import {ProgressBar} from 'primeng/progressbar';
 import {FormsModule} from '@angular/forms';
+import {HasPermissionDirective} from '../../../utils/directives/has-permission.directive';
+import {BaseComponent} from '../base/base.component';
+import {PermissionsNames} from '../../../models/tenants/permissions/permissions-names';
 
 @Component({
   selector: 'rb-table',
-  imports: [CommonModule, TableModule, Paginator, Toolbar, Button, NgTemplateOutlet, ProgressBar, FormsModule],
+  imports: [CommonModule, TableModule, Paginator, Toolbar, Button, NgTemplateOutlet, ProgressBar, FormsModule, HasPermissionDirective],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss'
 })
-export class TableComponent implements AfterViewInit, AfterContentChecked {
+export class TableComponent extends BaseComponent implements AfterViewInit, AfterContentChecked {
   loading = input<boolean>(false);
 
   @ContentChild('caption') captionTemplateRef?: TemplateRef<any>;
@@ -41,6 +44,8 @@ export class TableComponent implements AfterViewInit, AfterContentChecked {
   toolbarEndTemplate = signal<TemplateRef<any> | undefined>(undefined);
 
   rowActionTemplate = signal<TemplateRef<any> | undefined>(undefined);
+
+  addPermission = input<string>();
 
   selectedItems = signal<any[]>([]);
 
@@ -116,6 +121,8 @@ export class TableComponent implements AfterViewInit, AfterContentChecked {
   isPropNameFunction(prop: any) {
     return typeof prop === 'function';
   }
+
+  protected readonly PermissionsNames = PermissionsNames;
 }
 
 export interface PageOptions {

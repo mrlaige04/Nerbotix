@@ -12,7 +12,7 @@ public class PermissionGroupConfiguration : IEntityTypeConfiguration<PermissionG
         builder.HasKey(p => p.Id);
         
         builder.Property(p => p.Name).IsRequired();
-        builder.HasIndex(p => p.Name).IsUnique();
+        builder.HasIndex(p => new { p.TenantId, p.Name }).IsUnique();
         
         builder.HasMany(p => p.Permissions)
             .WithOne(p => p.Group)

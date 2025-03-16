@@ -5,11 +5,11 @@ import {CurrentUserService} from '../../services/user/current-user.service';
   selector: '[rbHasPermission]'
 })
 export class HasPermissionDirective {
-  private _permission!: string;
+  private _permission: string | undefined;
   private currentUserService = inject(CurrentUserService);
 
   @Input('rbHasPermission')
-  set hasPermission(permission: string) {
+  set hasPermission(permission: string | undefined) {
     this._permission = permission;
     this.updateView();
   }
@@ -18,7 +18,7 @@ export class HasPermissionDirective {
   }
 
   private updateView() {
-    const hasAccess = this.checkPermission(this._permission);
+    const hasAccess = !this._permission || this.checkPermission(this._permission);
 
     if (hasAccess) {
       this.viewContainer.createEmbeddedView(this.templateRef);
@@ -27,7 +27,7 @@ export class HasPermissionDirective {
     }
   }
 
-  private checkPermission(permission: string) {
+  private checkPermission(permission: string | undefined) {
     const user = this.currentUserService.currentUser();
     if (!user) return false;
 

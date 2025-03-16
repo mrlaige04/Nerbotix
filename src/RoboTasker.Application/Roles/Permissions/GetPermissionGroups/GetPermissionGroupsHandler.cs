@@ -16,6 +16,7 @@ public class GetPermissionGroupsHandler(
             g => new PermissionGroupBaseResponse
             {
                 Id = g.Id,
+                IsSystem = g.IsSystem,
                 Name = g.Name,
             },
             cancellationToken: cancellationToken);

@@ -24,7 +24,8 @@ export class PermissionsListComponent extends BaseTableListComponent<PermissionG
   constructor() {
     super();
     this.columns = [
-      { label: 'Name', propName: 'name' }
+      { label: 'Name', propName: 'name' },
+      { label: 'System', propName: 'isSystem' },
     ];
   }
 

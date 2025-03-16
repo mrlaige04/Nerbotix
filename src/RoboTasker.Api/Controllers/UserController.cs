@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RoboTasker.Application.User.CurrentUser;
 using RoboTasker.Domain.Services;
 
 namespace RoboTasker.Api.Controllers;
 
 [Route("[controller]"), Authorize]
-public class UserController(ICurrentUser currentUser) : BaseController
+public class UserController(ICurrentUser currentUser, IMediator mediator) : BaseController
 {
     [HttpGet("profile"), Authorize]
     public async Task<IActionResult> GetProfile()
@@ -16,5 +18,12 @@ public class UserController(ICurrentUser currentUser) : BaseController
         {
             userId, tenantId
         });
+    }
+
+    [HttpGet("current-user"), Authorize]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var result = await mediator.Send(new GetCurrentUserQuery());
+        return result.Match(Ok, Problem);
     }
 }

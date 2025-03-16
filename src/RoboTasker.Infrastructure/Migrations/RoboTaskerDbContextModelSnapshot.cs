@@ -92,21 +92,6 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
-                {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -250,7 +235,7 @@ namespace RoboTasker.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("TenantId", "Name")
                         .IsUnique();
 
                     b.ToTable("robots", (string)null);
@@ -277,7 +262,7 @@ namespace RoboTasker.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("TenantId", "Name")
                         .IsUnique();
 
                     b.ToTable("robot_categories", (string)null);
@@ -615,6 +600,9 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Property<Guid>("GroupId")
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -644,6 +632,9 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -656,7 +647,7 @@ namespace RoboTasker.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("TenantId", "Name")
                         .IsUnique();
 
                     b.ToTable("permission_groups", (string)null);
@@ -674,6 +665,9 @@ namespace RoboTasker.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
@@ -839,9 +833,6 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uuid");
 
@@ -929,21 +920,6 @@ namespace RoboTasker.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tenants.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
-                {
-                    b.HasOne("RoboTasker.Domain.Tenants.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("RoboTasker.Domain.Tenants.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -1124,6 +1100,15 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Navigation("Group");
                 });
 
+            modelBuilder.Entity("RoboTasker.Domain.Tenants.PermissionGroup", b =>
+                {
+                    b.HasOne("RoboTasker.Domain.Tenants.Tenant", null)
+                        .WithMany("PermissionGroups")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("RoboTasker.Domain.Tenants.Role", b =>
                 {
                     b.HasOne("RoboTasker.Domain.Tenants.Tenant", "Tenant")
@@ -1258,6 +1243,8 @@ namespace RoboTasker.Infrastructure.Migrations
 
             modelBuilder.Entity("RoboTasker.Domain.Tenants.Tenant", b =>
                 {
+                    b.Navigation("PermissionGroups");
+
                     b.Navigation("Roles");
 
                     b.Navigation("Users");

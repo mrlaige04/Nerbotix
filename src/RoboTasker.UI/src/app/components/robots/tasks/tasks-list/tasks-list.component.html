@@ -5,6 +5,7 @@
             [totalItems]="items().totalItems"
             (pageChange)="onPageChange($event)"
             (onAddClick)="openAddNew()"
+            [addPermission]="PermissionsNames.TasksCreate"
             dataKey="id"
             [showRowActions]="true"
             [showToolbar]="true">
@@ -36,8 +37,8 @@
         </td>
         <td>
           <div class="actions flex gap-1">
-            <p-button icon="pi pi-pencil" (onClick)="openEditTask(rowData.id)"/>
-            <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)"/>
+            <p-button icon="pi pi-pencil" (onClick)="openEditTask(rowData.id)" *rbHasPermission="PermissionsNames.TasksUpdate"/>
+            <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)" *rbHasPermission="PermissionsNames.TasksDelete"/>
           </div>
         </td>
       </tr>

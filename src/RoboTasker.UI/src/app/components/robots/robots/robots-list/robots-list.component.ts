@@ -16,6 +16,8 @@ import {ProgressBar} from 'primeng/progressbar';
 import {FormsModule} from '@angular/forms';
 import {RobotStatus} from '../../../../models/robots/robots/robot-status';
 import {RouterLink} from '@angular/router';
+import {HasPermissionDirective} from '../../../../utils/directives/has-permission.directive';
+import {PermissionsNames} from '../../../../models/tenants/permissions/permissions-names';
 
 @Component({
   selector: 'rb-robots-list',
@@ -30,6 +32,7 @@ import {RouterLink} from '@angular/router';
     FormsModule,
     RouterLink,
     DatePipe,
+    HasPermissionDirective,
   ],
   templateUrl: './robots-list.component.html',
   styleUrl: './robots-list.component.scss',
@@ -83,4 +86,5 @@ export class RobotsListComponent extends BaseTableListComponent<RobotBase> imple
   }
 
   protected readonly RobotStatus = RobotStatus;
+  protected readonly PermissionsNames = PermissionsNames;
 }

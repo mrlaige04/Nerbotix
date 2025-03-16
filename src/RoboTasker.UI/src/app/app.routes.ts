@@ -14,13 +14,13 @@ import {
 } from './components/robots/capabilities/capabilities-wrapper/capabilities-wrapper.component';
 import {HomeComponent} from './components/home/home.component';
 import {TasksWrapperComponent} from './components/robots/tasks/tasks-wrapper/tasks-wrapper.component';
-import {UsersWrapperComponent} from './components/users/users-wrapper/users-wrapper.component';
 import {TenantsWrapperComponent} from './components/tenants/tenants-wrapper/tenants-wrapper.component';
+import {ForbiddenComponent} from './components/layout/forbidden/forbidden.component';
 
 export const routes: Routes = [
   {
     path: '',
-    data: { title: 'Welcome to RoboTasker' },
+    title: 'Welcome to RoboTasker',
     component: LayoutComponent,
     canActivate: [isAuthenticatedGuard],
     children: [
@@ -31,43 +31,38 @@ export const routes: Routes = [
       {
         path: 'user',
         component: UserWrapperComponent,
+        canActivate: [isAuthenticatedGuard],
+        title: 'User',
         loadChildren: () =>
           import('./components/user/user.routes').then(r => r.USER_ROUTES)
       },
       {
         path: 'categories',
-        data: { title: 'Categories' },
+        title: 'Categories',
         component: CategoriesWrapperComponent,
         loadChildren: () =>
-          import('./components/robots/categories/categories.routes').then(r => r.CATEGORIES_ROUTES)
+          import('./components/robots/categories/categories.routes').then(r => r.CATEGORIES_ROUTES),
       },
       {
         path: 'robots',
-        data: { title: 'Robots' },
+        title: 'Robots',
         component: RobotsWrapperComponent,
         loadChildren: () =>
           import('./components/robots/robots/robots.routes').then(r => r.ROBOTS_ROUTES)
       },
       {
         path: 'capabilities',
-        data: { title: 'Capabilities' },
+        title: 'Capabilities',
         component: CapabilitiesWrapperComponent,
         loadChildren: () =>
           import('./components/robots/capabilities/capabilities.routes').then(r => r.CAPABILITIES_ROUTES)
       },
       {
         path: 'tasks',
-        data: { title: 'Tasks' },
+        title: 'Tasks',
         component: TasksWrapperComponent,
         loadChildren: () =>
           import('./components/robots/tasks/tasks.routes').then(r => r.TASKS_ROUTES)
-      },
-      {
-        path: 'users',
-        title: 'Users',
-        component: UsersWrapperComponent,
-        loadChildren: () =>
-          import('./components/users/users-routes').then(r => r.USERS_ROUTES)
       },
       {
         path: 'tenant',
@@ -85,4 +80,5 @@ export const routes: Routes = [
       import('./components/auth/auth.routes').then(r => r.AUTH_ROUTES)
   },
   { path: 'maintenance', component: MaintenanceComponent },
+  { path: 'no-access', component: ForbiddenComponent }
 ];

@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using RoboTasker.Application.Common.Data;
 using RoboTasker.Application.Common.Emails;
 using RoboTasker.Application.Services;
 using RoboTasker.Domain.Repositories;
@@ -21,6 +22,7 @@ using RoboTasker.Infrastructure.Authentication.Providers;
 using RoboTasker.Infrastructure.Authentication.Services;
 using RoboTasker.Infrastructure.Data;
 using RoboTasker.Infrastructure.Data.Interceptors;
+using RoboTasker.Infrastructure.Data.Prefill;
 using RoboTasker.Infrastructure.Emailing;
 
 namespace RoboTasker.Infrastructure;
@@ -78,6 +80,8 @@ public static class RegisterDependencies
         
         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
         services.AddScoped(typeof(ITenantRepository<>), typeof(TenantBaseRepository<>));
+        
+        services.AddScoped<ITenantSeeder, AppDbContextSeeder>();
     }
     
     private static void AddAppAuthentication(this IServiceCollection services, IConfiguration configuration)

@@ -9,12 +9,15 @@ import {Success} from '../../../../models/success';
 import {RobotStatus} from '../../../../models/robots/robots/robot-status';
 import {Button} from 'primeng/button';
 import {TableComponent} from '../../../common/table/table.component';
+import {HasPermissionDirective} from '../../../../utils/directives/has-permission.directive';
+import {PermissionsNames} from '../../../../models/tenants/permissions/permissions-names';
 
 @Component({
   selector: 'rb-capabilities-list',
   imports: [
     Button,
-    TableComponent
+    TableComponent,
+    HasPermissionDirective
   ],
   templateUrl: './capabilities-list.component.html',
   styleUrl: './capabilities-list.component.scss'
@@ -66,4 +69,5 @@ export class CapabilitiesListComponent extends BaseTableListComponent<Capability
   }
 
   protected readonly RobotStatus = RobotStatus;
+  protected readonly PermissionsNames = PermissionsNames;
 }

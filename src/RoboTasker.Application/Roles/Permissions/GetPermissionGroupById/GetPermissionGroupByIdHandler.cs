@@ -16,11 +16,13 @@ public class GetPermissionGroupByIdHandler(
             g => new PermissionGroupResponse
             {
                 Id = g.Id,
+                IsSystem = g.IsSystem,
                 Name = g.Name,
                 Permissions = g.Permissions
                     .Select(p => new PermissionBaseResponse
                     {
                         Id = p.Id,
+                        IsSystem = p.IsSystem,
                         Name = p.Name,
                         GroupName = g.Name
                     })

@@ -15,7 +15,8 @@ public class GetRolesHandler(ITenantRepository<Role> roleRepository) : IQueryHan
             r => new RoleBaseResponse
             {
                 Id = r.Id,
-                Name = r.Name!
+                Name = r.Name!,
+                IsSystem = r.IsSystem
             },
             cancellationToken: cancellationToken);
 
