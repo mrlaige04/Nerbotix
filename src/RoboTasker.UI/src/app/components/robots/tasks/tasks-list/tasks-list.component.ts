@@ -10,6 +10,8 @@ import {TaskStatus} from '../../../../models/robots/tasks/task-status';
 import {Button} from 'primeng/button';
 import {Tooltip} from 'primeng/tooltip';
 import {RouterLink} from '@angular/router';
+import {PermissionsNames} from '../../../../models/tenants/permissions/permissions-names';
+import {HasPermissionDirective} from '../../../../utils/directives/has-permission.directive';
 
 @Component({
   selector: 'rb-tasks-list',
@@ -17,7 +19,8 @@ import {RouterLink} from '@angular/router';
     TableComponent,
     Button,
     Tooltip,
-    RouterLink
+    RouterLink,
+    HasPermissionDirective
   ],
   templateUrl: './tasks-list.component.html',
   styleUrl: './tasks-list.component.scss'
@@ -73,4 +76,5 @@ export class TasksListComponent extends BaseTableListComponent<any> implements O
   }
 
   protected readonly TaskStatus = TaskStatus;
+  protected readonly PermissionsNames = PermissionsNames;
 }

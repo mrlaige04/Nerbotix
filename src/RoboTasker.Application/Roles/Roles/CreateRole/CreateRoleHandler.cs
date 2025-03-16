@@ -45,6 +45,7 @@ public class CreateRoleHandler(
         return new RoleBaseResponse
         {
             Name = createdRole.Name,
+            IsSystem = createdRole.IsSystem
         };
     }
 }

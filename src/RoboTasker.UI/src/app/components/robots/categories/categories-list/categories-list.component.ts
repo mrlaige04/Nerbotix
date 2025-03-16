@@ -1,6 +1,5 @@
-import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {CategoriesService} from '../../../../services/robots/categories.service';
-import {PaginatedList} from '../../../../models/common/paginated-list';
 import { finalize, Observable, tap} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {TableModule} from 'primeng/table';
@@ -18,6 +17,8 @@ import {CategoryBase} from '../../../../models/robots/categories/category-base';
 import {BaseTableListComponent} from '../../../common/base-table-list/base-table-list.component';
 import {Guid} from 'guid-typescript';
 import {Success} from '../../../../models/success';
+import {HasPermissionDirective} from '../../../../utils/directives/has-permission.directive';
+import {PermissionsNames} from '../../../../models/tenants/permissions/permissions-names';
 
 @Component({
   selector: 'rb-categories-list',
@@ -30,7 +31,8 @@ import {Success} from '../../../../models/success';
     InputText,
     RouterLink,
     TableComponent,
-    JsonPipe
+    JsonPipe,
+    HasPermissionDirective
   ],
   templateUrl: './categories-list.component.html',
   styleUrl: './categories-list.component.scss',
@@ -104,4 +106,6 @@ export class CategoriesListComponent extends BaseTableListComponent<CategoryBase
   override deleteItem(id: Guid): Observable<Success> {
     return this.categoriesService.deleteCategory(id);
   }
+
+  protected readonly PermissionsNames = PermissionsNames;
 }

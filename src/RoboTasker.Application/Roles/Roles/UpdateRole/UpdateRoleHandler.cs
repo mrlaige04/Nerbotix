@@ -63,7 +63,8 @@ public class UpdateRoleHandler(
         return new RoleBaseResponse
         {
             Id = role.Id,
-            Name = updatedRole.Name!
+            Name = updatedRole.Name!,
+            IsSystem = updatedRole.IsSystem
         };
     }
 }

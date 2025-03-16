@@ -68,7 +68,7 @@ export class UserEditComponent extends BaseComponent implements OnInit {
   private detectUser() {
     const id = this.activatedRoute.snapshot.params['id'];
     if (!id) {
-      this.router.navigate(['users']);
+      this.router.navigate(['tenant', 'users']);
       return;
     }
 
@@ -84,7 +84,7 @@ export class UserEditComponent extends BaseComponent implements OnInit {
       }),
       tap((user) => {
         if (!user) {
-          this.router.navigate(['users']);
+          this.router.navigate(['tenant', 'users']);
           return;
         }
 
@@ -126,7 +126,7 @@ export class UserEditComponent extends BaseComponent implements OnInit {
         }),
         tap((res) => {
           if (res) {
-            this.router.navigate(['users']);
+            this.router.navigate(['tenant', 'users']);
           }
         }),
         takeUntilDestroyed(this.destroyRef),

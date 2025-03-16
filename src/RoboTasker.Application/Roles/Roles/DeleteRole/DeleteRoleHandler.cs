@@ -16,6 +16,11 @@ public class DeleteRoleHandler(RoleManager<Role> roleManager) : ICommandHandler<
         {
             return Error.NotFound(RoleErrors.NotFound, RoleErrors.NotFoundDescription);
         }
+
+        if (role.IsSystem)
+        {
+            return Error.Forbidden(RoleErrors.DeletingFailed, RoleErrors.DeletionSystemRoleFailed);
+        }
         
         var result = await roleManager.DeleteAsync(role);
         return !result.Succeeded 

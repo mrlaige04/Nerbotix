@@ -13,4 +13,5 @@ public static class RoleErrors
     
     public const string DeletingFailed = "Role.DeletingFailed";
     public const string DeletingFailedDescription = "Failed to delete the role.";
+    public const string DeletionSystemRoleFailed = "You cannot delete the system role.";
 }

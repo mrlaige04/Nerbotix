@@ -4,18 +4,22 @@ import {CurrentUserService} from '../../services/user/current-user.service';
 
 export const hasPermissionGuard: CanActivateFn = async (route, state) => {
   const permission = route.data['permission'];
+  if (!permission) {
+    return true;
+  }
+
   const currentUserService = inject(CurrentUserService);
   const user = currentUserService.currentUser();
   const router = inject(Router);
 
   if (!user) {
-    await router.navigate(['/']);
+    await router.navigate(['no-access']);
     return false;
   }
 
   const hasPermission = user.permissions.some(p => p.name === permission);
   if (!hasPermission) {
-    await router.navigate(['/']);
+    await router.navigate(['no-access']);
     return false;
   }
 

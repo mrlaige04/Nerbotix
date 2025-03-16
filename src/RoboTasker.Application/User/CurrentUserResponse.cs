@@ -1,6 +1,7 @@
 ﻿using RoboTasker.Application.Roles.Permissions;
+using RoboTasker.Application.Roles.Roles;
 
-namespace RoboTasker.Infrastructure.Authentication;
+namespace RoboTasker.Application.User;
 
 public class CurrentUserResponse
 {
@@ -8,4 +9,5 @@ public class CurrentUserResponse
     public Guid TenantId { get; set; }
     public string Email { get; set; } = null!;
     public IList<PermissionBaseResponse> Permissions { get; set; } = [];
+    public IList<RoleBaseResponse> Roles { get; set; } = [];
 }

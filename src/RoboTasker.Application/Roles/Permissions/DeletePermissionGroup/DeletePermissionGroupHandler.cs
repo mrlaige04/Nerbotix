@@ -19,6 +19,11 @@ public class DeletePermissionGroupHandler(
         {
             return Error.NotFound(PermissionErrors.GroupNotFound, PermissionErrors.GroupNotFoundDescription);
         }
+
+        if (group.IsSystem)
+        {
+            return Error.Forbidden(PermissionErrors.DeletingFailed, PermissionErrors.DeletionSystemGroupFailed);
+        }
         
         await permissionGroupRepository.DeleteAsync(group, cancellationToken);
 

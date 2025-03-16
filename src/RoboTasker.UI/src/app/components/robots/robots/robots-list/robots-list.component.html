@@ -7,6 +7,7 @@
             (selectionChange)="onItemsSelect($event)"
             (onAddClick)="openAddNew()"
             dataKey="id"
+            [addPermission]="PermissionsNames.RobotsCreate"
             [showRowActions]="true"
             [showToolbar]="true">
     <ng-template #body let-rowData="rowData">
@@ -26,8 +27,8 @@
         <td>{{rowData['lastActivity'] ?? '-'}}</td>
         <td>
           <div class="actions flex gap-1">
-            <p-button icon="pi pi-pencil" (onClick)="openEditRobot(rowData.id)"/>
-            <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)"/>
+            <p-button icon="pi pi-pencil" (onClick)="openEditRobot(rowData.id)" *rbHasPermission="PermissionsNames.RobotsUpdate"/>
+            <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)" *rbHasPermission="PermissionsNames.RobotsDelete"/>
           </div>
         </td>
       </tr>

@@ -4,6 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {NotificationService} from '../../../services/common/notification.service';
 import {DialogService} from 'primeng/dynamicdialog';
 import {ConfirmationService} from 'primeng/api';
+import {CurrentUserService} from '../../../services/user/current-user.service';
 
 @Component({
   selector: 'rb-base',
@@ -20,9 +21,16 @@ export class BaseComponent {
   protected dialogService = inject(DialogService);
   protected confirmationService = inject(ConfirmationService);
   protected changeDetectorRef = inject(ChangeDetectorRef);
+  protected currentUserService = inject(CurrentUserService);
 
   showLoader() {
     this.globalLoader.showLoader();
+  }
+
+  protected hasPermission(permission: string | undefined) {
+    if (!permission) return true;
+
+    return this.currentUserService.currentUser()?.permissions.some(p => p.name === permission);
   }
 
   hideLoader() {

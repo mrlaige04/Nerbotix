@@ -7,6 +7,7 @@
             (selectionChange)="onItemsSelect($event)"
             (onAddClick)="openAddNew()"
             dataKey="id"
+            [addPermission]="PermissionsNames.UsersCreate"
             [showRowActions]="true"
             [showToolbar]="true">
     <ng-template #body let-rowData="rowData">
@@ -24,9 +25,9 @@
         </td>
         <td>
           <div class="actions flex gap-1">
-            <p-button icon="pi pi-pencil" (onClick)="openEditUser(rowData.id)"/>
+            <p-button icon="pi pi-pencil" (onClick)="openEditUser(rowData.id)" *rbHasPermission="PermissionsNames.UsersUpdate"/>
             @if (rowData['email'] !== currentUser()?.email) {
-              <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)"/>
+              <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)" *rbHasPermission="PermissionsNames.UsersDelete"/>
             }
           </div>
         </td>

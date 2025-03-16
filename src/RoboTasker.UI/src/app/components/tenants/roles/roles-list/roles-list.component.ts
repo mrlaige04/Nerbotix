@@ -7,12 +7,15 @@ import {finalize, tap} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {TableComponent} from '../../../common/table/table.component';
 import {Button} from 'primeng/button';
+import {HasPermissionDirective} from '../../../../utils/directives/has-permission.directive';
+import {PermissionsNames} from '../../../../models/tenants/permissions/permissions-names';
 
 @Component({
   selector: 'rb-roles-list',
   imports: [
     TableComponent,
-    Button
+    Button,
+    HasPermissionDirective
   ],
   templateUrl: './roles-list.component.html',
   styleUrl: './roles-list.component.scss'
@@ -25,6 +28,7 @@ export class RolesListComponent extends BaseTableListComponent<RoleBase> impleme
     super();
     this.columns = [
       { label: 'Name', propName: 'name' },
+      { label: 'System', propName: 'isSystem' },
     ];
   }
 
@@ -59,4 +63,6 @@ export class RolesListComponent extends BaseTableListComponent<RoleBase> impleme
   override deleteItem(id: Guid) {
     return this.rolesService.deleteRole(id);
   }
+
+  protected readonly PermissionsNames = PermissionsNames;
 }

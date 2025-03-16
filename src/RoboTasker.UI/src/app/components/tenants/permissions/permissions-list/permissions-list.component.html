@@ -11,7 +11,9 @@
     <ng-template #rowActions let-rowData="rowData">
       <div class="actions flex gap-1">
         <p-button icon="pi pi-pencil" (onClick)="openEditPermission(rowData.id)"/>
-        <p-button (onClick)="openDeleteConfirmation(rowData.id, $event)" severity="danger" icon="pi pi-trash"/>
+        @if (!rowData['isSystem']) {
+          <p-button (onClick)="openDeleteConfirmation(rowData.id, $event)" severity="danger" icon="pi pi-trash"/>
+        }
       </div>
     </ng-template>
   </rb-table>

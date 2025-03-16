@@ -17,11 +17,13 @@ public class GetRoleByIdHandler(ITenantRepository<Role> roleRepository) : IQuery
             {
                 Id = r.Id,
                 Name = r.Name!,
+                IsSystem = r.IsSystem,
                 Permissions = r.Permissions
                     .Select(p => new PermissionBaseResponse
                     {
                         Id = p.PermissionId,
                         Name = p.Permission.Name,
+                        IsSystem = p.Permission.IsSystem,
                         GroupName = p.Permission.Group.Name
                     }).ToList()
             },

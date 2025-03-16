@@ -16,7 +16,10 @@
                 <label for="perm-name">Name</label>
                 <input pInputText id="perm-name" formControlName="name">
               </div>
-              <p-button severity="danger" (onClick)="removePermission(i)" outlined icon="pi pi-trash"/>
+              @let isSystem = control.get('isSystem')?.value === true;
+              @if (!isSystem) {
+                <p-button severity="danger" (onClick)="removePermission(i)" outlined icon="pi pi-trash"/>
+              }
             </div>
           }
         </div>

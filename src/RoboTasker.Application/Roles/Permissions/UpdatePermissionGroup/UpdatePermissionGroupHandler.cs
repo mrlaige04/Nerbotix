@@ -31,10 +31,13 @@ public class UpdatePermissionGroupHandler(
         foreach (var delPermission in request.DeletePermissions ?? [])
         {
             var permission = group.Permissions.FirstOrDefault(p => p.Id == delPermission);
-            if (permission != null)
+            if (permission == null) continue;
+            if (permission.IsSystem)
             {
-                group.Permissions.Remove(permission);
+                return Error.Forbidden(PermissionErrors.DeletingFailed, PermissionErrors.DeletionSystemItemFailed);
             }
+
+            group.Permissions.Remove(permission);
         }
         
         foreach (var newPermission in request.Permissions ?? [])
@@ -64,6 +67,7 @@ public class UpdatePermissionGroupHandler(
         {
             Id = updatedGroup.Id,
             Name = updatedGroup.Name,
+            IsSystem = updatedGroup.IsSystem,
         };
     }
 }

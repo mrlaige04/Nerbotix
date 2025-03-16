@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RoboTasker.Application.Common.Abstractions;
 using RoboTasker.Application.Common.Errors;
 using RoboTasker.Application.Roles.Permissions;
+using RoboTasker.Application.User;
 using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Tenants;
 using RoboTasker.Infrastructure.Authentication.Services;
@@ -12,6 +13,7 @@ namespace RoboTasker.Infrastructure.Authentication.Login;
 
 public class LoginHandler(
     UserManager<User> userManager, TokenService tokenService,
+    ITenantRepository<Role> roleRepository,
     ITenantRepository<User> userRepository) 
     : ICommandHandler<LoginCommand, LoginResponse>
 {
@@ -56,23 +58,23 @@ public class LoginHandler(
             throw new InvalidOperationException(UserErrors.NotFound);
         }
         
-        var permissions = userFromRepo.Roles
-            .SelectMany(r => r.Role.Permissions)
-            .Select(rp => rp.Permission)
-            .ToList();
-        
         var currentUser = new CurrentUserResponse
         {
             Id = user.Id,
             TenantId = user.TenantId,
             Email = user.Email!,
-            Permissions = permissions.Select(p => new PermissionBaseResponse
-            {
-                Id = p.Id,
-                Name = p.Name,
-                GroupName = p.Group.Name
-            }).ToList()
+            Permissions = userFromRepo.Roles
+                .SelectMany(ur => ur.Role.Permissions)
+                .Select(rp => new PermissionBaseResponse
+                {
+                    Id = rp.PermissionId,
+                    Name = rp.Permission.Name,
+                    GroupName = rp.Permission.Group.Name,
+                    IsSystem = rp.Permission.IsSystem
+                }).ToList()
         };
+        
+        currentUser.Permissions = currentUser.Permissions.DistinctBy(p => p.Name).ToList();
 
         return new LoginResponse
         {

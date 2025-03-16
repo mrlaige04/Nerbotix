@@ -36,7 +36,8 @@ public class CreatePermissionGroupHandler(
         return new PermissionGroupBaseResponse
         {
             Id = createdGroup.Id,
-            Name = createdGroup.Name
+            Name = createdGroup.Name,
+            IsSystem = createdGroup.IsSystem
         };
     }
 }

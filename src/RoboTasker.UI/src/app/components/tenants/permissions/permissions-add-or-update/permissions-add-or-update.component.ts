@@ -46,6 +46,7 @@ export class PermissionsAddOrUpdateComponent extends BaseComponent implements On
   addNewPermission() {
     const group = this.fb.group({
       name: this.fb.control('', [Validators.required]),
+      isSystem: this.fb.control(false)
     });
     this.permissionsArray.push(group);
   }
@@ -104,7 +105,8 @@ export class PermissionsAddOrUpdateComponent extends BaseComponent implements On
     group.permissions.forEach(p => {
       const group = this.fb.group({
         name: this.fb.control(p.name, [Validators.required]),
-        existingId: this.fb.control(p.id, [Validators.required])
+        existingId: this.fb.control(p.id, [Validators.required]),
+        isSystem: this.fb.control(p.isSystem)
       });
 
       this.permissionsArray.push(group);
