@@ -14,7 +14,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder
             .HasMany(u => u.Roles)
             .WithOne(r => r.User)
-            .HasForeignKey(r => r.UserId);
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(u => u.RefreshToken).IsRequired(false);
     }

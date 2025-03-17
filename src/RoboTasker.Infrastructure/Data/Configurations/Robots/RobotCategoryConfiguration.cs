@@ -12,7 +12,7 @@ public class RobotCategoryConfiguration : IEntityTypeConfiguration<RobotCategory
         builder.HasKey(c => c.Id);
         
         builder.Property(c => c.Name).IsRequired();
-        builder.HasIndex(c => c.Name).IsUnique();
+        builder.HasIndex(c => new { c.TenantId, c.Name }).IsUnique();
         
         builder.HasMany(c => c.Robots)
             .WithOne(r => r.Category)

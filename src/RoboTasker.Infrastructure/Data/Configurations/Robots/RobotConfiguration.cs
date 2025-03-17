@@ -12,7 +12,7 @@ public class RobotConfiguration : IEntityTypeConfiguration<Robot>
         builder.HasKey(x => x.Id);
         
         builder.Property(x => x.Name).IsRequired();
-        builder.HasIndex(x => x.Name).IsUnique();
+        builder.HasIndex(x => new { x.TenantId, x.Name }).IsUnique();
         
         builder.HasOne(r => r.Communication)
             .WithOne(c => c.Robot)
