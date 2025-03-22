@@ -11,20 +11,36 @@
       }
     </div>
     <div class="menu">
-      <p-menu [model]="filteredMenu" class="w-full" styleClass="border-none bg-transparent">
-        <ng-template #submenuheader let-item>
-          <span class="text-primary font-bold text-md">{{ item.label }}</span>
-        </ng-template>
-        <ng-template #item let-item>
-          <a class="flex align-items-center p-2 px-3"
-             (click)="onNavigate(item.routerLink)"
-             *rbHasPermission="item.permission"
-             [routerLink]="item.routerLink" routerLinkActive="routerLinkActive">
-            <span [class]="item.icon"></span>
-            <span class="ml-2 text-lg">{{ item.label }}</span>
-          </a>
-        </ng-template>
-      </p-menu>
+      @if (isSuperAdmin()) {
+        <p-menu [model]="superAdminMenu" class="w-full" styleClass="border-none bg-transparent">
+          <ng-template #submenuheader let-item>
+            <span class="text-primary font-bold text-md">{{ item.label }}</span>
+          </ng-template>
+          <ng-template #item let-item>
+            <a class="flex align-items-center p-2 px-3"
+               (click)="onNavigate(item.routerLink)"
+               [routerLink]="item.routerLink" routerLinkActive="routerLinkActive">
+              <span [class]="item.icon"></span>
+              <span class="ml-2 text-lg">{{ item.label }}</span>
+            </a>
+          </ng-template>
+        </p-menu>
+      } @else {
+        <p-menu [model]="filteredMenu" class="w-full" styleClass="border-none bg-transparent">
+          <ng-template #submenuheader let-item>
+            <div class="text-primary font-bold text-md">{{ item.label }}</div>
+          </ng-template>
+          <ng-template #item let-item>
+            <a class="flex align-items-center p-2 px-3"
+               (click)="onNavigate(item.routerLink)"
+               *rbHasPermission="item.permission"
+               [routerLink]="item.routerLink" routerLinkActive="routerLinkActive">
+              <span [class]="item.icon"></span>
+              <span class="ml-2 text-lg">{{ item.label }}</span>
+            </a>
+          </ng-template>
+        </p-menu>
+      }
     </div>
     <div class="footer">
       <p-divider/>

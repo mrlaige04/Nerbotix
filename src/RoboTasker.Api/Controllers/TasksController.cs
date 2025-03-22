@@ -7,6 +7,7 @@ using RoboTasker.Application.Robots.Tasks.CreateTask;
 using RoboTasker.Application.Robots.Tasks.DeleteTask;
 using RoboTasker.Application.Robots.Tasks.GetTaskById;
 using RoboTasker.Application.Robots.Tasks.GetTasks;
+using RoboTasker.Application.Robots.Tasks.ReEnqueueTask;
 using RoboTasker.Application.Robots.Tasks.UpdateTask;
 
 namespace RoboTasker.Api.Controllers;
@@ -44,6 +45,14 @@ public class TasksController(IMediator mediator) : BaseController
         var command = request.Adapt<UpdateTaskCommand>();
         command.Files = request.Files;
         command.Id = id;
+        var result = await mediator.Send(command);
+        return result.Match(Ok, Problem);
+    }
+
+    [HttpPost("{id:guid}/enqueue")]
+    public async Task<IActionResult> EnqueueTask(Guid id)
+    {
+        var command = new ReEnqueueTaskCommand(id);
         var result = await mediator.Send(command);
         return result.Match(Ok, Problem);
     }

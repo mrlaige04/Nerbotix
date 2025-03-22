@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using RoboTasker.Domain.Abstractions;
 using RoboTasker.Domain.Repositories.Abstractions;
 
@@ -153,4 +154,9 @@ public class BaseRepository<T>(DbContext dbContext) : IBaseRepository<T> where T
 
     public virtual async Task<IQueryable<T>> GetQuery(CancellationToken cancellationToken = default)
         => await Task.FromResult(_dbSet);
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        return await dbContext.Database.BeginTransactionAsync(cancellationToken);
+    }
 }

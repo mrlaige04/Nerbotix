@@ -7,6 +7,7 @@ using RoboTasker.Application.Common.Emails;
 using RoboTasker.Application.Common.Errors;
 using RoboTasker.Domain.Consts;
 using RoboTasker.Domain.Repositories.Abstractions;
+using RoboTasker.Domain.Services;
 using RoboTasker.Domain.Tenants;
 
 namespace RoboTasker.Application.SuperAdmin.Tenants.CreateTenant;
@@ -14,6 +15,7 @@ namespace RoboTasker.Application.SuperAdmin.Tenants.CreateTenant;
 public class CreateTenantHandler(
     UserManager<Domain.Tenants.User> userManager,
     ITenantRepository<Role> roleRepository, ITenantSeeder seeder,
+    ICurrentUser currentUser,
     ITenantRepository<Domain.Tenants.User> userRepository,
     IBaseRepository<Tenant> tenantRepository, IUserEmailSender userEmailSender) 
     : ICommandHandler<CreateTenantCommand, TenantBaseResponse>
@@ -41,6 +43,7 @@ public class CreateTenantHandler(
         
         var createdTenant = await tenantRepository.AddAsync(tenant, cancellationToken);
 
+        currentUser.SetTenantId(createdTenant.Id);
         await seeder.SeedRolesAndPermissionsAsync(createdTenant.Id);
         
         var user = Domain.Tenants.User.Create(request.Email);
@@ -48,7 +51,9 @@ public class CreateTenantHandler(
         await userManager.CreateAsync(user);
         
         var adminRole = await roleRepository.GetAsync(
-            r => r.Name == RoleNames.Admin && r.TenantId == createdTenant.Id, cancellationToken: cancellationToken);
+            r => r.Name == RoleNames.Admin,
+            q => q.IgnoreQueryFilters(),
+            cancellationToken: cancellationToken);
         
         user.Roles.Add(new UserRole
         {

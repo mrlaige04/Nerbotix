@@ -2,12 +2,14 @@ import {Component, inject, OnDestroy, OnInit} from '@angular/core';
 import {UIChart} from 'primeng/chart';
 import {Divider} from 'primeng/divider';
 import {LayoutService} from '../../services/layout/layout.service';
+import {NgxEchartsDirective} from 'ngx-echarts';
 
 @Component({
   selector: 'rb-home',
   imports: [
     UIChart,
-    Divider
+    Divider,
+    NgxEchartsDirective
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
@@ -20,15 +22,19 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.layoutService.wrapToCard.set(false);
-    this.data = {
-      labels: ['Q1','Q2','Q3','Q4'],
-      datasets: [
-        {
-          label: 'Sales',
-          data: [400, 200, 150, 400]
-        }
-      ]
-    };
+    this.options = {
+      xAxis: {
+        type: 'category',
+        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [{
+        data: [150, 230, 224, 218, 154, 25, 235],
+        type: 'bar',
+      }]
+    }
   }
 
   ngOnDestroy() {

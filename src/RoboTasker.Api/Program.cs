@@ -1,3 +1,4 @@
+using Hangfire;
 using RoboTasker.Api;
 using RoboTasker.Api.Extensions;
 using RoboTasker.Application;
@@ -30,6 +31,8 @@ app.UseExceptionHandler(options => {});
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseBackgroundJobsDashboard();
 
 app.MapControllers();
 

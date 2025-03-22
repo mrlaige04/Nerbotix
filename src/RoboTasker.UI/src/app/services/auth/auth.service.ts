@@ -10,6 +10,7 @@ import {ChangePasswordRequest} from '../../models/auth/change-password-request';
 import {CurrentUserService} from '../user/current-user.service';
 import {LoginResponse} from '../../models/auth/login-response';
 import {RegisterRequest} from '../../models/auth/register-request';
+import {jwtDecode} from 'jwt-decode'
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,9 @@ export class AuthService {
 
   private _isAuthenticated = signal(this.getSavedToken() !== null);
   public isAuthenticated = this._isAuthenticated.asReadonly();
+
+  private _isSuperAdmin = signal<boolean>(this.getSavedIsSuperAdmin());
+  public isSuperAdmin = this._isSuperAdmin.asReadonly();
 
   register(data: RegisterRequest): Observable<Success> {
     const url = `${this.baseUrl}/register`;
@@ -68,12 +72,20 @@ export class AuthService {
     this._isAuthenticated.set(true);
 
     this.currentUserService.setCurrentUser(result.user);
+
+    const decodedToken = jwtDecode<any>(result.token.accessToken);
+    const isSuperAdmin = decodedToken['IsSuperAdmin'] === 'true';
+    this._isSuperAdmin.set(isSuperAdmin);
   }
 
   updateToken(token: AccessToken) {
     localStorage.setItem(this.storageKey, JSON.stringify(token));
     this._accessToken.set(token);
     this._isAuthenticated.set(true);
+
+    const decodedToken = jwtDecode<any>(token.accessToken);
+    const isSuperAdmin = decodedToken['IsSuperAdmin'] === 'true';
+    this._isSuperAdmin.set(isSuperAdmin);
   }
 
   private getSavedToken() {
@@ -86,6 +98,19 @@ export class AuthService {
     }
 
     return null;
+  }
+
+  private getSavedIsSuperAdmin() {
+    const json = localStorage.getItem(this.storageKey);
+    if (json) {
+      const token = JSON.parse(json) as AccessToken;
+      if (token) {
+        const decodedToken = jwtDecode<any>(token.accessToken);
+        return decodedToken['IsSuperAdmin'] === 'true';
+      }
+    }
+
+    return false;
   }
 
   logout() {

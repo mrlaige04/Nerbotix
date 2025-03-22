@@ -11,6 +11,14 @@ import {ConfirmationService, MessageService} from 'primeng/api';
 import {handleUnauthorizedInterceptor} from './utils/interceptors/handle-unauthorized.interceptor';
 import {handleServerNotRespondingInterceptor} from './utils/interceptors/handle-server-not-responding.interceptor';
 import {DialogService} from 'primeng/dynamicdialog';
+import {provideEchartsCore} from 'ngx-echarts';
+import * as echarts from 'echarts/core';
+import {CanvasRenderer} from 'echarts/renderers';
+import {GridComponent} from 'echarts/components';
+import {BarChart} from 'echarts/charts';
+
+echarts.use([GridComponent, CanvasRenderer]);
+echarts.use([BarChart]);
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -34,6 +42,7 @@ export const appConfig: ApplicationConfig = {
     ])),
     DialogService,
     MessageService,
-    ConfirmationService
+    ConfirmationService,
+    provideEchartsCore({ echarts })
   ]
 };

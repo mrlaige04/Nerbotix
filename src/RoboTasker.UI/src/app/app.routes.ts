@@ -16,6 +16,9 @@ import {HomeComponent} from './components/home/home.component';
 import {TasksWrapperComponent} from './components/robots/tasks/tasks-wrapper/tasks-wrapper.component';
 import {TenantsWrapperComponent} from './components/tenants/tenants-wrapper/tenants-wrapper.component';
 import {ForbiddenComponent} from './components/layout/forbidden/forbidden.component';
+import {SaWrapperComponent} from './components/sa/sa-wrapper/sa-wrapper.component';
+import {isSuperAdminGuard} from './utils/guards/is-super-admin.guard';
+import {ChatsWrapperComponent} from './components/chats/chats-wrapper/chats-wrapper.component';
 
 export const routes: Routes = [
   {
@@ -69,6 +72,18 @@ export const routes: Routes = [
         component: TenantsWrapperComponent,
         loadChildren: () =>
           import('./components/tenants/tenants.routes').then(r => r.TENANTS_ROUTES)
+      },
+      {
+        path: 'chats',
+        loadChildren: () =>
+          import('./components/chats/chat.routes').then(r => r.CHATS_ROUTES)
+      },
+      {
+        path: 'sa',
+        component: SaWrapperComponent,
+        loadChildren: () =>
+          import('./components/sa/sa.routes').then(r => r.SA_ROUTES),
+        canActivate: [isSuperAdminGuard]
       }
     ]
   },

@@ -24,7 +24,7 @@ public class AssignTenantInterceptor(ICurrentUser currentUser) : SaveChangesInte
     private void UpdateEntities(DbContext? context)
     {
         if (context == null) return;
-
+        
         var tenantId = currentUser.GetTenantId();
         if (!tenantId.HasValue) return;
         

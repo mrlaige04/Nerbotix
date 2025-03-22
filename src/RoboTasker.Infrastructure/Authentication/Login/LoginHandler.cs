@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RoboTasker.Application.Common.Abstractions;
 using RoboTasker.Application.Common.Errors;
 using RoboTasker.Application.Roles.Permissions;
+using RoboTasker.Application.Roles.Roles;
 using RoboTasker.Application.User;
 using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Tenants;
@@ -35,7 +36,7 @@ public class LoginHandler(
             return Error.Unauthorized(UserErrors.InvalidPassword, UserErrors.InvalidPasswordDescription);
         }
         
-        var token = tokenService.GenerateToken(user);
+        var token = await tokenService.GenerateToken(user);
         token.RefreshToken = tokenService.GenerateRefreshToken();
         
         user.RefreshToken = token.RefreshToken;
@@ -63,6 +64,12 @@ public class LoginHandler(
             Id = user.Id,
             TenantId = user.TenantId,
             Email = user.Email!,
+            Roles = user.Roles.Select(ur => new RoleBaseResponse
+            {
+                Id = ur.RoleId,
+                Name = ur.Role.Name!,
+                IsSystem = ur.Role.IsSystem,
+            }).ToList(),
             Permissions = userFromRepo.Roles
                 .SelectMany(ur => ur.Role.Permissions)
                 .Select(rp => new PermissionBaseResponse

@@ -1,28 +1,49 @@
 ﻿using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Tenants;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace RoboTasker.Infrastructure.Authentication.Services;
 
-public class TokenService(IOptions<JwtOptions> jwtOptions)
+public class TokenService(
+    IOptions<JwtOptions> jwtOptions, ITenantRepository<User> userRepository,
+    IConfiguration configuration)
 {
-    public AccessTokenResponse GenerateToken(User user)
+    public async Task<AccessTokenResponse> GenerateToken(User user)
     {
         var options = jwtOptions.Value;
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.JwtSecret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        
+        var superAdminEmail = configuration["SuperAdmin:Email"];
+        var isSuperAdmin = user.Email!.Equals(superAdminEmail, StringComparison.InvariantCultureIgnoreCase);
+        
+        var userRoles = await userRepository.GetWithSelectorAsync(
+            u => u.Roles.Select(ur => ur.Role),
+            u => u.Id == user.Id,
+            q => q
+                .Include(u => u.Roles)
+                .ThenInclude(ur => ur.Role));
 
+        var roleClaims = userRoles?
+            .Select(ur => new Claim("role", ur.Name!))
+            .ToList();
+        
         var securityTokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity([
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-                new Claim(CustomClaims.TenantId, user.TenantId.ToString())
+                new Claim(CustomClaims.TenantId, user.TenantId.ToString()),
+                ..roleClaims ?? [],
+                new Claim("IsSuperAdmin", isSuperAdmin.ToString().ToLowerInvariant()),
             ]),
             Expires = DateTime.UtcNow.AddMinutes(60),
             SigningCredentials = credentials,

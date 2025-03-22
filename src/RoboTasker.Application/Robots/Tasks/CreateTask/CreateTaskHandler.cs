@@ -1,6 +1,7 @@
 ﻿using System.IO.Compression;
 using ErrorOr;
 using Microsoft.AspNetCore.Http;
+using RoboTasker.Application.BackgroundJobs;
 using RoboTasker.Application.Common.Abstractions;
 using RoboTasker.Application.Common.Errors;
 using RoboTasker.Domain.Capabilities;
@@ -14,6 +15,7 @@ namespace RoboTasker.Application.Robots.Tasks.CreateTask;
 
 public class CreateTaskHandler(
     ICurrentUser currentUser,
+    IJobsService jobsService,
     IBaseRepository<Tenant> tenantRepository,
     ITenantRepository<Capability> capabilityRepository,
     ITenantRepository<RobotTask> taskRepository) : ICommandHandler<CreateTaskCommand, TaskBaseResponse>
@@ -74,6 +76,8 @@ public class CreateTaskHandler(
 
         var createdTask = await taskRepository.AddAsync(task, cancellationToken);
 
+        var jobId = jobsService.EnqueueTask(createdTask.Id);
+        
         return new TaskBaseResponse
         {
             Id = createdTask.Id,
