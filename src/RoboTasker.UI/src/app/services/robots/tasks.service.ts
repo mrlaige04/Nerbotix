@@ -47,6 +47,11 @@ export class TasksService {
     return this.base.post<FormData, TaskBase>(url, formData);
   }
 
+  reEnqueue(id: Guid): Observable<Success> {
+    const url = `${this.baseUrl}/${id}/enqueue`;
+    return this.base.post<null, Success>(url, null);
+  }
+
   updateTask(id:Guid, data: UpdateTaskRequest): Observable<TaskBase> {
     const url = `${this.baseUrl}/${id}`;
 

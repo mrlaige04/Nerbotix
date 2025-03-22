@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using RoboTasker.Domain.Consts;
 using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Tenants;
 using RoboTasker.Infrastructure.Data;
@@ -24,8 +25,11 @@ public static class DatabaseExtensions
     {
         await using var scope = app.Services.CreateAsyncScope();
         var tenantRepository = scope.ServiceProvider.GetRequiredService<IBaseRepository<Tenant>>();
+        var roleRepository = scope.ServiceProvider.GetRequiredService<ITenantRepository<Role>>();
+        var userRepository = scope.ServiceProvider.GetRequiredService<ITenantRepository<User>>();
         var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
         
         var superAdminEmail = configuration["SuperAdmin:Email"];
         var superAdminPassword = configuration["SuperAdmin:Password"];
@@ -57,6 +61,37 @@ public static class DatabaseExtensions
             {
                 throw new Exception(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
             }
+        }
+        
+        var existingSuperRole = await roleRepository.GetAsync(
+            t => t.Name == RoleNames.SuperAdmin && t.TenantId == existingTenant.Id);
+        if (existingSuperRole == null)
+        {
+            var result = await roleManager.CreateAsync(new Role
+            {
+                Name = RoleNames.SuperAdmin,
+                TenantId = existingTenant.Id
+            });
+            if (!result.Succeeded)
+            {
+                throw new Exception(string.Join(Environment.NewLine, result.Errors.Select(e => e.Description)));
+            }
+            existingSuperRole = await roleRepository.GetAsync(t => t.Name == RoleNames.SuperAdmin && t.TenantId == existingTenant.Id);
+        }
+
+        var superAdminUser = await userRepository.GetAsync(
+            t => t.Email == superAdminEmail && t.TenantId == existingTenant.Id,
+            q => q.Include(u => u.Roles)
+                .ThenInclude(ur => ur.Role));
+        if (superAdminUser!.Roles.All(r => r.Role.Name != RoleNames.SuperAdmin))
+        {
+            superAdminUser!.Roles.Add(new UserRole
+            {
+                RoleId = existingSuperRole!.Id,
+                TenantId = existingTenant.Id
+            });
+            
+            await userRepository.UpdateAsync(superAdminUser);
         }
     }
 }

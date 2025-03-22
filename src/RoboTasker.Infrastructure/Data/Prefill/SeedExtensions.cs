@@ -16,6 +16,8 @@ public class AppDbContextSeeder(
 {
     public async Task SeedRolesAndPermissionsAsync(Guid tenantId)
     {
+        await using var transaction = await permissionGroupRepository.BeginTransactionAsync();
+        
         try
         {
             logger.LogInformation("Seeding database...");
@@ -88,10 +90,13 @@ public class AppDbContextSeeder(
                 IsSystem = true,
             };
             await roleManager.CreateAsync(userRole);
+            
+            await transaction.CommitAsync();
         }
         catch (Exception e)
         {
             logger.LogError("Error while seeding: {Message}", e.Message);
+            await transaction.RollbackAsync();
         }
     }
 }

@@ -3,6 +3,7 @@
 public enum RobotTaskStatus
 {
     Pending,
+    WaitingForEnqueue,
     InProgress,
     Completed,
     Failed,

@@ -6,13 +6,17 @@ import {Menu} from 'primeng/menu';
 import {MenuItem} from 'primeng/api';
 import {AuthService} from '../../../services/auth/auth.service';
 import {BaseComponent} from '../../common/base/base.component';
+import {BadgeDirective} from 'primeng/badge';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'rb-topbar',
   imports: [
     Button,
     Avatar,
-    Menu
+    Menu,
+    BadgeDirective,
+    RouterLink
   ],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss'

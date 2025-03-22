@@ -1,7 +1,7 @@
 import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {BaseTableListComponent} from '../../../common/base-table-list/base-table-list.component';
 import {Guid} from 'guid-typescript';
-import {finalize, Observable, tap} from 'rxjs';
+import {catchError, finalize, Observable, of, tap} from 'rxjs';
 import {Success} from '../../../../models/success';
 import {TasksService} from '../../../../services/robots/tasks.service';
 import {TableComponent} from '../../../common/table/table.component';
@@ -12,6 +12,7 @@ import {Tooltip} from 'primeng/tooltip';
 import {RouterLink} from '@angular/router';
 import {PermissionsNames} from '../../../../models/tenants/permissions/permissions-names';
 import {HasPermissionDirective} from '../../../../utils/directives/has-permission.directive';
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'rb-tasks-list',
@@ -53,6 +54,27 @@ export class TasksListComponent extends BaseTableListComponent<any> implements O
 
   openEditTask(id: Guid) {
     this.router.navigate(['tasks', id]);
+  }
+
+  reEnqueue(id: Guid) {
+    this.showLoader();
+    this.tasksService.reEnqueue(id).pipe(
+      catchError((error: HttpErrorResponse) => {
+        const message = error.error?.detail;
+        this.notificationService.showError('Error while enqueueing task', message);
+        return of(null);
+      }),
+      tap((res) => {
+        if (res) {
+          this.notificationService.showSuccess('OK', 'Task was sent to enqueue');
+          this.getData();
+        }
+      }),
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => {
+        this.hideLoader();
+      })
+    ).subscribe();
   }
 
   override getData() {

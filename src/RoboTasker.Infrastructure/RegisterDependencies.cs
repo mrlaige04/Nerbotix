@@ -3,6 +3,8 @@ using System.Net;
 using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using RoboTasker.Application.BackgroundJobs;
 using RoboTasker.Application.Common.Data;
 using RoboTasker.Application.Common.Emails;
 using RoboTasker.Application.Services;
@@ -24,6 +27,8 @@ using RoboTasker.Infrastructure.Data;
 using RoboTasker.Infrastructure.Data.Interceptors;
 using RoboTasker.Infrastructure.Data.Prefill;
 using RoboTasker.Infrastructure.Emailing;
+using RoboTasker.Infrastructure.Hangfire;
+using RoboTasker.Infrastructure.Hangfire.Jobs;
 
 namespace RoboTasker.Infrastructure;
 
@@ -33,8 +38,8 @@ public static class RegisterDependencies
     {
         services.AddAppAuthentication(configuration);
         services.AddDatabase(configuration);
-
         services.AddEmailing(configuration);
+        services.AddBackgroundJobs(configuration);
     }
 
     private static void AddEmailing(this IServiceCollection services, IConfiguration configuration)
@@ -108,7 +113,7 @@ public static class RegisterDependencies
                 options.ClaimsIdentity.EmailClaimType = JwtRegisteredClaimNames.Email;
                 options.ClaimsIdentity.UserNameClaimType = JwtRegisteredClaimNames.Name;
                 options.ClaimsIdentity.UserIdClaimType = JwtRegisteredClaimNames.Sub;
-                
+
                 options.Tokens.EmailConfirmationTokenProvider = "24LengthCode";
             })
             .AddRoles<Role>()
@@ -120,5 +125,22 @@ public static class RegisterDependencies
         services.AddScoped<TokenService>();
 
         services.AddScoped<IUserEmailSender, UserEmailSender>();
+    }
+
+    private static void AddBackgroundJobs(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<HangfireDashboardOptions>(configuration.GetSection(HangfireDashboardOptions.SectionName));
+        
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        services.AddHangfire((sp, cfg) =>
+        {
+            cfg.UseSimpleAssemblyNameTypeSerializer();
+            cfg.UsePostgreSqlStorage(opt => opt.UseNpgsqlConnection(connectionString));
+        });
+        
+        services.AddHangfireServer();
+
+        services.AddScoped<TaskAssignJob>();
+        services.AddScoped<IJobsService, JobsService>();
     }
 }

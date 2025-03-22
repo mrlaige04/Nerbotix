@@ -23,7 +23,7 @@ public class RefreshTokenHandler(TokenService tokenService, UserManager<User> us
             return Error.Unauthorized();
         }
 
-        var newAccessToken = tokenService.GenerateToken(user);
+        var newAccessToken = await tokenService.GenerateToken(user);
         var refreshToken = tokenService.GenerateRefreshToken();
         
         user.RefreshToken = refreshToken;

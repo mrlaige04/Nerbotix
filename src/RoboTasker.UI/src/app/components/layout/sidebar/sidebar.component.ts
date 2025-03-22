@@ -12,6 +12,8 @@ import {PermissionsNames} from '../../../models/tenants/permissions/permissions-
 import {HasPermissionDirective} from '../../../utils/directives/has-permission.directive';
 import {JsonPipe} from '@angular/common';
 import {CurrentUserService} from '../../../services/user/current-user.service';
+import {RoleNames} from '../../../models/tenants/roles/roles-names';
+import {HasRoleDirective} from '../../../utils/directives/has-role.directive';
 
 @Component({
   selector: 'rb-sidebar',
@@ -23,7 +25,8 @@ import {CurrentUserService} from '../../../services/user/current-user.service';
     RouterLink,
     RouterLinkActive,
     HasPermissionDirective,
-    JsonPipe
+    JsonPipe,
+    HasRoleDirective
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
@@ -35,6 +38,7 @@ export class SidebarComponent extends BaseComponent implements OnInit {
 
   public sidebarOpened = this.layoutService.sidebarOpened;
   public isDesktop = this.layoutService.isDesktop;
+  public isSuperAdmin = this.authService.isSuperAdmin;
 
   constructor() {
     super();
@@ -101,6 +105,25 @@ export class SidebarComponent extends BaseComponent implements OnInit {
           routerLink: 'user/settings',
           icon: 'pi pi-cog',
           permission: PermissionsNames.TenantSettingsRead
+        },
+        {
+          label: 'Support',
+          routerLink: 'support',
+          icon: 'pi pi-info-circle'
+        }
+      ]
+    },
+  ];
+
+  superAdminMenu: RbMenuItem[] = [
+    {
+      label: 'Tenant Management',
+      items: [
+        {
+          label: 'Tenants',
+          routerLink: 'sa/tenants',
+          icon: 'pi pi-users',
+          role: RoleNames.SuperAdmin
         }
       ]
     }

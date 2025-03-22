@@ -38,6 +38,11 @@
         <td>
           <div class="actions flex gap-1">
             <p-button icon="pi pi-pencil" (onClick)="openEditTask(rowData.id)" *rbHasPermission="PermissionsNames.TasksUpdate"/>
+
+            @if (rowData.status === TaskStatus.Pending) {
+              <p-button icon="pi pi-sync" severity="info" (onClick)="reEnqueue(rowData.id)" *rbHasPermission="PermissionsNames.TasksUpdate"/>
+            }
+
             <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)" *rbHasPermission="PermissionsNames.TasksDelete"/>
           </div>
         </td>

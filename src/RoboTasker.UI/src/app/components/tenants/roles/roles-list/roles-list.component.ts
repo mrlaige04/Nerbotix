@@ -28,7 +28,7 @@ export class RolesListComponent extends BaseTableListComponent<RoleBase> impleme
     super();
     this.columns = [
       { label: 'Name', propName: 'name' },
-      { label: 'System', propName: 'isSystem' },
+      { label: 'System', propName: (role) => role.isSystem ? 'Yes' : 'No',  },
     ];
   }
 

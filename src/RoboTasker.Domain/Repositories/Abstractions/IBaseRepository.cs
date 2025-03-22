@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Storage;
 using RoboTasker.Domain.Abstractions;
 
 namespace RoboTasker.Domain.Repositories.Abstractions;
@@ -55,4 +56,6 @@ public interface IBaseRepository<T> where T : class, IEntity<Guid>
         CancellationToken cancellationToken = default);
     
     Task<IQueryable<T>> GetQuery(CancellationToken cancellationToken = default);
+    
+    Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
 }
