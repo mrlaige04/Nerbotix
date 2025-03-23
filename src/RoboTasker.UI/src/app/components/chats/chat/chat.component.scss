@@ -1,0 +1,41 @@
+@import '../../../styles/vars';
+
+::ng-deep.p-card-body {
+  height: 100% !important;
+
+  .p-card-content {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+  }
+}
+
+.messages-wrapper {
+  max-height: calc(100vh - $minContentHeight - 190px);
+  overflow-y: auto;
+}
+
+.msg-wrapper {
+  display: flex;
+
+  .msg {
+    max-width: 45%;
+    word-break: break-word;
+    background: var(--gray-600);
+
+    .time {
+      font-size: .75rem;
+      user-select: none;
+    }
+  }
+
+  &.yours {
+    justify-content: flex-end;
+
+    .msg {
+      background: var(--blue-600);
+    }
+  }
+}
+
+

@@ -46,4 +46,10 @@ export class PermissionsNames {
   public static readonly TenantSettingsCreate = "TenantSettings.Create";
   public static readonly TenantSettingsUpdate = "TenantSettings.Update";
   public static readonly TenantSettingsDelete = "TenantSettings.Delete";
+
+  public static readonly ChatGroup = "Chat";
+  public static readonly ChatRead = "Chat.Read";
+  public static readonly ChatCreate = "Chat.Create";
+  public static readonly ChatUpdate = "Chat.Update";
+  public static readonly ChatDelete = "Chat.Delete";
 }

@@ -1,0 +1,21 @@
+<div class="create-chat-wrapper">
+  <div class="name flex flex-column gap-1 w-full">
+    <label for="name">Name</label>
+    <input pInputText id="name" [(ngModel)]="name" type="text">
+  </div>
+
+  <div class="users mt-2 flex flex-column gap-1">
+    <label for="users">Users</label>
+    <p-multi-select [options]="availableUsers()"
+                    optionLabel="username"
+                    id="Users"
+                    [(ngModel)]="selectedUsers"
+                    styleClass="w-full"
+                    [filter]="null"
+                    appendTo="body"
+    />
+  </div>
+  <div class="actions mt-3 w-full">
+    <p-button [disabled]="selectedUsers().length === 0" type="submit" label="Submit" (onClick)="submit()"/>
+  </div>
+</div>

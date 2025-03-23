@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using RoboTasker.Domain.Abstractions;
+using RoboTasker.Domain.Chatting;
 
 namespace RoboTasker.Domain.Tenants;
 
@@ -25,5 +26,7 @@ public sealed class User : IdentityUser<Guid>, ITenantEntity<Guid>, IAuditableEn
     public Tenant Tenant { get; set; } = null!;
     public Guid TenantId { get; set; }
 
+    public IList<ChatUser> Chats { get; set; } = [];
+    
     public IList<UserRole> Roles { get; set; } = [];
 }

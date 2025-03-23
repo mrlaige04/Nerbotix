@@ -18,7 +18,6 @@ import {TenantsWrapperComponent} from './components/tenants/tenants-wrapper/tena
 import {ForbiddenComponent} from './components/layout/forbidden/forbidden.component';
 import {SaWrapperComponent} from './components/sa/sa-wrapper/sa-wrapper.component';
 import {isSuperAdminGuard} from './utils/guards/is-super-admin.guard';
-import {ChatsWrapperComponent} from './components/chats/chats-wrapper/chats-wrapper.component';
 
 export const routes: Routes = [
   {

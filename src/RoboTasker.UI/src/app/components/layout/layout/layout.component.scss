@@ -3,6 +3,10 @@
 }
 
 .layout-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 2.5rem);
+
   margin-left: 0;
   transition: margin-left var(--transition-duration);
   padding: 1.25rem 2rem;
@@ -22,3 +26,4 @@
     padding: 1.25rem .5rem 1rem .5rem;
   }
 }
+

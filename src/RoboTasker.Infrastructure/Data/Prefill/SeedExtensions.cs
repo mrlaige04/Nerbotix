@@ -70,7 +70,8 @@ public class AppDbContextSeeder(
             }
             
             var allPermissions = await permissionRepository.GetAllAsync(
-                p => p.TenantId == tenantId);
+                p => p.TenantId == tenantId,
+                q => q.Include(p => p.Group));
             var adminRole = new Role
             {
                 TenantId = tenantId,
@@ -83,11 +84,17 @@ public class AppDbContextSeeder(
             };
             await roleManager.CreateAsync(adminRole);
 
+            var chatPermissions = allPermissions
+                .Where(p => p.Group.Name == PermissionNames.ChatGroup);
             var userRole = new Role
             {
                 TenantId = tenantId,
                 Name = RoleNames.User,
                 IsSystem = true,
+                Permissions = chatPermissions.Select(p => new RolePermission
+                {
+                    Permission = p
+                }).ToList()
             };
             await roleManager.CreateAsync(userRole);
             

@@ -49,6 +49,12 @@ public class PermissionNames
     public const string TenantSettingsCreate = "TenantSettings.Create";
     public const string TenantSettingsUpdate = "TenantSettings.Update";
     public const string TenantSettingsDelete = "TenantSettings.Delete";
+    
+    public const string ChatGroup = "Chat";
+    public const string ChatRead = "Chat.Read";
+    public const string ChatCreate = "Chat.Create";
+    public const string ChatUpdate = "Chat.Update";
+    public const string ChatDelete = "Chat.Delete";
 
     public static Dictionary<string, string[]> GetAll()
     {
@@ -61,7 +67,8 @@ public class PermissionNames
             { UsersGroup, [UsersRead, UsersCreate, UsersUpdate, UsersDelete] },
             { RolesGroup, [RolesRead, RolesCreate, RolesUpdate, RolesDelete] },
             { PermissionsGroup, [PermissionsRead, PermissionsCreate, PermissionsUpdate, PermissionsDelete] },
-            { TenantSettingsGroup, [TenantSettingsRead, TenantSettingsCreate, TenantSettingsUpdate, TenantSettingsDelete] }
+            { TenantSettingsGroup, [TenantSettingsRead, TenantSettingsCreate, TenantSettingsUpdate, TenantSettingsDelete] },
+            { ChatGroup, [ChatRead, ChatCreate, ChatUpdate, ChatDelete] }
         };
     }
 }

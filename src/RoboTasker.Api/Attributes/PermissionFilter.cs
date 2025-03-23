@@ -11,7 +11,8 @@ namespace RoboTasker.Api.Attributes;
 public class PermissionFilter(
     ICurrentUser currentUser,
     ITenantRepository<User> userRepository,
-    string permission) : IAsyncAuthorizationFilter
+    PermissionCombining combining,
+    string[] permissions) : IAsyncAuthorizationFilter
 {
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
@@ -22,15 +23,17 @@ public class PermissionFilter(
             return;
         }
         
-        var permissions = await userRepository.GetWithSelectorAsync(
+        var userPermissions = await userRepository.GetWithSelectorAsync(
             u => u.Roles
                 .Select(r => r.Role)
                 .SelectMany(r => r.Permissions
                     .Select(p => p.Permission)),
-            u => u.Id == user);
-        
-        var hasPermission = permissions?.Any(p => p.Name == permission) ?? false;
+            u => u.Id == user) ?? [];
 
+        var hasPermission = combining == PermissionCombining.All ? 
+            permissions.All(p => userPermissions.Any(up => up.Name == p)) : 
+            permissions.Any(p => userPermissions.Any(u => u.Name == p));
+        
         if (!hasPermission)
         {
             context.Result = new ForbidResult();

@@ -1,5 +1,7 @@
 @use 'colors/colors';
 
+$minContentHeight: 126px;
+
 :root {
   --sidebar-width: 18rem;
 
@@ -11,4 +13,6 @@
   --border-radius-xl: 14px;
 
   --transition-duration: .2s;
+
+  --min-content-height: 126px;
 }

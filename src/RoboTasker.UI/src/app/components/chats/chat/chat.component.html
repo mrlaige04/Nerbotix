@@ -1,1 +1,58 @@
-<p>chat works!</p>
+<div class="chat-wrapper h-full">
+  <p-card styleClass="chat-card h-full">
+    <div class="header flex justify-content-between align-items-center">
+      <div class="chat flex gap-4 p-1 align-items-center">
+        <p-avatar icon="pi pi-user"/>
+        <div class="chat-info">
+          <h3 class="title">Test</h3>
+          <div class="active-users"></div>
+        </div>
+        <div class="active-users"></div>
+      </div>
+      <div class="actions">
+        <p-button icon="pi pi-ellipsis-v" text outlined rounded/>
+      </div>
+    </div>
+    <p-divider/>
+
+    <div #msgWrapper class="messages-wrapper flex-grow-1 flex flex-column">
+      <div class="messages p-2 h-full flex-grow-1">
+        @for (message of messages(); track message.id; let first = $first; let i = $index) {
+          @let isYours = currentUserId === message.senderId;
+          <p-context-menu #cm (onHide)="onCmHide()" [model]="cmItems"/>
+          @let prevMessage = first ? null : messages().at(i - 1);
+          @let showDate = calculateShowDayOfMessage(prevMessage, message);
+
+          @if (showDate) {
+            <div class="date-wrapper flex justify-content-center">
+              <div class="date text-center my-2 py-1 px-2 border-round-2xl bg-gray-800 w-max">
+                {{ message.updatedAt | date }}
+              </div>
+            </div>
+          }
+
+          <div class="msg-wrapper {{ !isYours || 'yours' }} {{ first || 'mt-3' }}">
+            <div class="msg w-fit p-3 py-2 border-round" (contextmenu)="onCmOpen(message, $event)">
+              <div class="text">
+                {{ message.message }}
+              </div>
+              <div class="time text-right text-gray-400 mt-1">
+                {{ message.updatedAt | date:'HH:mm' }}
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="footer">
+      <p-divider/>
+      <form [formGroup]="form">
+        <div class="input-wrapper flex gap-1">
+          <input (keydown.enter)="sendMessage()" formControlName="input" pInputText type="text" class="flex-grow-1" placeholder="Enter message">
+          <p-button (onClick)="sendMessage()" label="Send" icon="pi pi-send"/>
+        </div>
+      </form>
+    </div>
+  </p-card>
+</div>

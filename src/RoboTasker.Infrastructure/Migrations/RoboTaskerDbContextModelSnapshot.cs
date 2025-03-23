@@ -197,6 +197,94 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.ToTable("robots_capabilities", (string)null);
                 });
 
+            modelBuilder.Entity("RoboTasker.Domain.Chatting.Chat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("chats", (string)null);
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Chatting.ChatMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.ToTable("chat_messages", (string)null);
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Chatting.ChatUser", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("UserId", "ChatId");
+
+                    b.HasIndex("ChatId");
+
+                    b.ToTable("chats_users", (string)null);
+                });
+
             modelBuilder.Entity("RoboTasker.Domain.Robots.Robot", b =>
                 {
                     b.Property<Guid>("Id")
@@ -966,6 +1054,45 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Navigation("Robot");
                 });
 
+            modelBuilder.Entity("RoboTasker.Domain.Chatting.Chat", b =>
+                {
+                    b.HasOne("RoboTasker.Domain.Tenants.Tenant", null)
+                        .WithMany("Chats")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Chatting.ChatMessage", b =>
+                {
+                    b.HasOne("RoboTasker.Domain.Chatting.Chat", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Chatting.ChatUser", b =>
+                {
+                    b.HasOne("RoboTasker.Domain.Chatting.Chat", "Chat")
+                        .WithMany("Users")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RoboTasker.Domain.Tenants.User", "User")
+                        .WithMany("Chats")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RoboTasker.Domain.Robots.Robot", b =>
                 {
                     b.HasOne("RoboTasker.Domain.Robots.RobotCategory", "Category")
@@ -1186,6 +1313,13 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Navigation("Capabilities");
                 });
 
+            modelBuilder.Entity("RoboTasker.Domain.Chatting.Chat", b =>
+                {
+                    b.Navigation("Messages");
+
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("RoboTasker.Domain.Robots.Robot", b =>
                 {
                     b.Navigation("Capabilities");
@@ -1243,6 +1377,8 @@ namespace RoboTasker.Infrastructure.Migrations
 
             modelBuilder.Entity("RoboTasker.Domain.Tenants.Tenant", b =>
                 {
+                    b.Navigation("Chats");
+
                     b.Navigation("PermissionGroups");
 
                     b.Navigation("Roles");
@@ -1252,6 +1388,8 @@ namespace RoboTasker.Infrastructure.Migrations
 
             modelBuilder.Entity("RoboTasker.Domain.Tenants.User", b =>
                 {
+                    b.Navigation("Chats");
+
                     b.Navigation("Roles");
                 });
 #pragma warning restore 612, 618
