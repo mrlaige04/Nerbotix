@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using RoboTasker.Application.BackgroundJobs;
+using RoboTasker.Application.Chatting;
 using RoboTasker.Application.Common.Data;
 using RoboTasker.Application.Common.Emails;
 using RoboTasker.Application.Services;
@@ -23,6 +24,7 @@ using RoboTasker.Domain.Tenants;
 using RoboTasker.Infrastructure.Authentication;
 using RoboTasker.Infrastructure.Authentication.Providers;
 using RoboTasker.Infrastructure.Authentication.Services;
+using RoboTasker.Infrastructure.Chatting;
 using RoboTasker.Infrastructure.Data;
 using RoboTasker.Infrastructure.Data.Interceptors;
 using RoboTasker.Infrastructure.Data.Prefill;
@@ -40,6 +42,7 @@ public static class RegisterDependencies
         services.AddDatabase(configuration);
         services.AddEmailing(configuration);
         services.AddBackgroundJobs(configuration);
+        services.AddChatting(configuration);
     }
 
     private static void AddEmailing(this IServiceCollection services, IConfiguration configuration)
@@ -61,6 +64,12 @@ public static class RegisterDependencies
 
         services.AddScoped<IEmailSender, EmailSender>();
         services.AddScoped<TemplateService>();
+    }
+
+    private static void AddChatting(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddSignalR();
+        services.AddScoped<IChatService, ChatService>();
     }
     
     private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)

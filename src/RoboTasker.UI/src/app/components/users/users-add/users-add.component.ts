@@ -79,9 +79,11 @@ export class UsersAddComponent extends BaseComponent implements OnInit {
         this.notificationService.showError(`Error while creating user.`, errorMessage);
         return of(null);
       }),
-      tap(() => {
-        this.notificationService.showSuccess('OK', `User created`);
-        this.dialogRef.close(true);
+      tap((res) => {
+        if (res) {
+          this.notificationService.showSuccess('OK', `User created`);
+          this.dialogRef.close(true);
+        }
       }),
       takeUntilDestroyed(this.destroyRef),
       finalize(() => this.hideLoader())

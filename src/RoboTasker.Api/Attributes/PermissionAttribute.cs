@@ -4,10 +4,19 @@ namespace RoboTasker.Api.Attributes;
 
 public class PermissionAttribute : TypeFilterAttribute
 {
-    public string Permission { get; set; }
-    public PermissionAttribute(string permission) : base(typeof(PermissionFilter))
+    public string[] Permissions { get; set; }
+    public PermissionCombining Combining { get; set; }
+    public PermissionAttribute(PermissionCombining combining = PermissionCombining.All, params string[] permissions) 
+        : base(typeof(PermissionFilter))
     {
-        Permission = permission;
-        Arguments = [permission];
+        Permissions = permissions;
+        Combining = combining;
+        Arguments = [combining, permissions];
     }
+}
+
+public enum PermissionCombining
+{
+    AtLeastOne,
+    All
 }

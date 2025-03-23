@@ -3,6 +3,7 @@ using RoboTasker.Api;
 using RoboTasker.Api.Extensions;
 using RoboTasker.Application;
 using RoboTasker.Infrastructure;
+using RoboTasker.Infrastructure.Chatting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,8 @@ app.UseAuthorization();
 app.UseBackgroundJobsDashboard();
 
 app.MapControllers();
+
+app.MapHub<ChatHub>("/chat");
 
 app.MapGet("ping", () => "Hello World!");
 

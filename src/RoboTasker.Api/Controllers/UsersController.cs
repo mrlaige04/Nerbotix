@@ -16,14 +16,15 @@ namespace RoboTasker.Api.Controllers;
 [Route("[controller]"), Authorize]
 public class UsersController(IMediator mediator) : BaseController
 {
-    [HttpGet(""), Permission(PermissionNames.UsersRead)]
+    [HttpGet(""), Permission(PermissionCombining.AtLeastOne, 
+         PermissionNames.UsersRead, PermissionNames.ChatCreate)]
     public async Task<IActionResult> GetUsers([FromQuery] GetUsersQuery query)
     {
         var result = await mediator.Send(query);
         return result.Match(Ok, Problem);
     }
 
-    [HttpGet("{id:guid}"), Permission(PermissionNames.UsersRead)]
+    [HttpGet("{id:guid}"), Permission(permissions: PermissionNames.UsersRead)]
     public async Task<IActionResult> GetUserById(Guid id)
     {
         var query = new GetUserByIdQuery(id);
@@ -31,14 +32,14 @@ public class UsersController(IMediator mediator) : BaseController
         return result.Match(Ok, Problem);
     }
 
-    [HttpPost(""), Permission(PermissionNames.UsersCreate)]
+    [HttpPost(""), Permission(permissions: PermissionNames.UsersCreate)]
     public async Task<IActionResult> CreateUser(CreateUserCommand command)
     {
         var result = await mediator.Send(command);
         return result.Match(Ok, Problem);
     }
 
-    [HttpPut("{id:guid}"), Permission(PermissionNames.UsersUpdate)]
+    [HttpPut("{id:guid}"), Permission(permissions: PermissionNames.UsersUpdate)]
     public async Task<IActionResult> UpdateUser(Guid id, UpdateUserRequest request)
     {
         var command = request.Adapt<UpdateUserCommand>();
@@ -47,7 +48,7 @@ public class UsersController(IMediator mediator) : BaseController
         return result.Match(Ok, Problem);
     }
     
-    [HttpDelete("{id:guid}"), Permission(PermissionNames.UsersDelete)]
+    [HttpDelete("{id:guid}"), Permission(permissions: PermissionNames.UsersDelete)]
     public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
     {
         var command = new DeleteUserCommand(id);

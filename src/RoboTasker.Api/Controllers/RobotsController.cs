@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RoboTasker.Api.Attributes;
 using RoboTasker.Api.Models.Robots;
 using RoboTasker.Application.Robots.Robots.CreateRobot;
 using RoboTasker.Application.Robots.Robots.DeleteRobot;
