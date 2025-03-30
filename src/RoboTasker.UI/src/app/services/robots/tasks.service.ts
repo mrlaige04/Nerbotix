@@ -85,6 +85,10 @@ export class TasksService {
       formData.append('data', JSON.stringify(data.data));
     }
 
+    if (data.categoryId) {
+      formData.append('categoryId', data.categoryId.toString());
+    }
+
     if (data.files) {
       data.files.forEach(file => {
         formData.append('files', file, file.name);

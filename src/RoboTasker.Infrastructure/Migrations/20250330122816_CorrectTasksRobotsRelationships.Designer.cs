@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RoboTasker.Infrastructure.Data;
@@ -11,9 +12,11 @@ using RoboTasker.Infrastructure.Data;
 namespace RoboTasker.Infrastructure.Migrations
 {
     [DbContext(typeof(RoboTaskerDbContext))]
-    partial class RoboTaskerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250330122816_CorrectTasksRobotsRelationships")]
+    partial class CorrectTasksRobotsRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -335,9 +338,6 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool?>("LinearOptimizationMaximization")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -469,9 +469,6 @@ namespace RoboTasker.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<double>("Factor")
-                        .HasColumnType("double precision");
 
                     b.Property<string>("Name")
                         .IsRequired()

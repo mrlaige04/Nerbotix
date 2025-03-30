@@ -102,7 +102,7 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       items: [
         {
           label: 'Settings',
-          routerLink: 'user/settings',
+          routerLink: 'tenant/settings',
           icon: 'pi pi-cog',
           permission: PermissionsNames.TenantSettingsRead
         },

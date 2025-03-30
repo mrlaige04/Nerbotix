@@ -1,7 +1,6 @@
 export enum CategoryPropertyType {
   Boolean,
-  Integer,
+  Number,
   String,
-  Float,
   DateTime
 }

@@ -47,14 +47,11 @@
                             <label for="checkbox">{{prop?.name}} ({{CategoryPropertyType[type!]}})</label>
                           </div>
                         }
-                        @case (CategoryPropertyType.Integer) {
-                          <p-input-number inputId="integeronly" formControlName="value"/>
+                        @case (CategoryPropertyType.Number) {
+                          <p-input-number formControlName="value" mode="decimal" inputId="minmaxfraction" [minFractionDigits]="2"/>
                         }
                         @case (CategoryPropertyType.String) {
                           <textarea pTextarea formControlName="value" rows="5"></textarea>
-                        }
-                        @case (CategoryPropertyType.Float) {
-                          <p-input-number formControlName="value" mode="decimal" inputId="minmaxfraction" [minFractionDigits]="2"/>
                         }
                         @case (CategoryPropertyType.DateTime) {
                           <p-date-picker formControlName="value"/>

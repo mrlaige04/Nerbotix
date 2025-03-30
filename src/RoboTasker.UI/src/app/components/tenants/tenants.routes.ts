@@ -9,6 +9,10 @@ import {hasPermissionGuard} from '../../utils/guards/has-permission.guard';
 import {PermissionsNames} from '../../models/tenants/permissions/permissions-names';
 import {UsersListComponent} from '../users/users-list/users-list.component';
 import {UserEditComponent} from '../users/user-edit/user-edit.component';
+import {TenantSettingsWrapperComponent} from './tenant-settings-wrapper/tenant-settings-wrapper.component';
+import {
+  LinearOptimizationSettingsComponent
+} from './settings/algorithms/linear-optimization-settings/linear-optimization-settings.component';
 
 export const TENANTS_ROUTES: Routes = [
   {
@@ -111,6 +115,25 @@ export const TENANTS_ROUTES: Routes = [
           permission: PermissionsNames.UsersUpdate
         }
       },
+    ]
+  },
+  {
+    path: 'settings',
+    canActivate: [hasPermissionGuard],
+    data: {
+      permission: PermissionsNames.TenantSettingsRead
+    },
+    component: TenantSettingsWrapperComponent,
+    children: [
+      {
+        path: 'algorithms',
+        children: [
+          {
+            path: 'linear-optimization',
+            component: LinearOptimizationSettingsComponent
+          }
+        ]
+      }
     ]
   }
 ];

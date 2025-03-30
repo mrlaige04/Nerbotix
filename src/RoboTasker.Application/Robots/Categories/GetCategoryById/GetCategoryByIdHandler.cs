@@ -18,12 +18,14 @@ public class GetCategoryByIdHandler(
                 Id = c.Id,
                 Name = c.Name,
                 TenantId = c.TenantId,
+                IsMaximization = c.LinearOptimizationMaximization == true,
                 Properties = c.Properties
                     .Select(p => new CategoryPropertyResponse
                     {
                         Id = p.Id,
                         Name = p.Name,
                         Type = p.Type,
+                        Factor = p.Factor,
                         CreatedAt = p.CreatedAt,
                         UpdatedAt = p.UpdatedAt,
                     }).ToList(),

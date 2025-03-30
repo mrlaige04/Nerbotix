@@ -1,0 +1,39 @@
+<div class="tenant-settings-wrapper flex flex-column lg:flex-row gap-1">
+  <div class="left-navigation border-bottom-1 lg:border-bottom-none border-gray-700">
+    @for (menu of menus; track menu) {
+      @let isExpandable = menu.children && menu.children.length > 0;
+      <div class="menu" [routerLink]="menu.routerLink" routerLinkActive="routerLinkActive">
+        <div class="menu-item p-2 border-round hover:bg-gray-700 gap-2 cursor-pointer
+                    flex align-items-center justify-content-between" (click)="toggleExpansion(menu)">
+          <div class="menu-item-main flex gap-2 align-items-center">
+            @if (menu.icon) {
+              <i [class]="menu.icon"></i>
+            }
+            <span class="menu-label">{{ menu.label }}</span>
+          </div>
+          @if (isExpandable) {
+            @let isExpanded = menu.expanded;
+            <i class="pi pi-chevron-{{ isExpanded ? 'up' : 'down' }}"></i>
+          }
+        </div>
+
+        @if (isExpandable && menu.expanded) {
+          @for (submenu of menu.children; track submenu) {
+            <div class="submenu cursor-pointer hover:bg-gray-700 border-round p-2 pl-3"
+                 [routerLink]="submenu.routerLink">
+              <div class="submenu-item flex gap-2 align-items-center">
+                @if (menu.icon) {
+                  <i [class]="submenu.icon"></i>
+                }
+                <span class="submenu-label">{{ submenu.label }}</span>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    }
+  </div>
+  <div class="settings-wrapper p-2 px-3">
+    <router-outlet/>
+  </div>
+</div>

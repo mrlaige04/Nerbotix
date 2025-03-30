@@ -1,8 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Mail;
-using System.Security.Claims;
-using System.Text;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,8 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using RoboTasker.Application.Algorithms;
 using RoboTasker.Application.BackgroundJobs;
 using RoboTasker.Application.Chatting;
@@ -23,7 +19,9 @@ using RoboTasker.Domain.Algorithms;
 using RoboTasker.Domain.Repositories;
 using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Tenants;
-using RoboTasker.Infrastructure.Algorithms;
+using RoboTasker.Infrastructure.Algorithms.Classical;
+using RoboTasker.Infrastructure.Algorithms.Heuristic;
+using RoboTasker.Infrastructure.Algorithms.MathBased;
 using RoboTasker.Infrastructure.Authentication;
 using RoboTasker.Infrastructure.Authentication.Providers;
 using RoboTasker.Infrastructure.Authentication.Services;
@@ -51,7 +49,25 @@ public static class RegisterDependencies
 
     private static void AddTaskDistribution(this IServiceCollection services, IConfiguration configuration)
     {
+        // Classical algorithms
         services.AddKeyedScoped<ITaskDistributionAlgorithm, LoadBalancingTaskDistributionAlgorithm>(AlgorithmNames.LoadBalancing);
+        services.AddKeyedScoped<ITaskDistributionAlgorithm, LatestTaskFinishedTaskDistributionAlgorithm>(AlgorithmNames.LatestTaskFinished);
+        services.AddKeyedScoped<ITaskDistributionAlgorithm, RoundRobinTaskDistributionAlgorithm>(AlgorithmNames.RoundRobin);
+        services.AddKeyedScoped<ITaskDistributionAlgorithm, LeastConnectionsTaskDistributionAlgorithm>(AlgorithmNames.LeastConnections);
+        services.AddKeyedScoped<ITaskDistributionAlgorithm, RandomTaskDistributionAlgorithm>(AlgorithmNames.Random);
+        
+        // Math-based
+        services.AddKeyedScoped<ITaskDistributionAlgorithm, LinearOptimizationTaskDistributionAlgorithm>(AlgorithmNames.LinearOptimization);
+        services.AddKeyedScoped<ITaskDistributionAlgorithm, FuzzyLogicTaskDistributionAlgorithm>(AlgorithmNames.FuzzyLogic);
+        services.AddKeyedScoped<ITaskDistributionAlgorithm, AssignmentProblemTaskDistributionAlgorithm>(AlgorithmNames.AssignmentProblem);
+        
+        // Heuristic
+        services.AddKeyedScoped<ITaskDistributionAlgorithm, GeneticTaskDistributionAlgorithm>(AlgorithmNames.GeneticTask);
+        services.AddKeyedScoped<ITaskDistributionAlgorithm, AntColonyTaskDistributionAlgorithm>(AlgorithmNames.AntColony);
+        services.AddKeyedScoped<ITaskDistributionAlgorithm, SimulatedAnnealingTaskDistributionAlgorithm>(AlgorithmNames.SimulatedAnnealing);
+        
+        // AI-based
+        
     }
 
     private static void AddEmailing(this IServiceCollection services, IConfiguration configuration)
