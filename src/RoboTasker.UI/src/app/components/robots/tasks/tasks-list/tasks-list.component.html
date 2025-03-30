@@ -39,7 +39,7 @@
           <div class="actions flex gap-1">
             <p-button icon="pi pi-pencil" (onClick)="openEditTask(rowData.id)" *rbHasPermission="PermissionsNames.TasksUpdate"/>
 
-            @if (rowData.status === TaskStatus.Pending) {
+            @if (rowData.status === TaskStatus.Pending || rowData.status === TaskStatus.WaitingForEnqueue) {
               <p-button icon="pi pi-sync" severity="info" (onClick)="reEnqueue(rowData.id)" *rbHasPermission="PermissionsNames.TasksUpdate"/>
             }
 

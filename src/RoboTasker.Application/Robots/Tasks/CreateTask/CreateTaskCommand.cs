@@ -14,12 +14,16 @@ public class CreateTaskCommand : ITenantCommand<TaskBaseResponse>
     public int Priority { get; set; }
     public double Complexity { get; set; }
 
+    public Guid CategoryId { get; set; } 
+
     public IList<CreateTaskRequirementCommand>? Requirements { get; set; }
     
     public IList<CreateTaskDataCommand>? Data { get; set; }
     
     public IFormFileCollection? Files { get; set; }
 }
+
+public record CategoryId(Guid Id);
 
 public class CreateTaskRequirementCommand
 {

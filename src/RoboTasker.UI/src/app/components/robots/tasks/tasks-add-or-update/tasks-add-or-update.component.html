@@ -31,6 +31,14 @@
                     <label for="description">Description</label>
                     <textarea pTextarea formControlName="description" id="description" rows="3" autoResize></textarea>
                   </div>
+                  <div class="category flex flex-column gap-1 mt-1">
+                    <label for="category">Category</label>
+                    <p-select [options]="categories()"
+                              optionValue="id"
+                              optionLabel="name"
+                              id="category"
+                              formControlName="categoryId"/>
+                  </div>
                 </div>
               </div>
               <div class="other-info mt-2">

@@ -71,6 +71,7 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
   form = this.fb.group({
     name: this.fb.control('', [Validators.required, Validators.maxLength(50)]),
     description: this.fb.control(''),
+    categoryId: this.fb.control('', [Validators.required]),
     priority: this.fb.control(0, [Validators.required, Validators.min(1), Validators.max(10)]),
     complexity: this.fb.control(0, [Validators.required, Validators.min(1), Validators.max(5)]),
     estimatedDuration: this.fb.control('000:00', [Validators.required, CustomValidators.Duration()]),
@@ -136,6 +137,20 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
 
     if (isEdit) this.loadData();
     else this.getCapabilities();
+
+    this.loadCategories();
+  }
+
+  private loadCategories() {
+    this.categoriesService.getCategories({
+      pageNumber: 1,
+      pageSize: 99999
+    }).pipe(
+      tap((categories) => {
+        this.categories.set(categories.items);
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe();
   }
 
   private loadData() {
@@ -362,6 +377,7 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
     const request: CreateTaskRequest = {
       description: formValue.description,
       name: formValue.name,
+      categoryId: Guid.parse(formValue.categoryId!),
       priority: formValue.priority,
       complexity: formValue.complexity,
       estimatedDuration: DateHelper.NormalizeDuration(formValue.estimatedDuration!),

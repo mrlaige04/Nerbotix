@@ -6,6 +6,7 @@ using RoboTasker.Application.Common.Abstractions;
 using RoboTasker.Application.Common.Errors.Robots;
 using RoboTasker.Domain.Capabilities;
 using RoboTasker.Domain.Repositories.Abstractions;
+using RoboTasker.Domain.Robots;
 using RoboTasker.Domain.Services;
 using RoboTasker.Domain.Tasks;
 using RoboTasker.Domain.Tasks.Data;
@@ -15,6 +16,7 @@ namespace RoboTasker.Application.Robots.Tasks.UpdateTask;
 public class UpdateTaskHandler(
     ICurrentUser currentUser,
     ITenantRepository<RobotTask> taskRepository,
+    ITenantRepository<RobotCategory> robotCategoryRepository,
     ITenantRepository<Capability> capabilityRepository) : ICommandHandler<UpdateTaskCommand, TaskBaseResponse>
 {
     public async Task<ErrorOr<TaskBaseResponse>> Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
@@ -32,6 +34,19 @@ public class UpdateTaskHandler(
             return Error.NotFound(TaskErrors.NotFound, TaskErrors.NotFoundDescription);
         }
 
+        if (request.CategoryId.HasValue)
+        {
+            var category = await robotCategoryRepository.GetAsync(
+                c => c.Id == request.CategoryId,
+                cancellationToken: cancellationToken);
+
+            if (category == null)
+            {
+                return Error.NotFound(CategoryErrors.NotFound, CategoryErrors.NotFoundDescription);
+            }
+            
+            task.Category = category;
+        }
 
         if (!string.IsNullOrEmpty(request.Name))
         {
