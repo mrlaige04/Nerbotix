@@ -1,0 +1,11 @@
+<div class="load-balancing-settings-wrapper">
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="complexityFactor flex flex-column gap-1">
+      <label for="factor">Complexity Factor</label>
+      <p-inputNumber id="factor" formControlName="complexityFactor" inputId="mimaxfraction" mode="decimal" [maxFractionDigits]="2"/>
+    </div>
+    <div class="actions mt-2">
+      <p-button type="submit" label="Submit"/>
+    </div>
+  </form>
+</div>

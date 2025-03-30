@@ -1,5 +1,6 @@
 ﻿using RoboTasker.Domain.Abstractions;
 using RoboTasker.Domain.Chatting;
+using RoboTasker.Domain.Tenants.Settings;
 
 namespace RoboTasker.Domain.Tenants;
 
@@ -11,4 +12,6 @@ public class Tenant : BaseEntity
     public IList<Role> Roles { get; set; } = [];
     public IList<PermissionGroup> PermissionGroups { get; set; } = [];
     public IList<Chat> Chats { get; set; } = [];
+    
+    public TenantSettings Settings { get; set; } = null!;
 }

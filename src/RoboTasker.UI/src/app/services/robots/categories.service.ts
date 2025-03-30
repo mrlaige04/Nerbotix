@@ -9,9 +9,6 @@ import {Success} from '../../models/success';
 import {Guid} from 'guid-typescript';
 import {CategoryBase} from '../../models/robots/categories/category-base';
 import {UpdateCategoryRequest} from '../../models/robots/categories/requests/update-category-request';
-import {
-  UpdateCategoryLinearOptimizationParamsRequest
-} from '../../models/robots/categories/requests/update-category-linearopt-params-request';
 
 @Injectable({
   providedIn: 'root'
@@ -43,10 +40,5 @@ export class CategoriesService {
   deleteCategory(id: Guid) : Observable<Success> {
     const url = `${this.baseUrl}/${id}`;
     return this.base.delete<Success>(url);
-  }
-
-  updateLinearOptimizationAlgoParams(id: Guid, data: UpdateCategoryLinearOptimizationParamsRequest): Observable<Success> {
-    const url = `${this.baseUrl}/${id}/algorithms/linear-optimization`;
-    return this.base.put<UpdateCategoryLinearOptimizationParamsRequest, Success>(url, data);
   }
 }

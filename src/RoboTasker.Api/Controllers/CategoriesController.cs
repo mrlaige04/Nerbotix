@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RoboTasker.Api.Models.Categories;
-using RoboTasker.Application.Algorithms.LinearOptimization.UpdateCategoryLinearParams;
 using RoboTasker.Application.Robots.Categories.CreateCategory;
 using RoboTasker.Application.Robots.Categories.DeleteCategory;
 using RoboTasker.Application.Robots.Categories.GetCategories;
@@ -51,17 +50,6 @@ public class CategoriesController(IMediator mediator) : BaseController
         var command = request.Adapt<UpdateCategoryCommand>();
         command.Id = id;
         
-        var result = await mediator.Send(command);
-        return result.Match(Ok, Problem);
-    }
-    
-    
-    // Algorithms specific endpoints
-    
-    [HttpPut("{id:guid}/algorithms/linear-optimization")]
-    public async Task<IActionResult> LinearOptimization(Guid id, UpdateCategoryLinearOptimizationParamsCommand command)
-    {
-        command.CategoryId = id;
         var result = await mediator.Send(command);
         return result.Match(Ok, Problem);
     }

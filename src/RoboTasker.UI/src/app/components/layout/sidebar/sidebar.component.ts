@@ -98,7 +98,7 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       ]
     },
     {
-      label: 'Settings',
+      label: 'Others',
       items: [
         {
           label: 'Settings',

@@ -1,26 +1,41 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RoboTasker.Application.Algorithms;
+using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Robots;
 using RoboTasker.Domain.Tasks;
+using RoboTasker.Domain.Tenants.Settings;
 
 namespace RoboTasker.Infrastructure.Algorithms.Heuristic;
 
-public class GeneticTaskDistributionAlgorithm : ITaskDistributionAlgorithm
+public class GeneticTaskDistributionAlgorithm(ITenantRepository<TenantSettings> settingsRepository) : ITaskDistributionAlgorithm
 {
-    private const int PopulationSize = 10;
-    private const int Generations = 50;
-    private const double MutationRate = 0.1;
+    private int PopulationSize { get; set; }
+    private int Generations { get; set; }
+    private double MutationRate { get; set; }
     
     public async Task<Robot?> FindRobot(RobotTask task, IQueryable<Robot> robots)
     {
+        var settings = await settingsRepository.GetAsync(
+            t => t.TenantId == task.TenantId);
+
+        if (settings == null)
+        {
+            return null;
+        }
+
+        var geneticSettings = settings.GeneticAlgorithmSettings;
+        PopulationSize = geneticSettings.PopulationSize;
+        Generations = geneticSettings.Generations;
+        MutationRate = geneticSettings.MutationRate;
+        
         var allRobots = await robots.ToListAsync();
 
         var population = InitializePopulation(allRobots);
 
-        for (var gen = 0; gen < Generations; gen++)
+        for (var gen = 0; gen < geneticSettings.Generations; gen++)
         {
             var fitnessScores = population
-                .Select(r => (robot: r, score: EvaluateFitness(r, task)))
+                .Select(r => (robot: r, score: EvaluateFitness(r)))
                 .ToList();
             
             var selected = fitnessScores
@@ -29,22 +44,22 @@ public class GeneticTaskDistributionAlgorithm : ITaskDistributionAlgorithm
                 .Select(x => x.robot)
                 .ToList();
 
-            var offspring = Crossover(selected, allRobots);
+            var offspring = Crossover(selected);
             
             Mutate(offspring, allRobots);
             
             population = selected.Concat(offspring).ToList();
         }
         
-        return population.OrderByDescending(r => EvaluateFitness(r, task)).FirstOrDefault();
+        return population.OrderByDescending(r => EvaluateFitness(r)).FirstOrDefault();
     }
     
-    private static List<Robot> InitializePopulation(List<Robot> allRobots)
+    private List<Robot> InitializePopulation(List<Robot> allRobots)
     {
         return allRobots.OrderBy(_ => Guid.NewGuid()).Take(PopulationSize).ToList();
     }
     
-    private static double EvaluateFitness(Robot robot, RobotTask task)
+    private static double EvaluateFitness(Robot robot)
     {
         double score = 0;
         
@@ -62,7 +77,7 @@ public class GeneticTaskDistributionAlgorithm : ITaskDistributionAlgorithm
         return score;
     }
 
-    private static List<Robot> Crossover(List<Robot> selected, List<Robot> allRobots)
+    private List<Robot> Crossover(List<Robot> selected)
     {
         var offspring = new List<Robot>();
         var rnd = new Random();
@@ -92,7 +107,7 @@ public class GeneticTaskDistributionAlgorithm : ITaskDistributionAlgorithm
         return offspring;
     }
     
-    private static void Mutate(List<Robot> offspring, List<Robot> allRobots)
+    private void Mutate(List<Robot> offspring, List<Robot> allRobots)
     {
         var rnd = new Random();
         for (var i = 0; i < offspring.Count; i++)

@@ -9,6 +9,7 @@ using RoboTasker.Domain.Consts;
 using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Services;
 using RoboTasker.Domain.Tenants;
+using RoboTasker.Domain.Tenants.Settings;
 
 namespace RoboTasker.Application.SuperAdmin.Tenants.CreateTenant;
 
@@ -35,10 +36,17 @@ public class CreateTenantHandler(
             return Error.Conflict(TenantErrors.Conflict, "User with the same email already exists.");
         }
 
+        var tenantId = Guid.NewGuid();
+        currentUser.SetTenantId(tenantId);
         var tenant = new Tenant
         {
+            Id = tenantId,
             Name = request.Name,
             Email = request.Email,
+            Settings = new TenantSettings
+            {
+                TenantId = tenantId,
+            }
         };
         
         var createdTenant = await tenantRepository.AddAsync(tenant, cancellationToken);

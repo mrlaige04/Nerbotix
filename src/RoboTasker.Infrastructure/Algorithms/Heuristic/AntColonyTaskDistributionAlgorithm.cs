@@ -1,20 +1,37 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RoboTasker.Application.Algorithms;
+using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Robots;
 using RoboTasker.Domain.Tasks;
+using RoboTasker.Domain.Tenants.Settings;
 
 namespace RoboTasker.Infrastructure.Algorithms.Heuristic;
 
-public class AntColonyTaskDistributionAlgorithm : ITaskDistributionAlgorithm
+public class AntColonyTaskDistributionAlgorithm(ITenantRepository<TenantSettings> settingsRepository) : ITaskDistributionAlgorithm
 {
-    private const int AntCount = 20;
-    private const int Iterations = 50;
-    private const double Evaporation = 0.5;
-    private const double Alpha = 1.0;
-    private const double Beta = 2.0;
+    private int AntCount { get; set; }
+    private int Iterations { get; set; }
+    private double Evaporation { get; set; }
+    private double Alpha { get; set; }
+    private double Beta { get; set; }
     
     public async Task<Robot?> FindRobot(RobotTask task, IQueryable<Robot> robots)
     {
+        var settings = await settingsRepository.GetAsync(
+            t => t.TenantId == task.TenantId);
+
+        if (settings == null)
+        {
+            return null;
+        }
+
+        var antSettings = settings.AntColonyAlgorithmSettings;
+        AntCount = antSettings.AntCount;
+        Iterations = antSettings.Iterations;
+        Evaporation = antSettings.Evaporation;
+        Alpha = antSettings.Alpha;
+        Beta = antSettings.Beta;
+        
         var allRobots = await robots.ToListAsync();
 
         var pheromones = allRobots.ToDictionary(r => r, _ => 1.0);
@@ -38,7 +55,7 @@ public class AntColonyTaskDistributionAlgorithm : ITaskDistributionAlgorithm
         return pheromones.OrderByDescending(x => x.Value).FirstOrDefault().Key;
     }
     
-    private static Robot? SelectRobot(List<Robot> robots, Dictionary<Robot, double> pheromones, RobotTask task)
+    private Robot? SelectRobot(List<Robot> robots, Dictionary<Robot, double> pheromones, RobotTask task)
     {
         var probabilities = new Dictionary<Robot, double>();
         double sum = 0;
@@ -83,11 +100,11 @@ public class AntColonyTaskDistributionAlgorithm : ITaskDistributionAlgorithm
         return Math.Max(score, 0.1);
     }
 
-    private static void UpdatePheromones(Dictionary<Robot, double> pheromones, List<Robot> antPaths)
+    private void UpdatePheromones(Dictionary<Robot, double> pheromones, List<Robot> antPaths)
     {
         foreach (var robot in pheromones.Keys.ToList())
         {
-            pheromones[robot] *= (1 - Evaporation);
+            pheromones[robot] *= 1 - Evaporation;
         }
 
         foreach (var robot in antPaths)

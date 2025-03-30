@@ -15,6 +15,7 @@ import {Button} from 'primeng/button';
 import {
   UpdateCategoryLinearOptimizationParamsRequest, UpdateCategoryLinearOptimizationPropertyFactor
 } from '../../../../../models/robots/categories/requests/update-category-linearopt-params-request';
+import {TenantSettingsService} from '../../../../../services/tenants/tenant-settings.service';
 
 @Component({
   selector: 'rb-linear-optimization-settings',
@@ -29,6 +30,7 @@ import {
 })
 export class LinearOptimizationSettingsComponent extends BaseComponent implements OnInit {
   private categoriesService = inject(CategoriesService);
+  private tenantSettingsService = inject(TenantSettingsService);
   private destroyRef = inject(DestroyRef);
   private fb = inject(FormBuilder);
 
@@ -109,11 +111,12 @@ export class LinearOptimizationSettingsComponent extends BaseComponent implement
     const formValue = this.form.value;
     const request: UpdateCategoryLinearOptimizationParamsRequest = {
       isMaximization: formValue.isMaximization === true,
+      categoryId: this.categoryId()!,
       updateCategoryLinearParamsList: formValue.properties as UpdateCategoryLinearOptimizationPropertyFactor[]
     };
 
     this.showLoader();
-    this.categoriesService.updateLinearOptimizationAlgoParams(this.categoryId()!, request).pipe(
+    this.tenantSettingsService.updateLinearOptimizationAlgoParams(request).pipe(
       catchError((error: HttpErrorResponse) => {
         const detail = error.error.detail;
         this.notificationService.showError('Error while loading properties', detail);
@@ -122,7 +125,7 @@ export class LinearOptimizationSettingsComponent extends BaseComponent implement
       tap((success) => {
         if (success) {
           this.notificationService.showSuccess('OK', `Params were updated.`);
-          this.router.navigate(['tenant/settings']);
+          this.router.navigate(['tenant', 'settings', 'algorithms']);
         }
       }),
       takeUntilDestroyed(this.destroyRef),

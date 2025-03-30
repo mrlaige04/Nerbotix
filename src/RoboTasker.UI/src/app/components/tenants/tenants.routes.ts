@@ -13,6 +13,9 @@ import {TenantSettingsWrapperComponent} from './tenant-settings-wrapper/tenant-s
 import {
   LinearOptimizationSettingsComponent
 } from './settings/algorithms/linear-optimization-settings/linear-optimization-settings.component';
+import {
+  AlgorithmsSettingsWrapperComponent
+} from './settings/algorithms-settings-wrapper/algorithms-settings-wrapper.component';
 
 export const TENANTS_ROUTES: Routes = [
   {
@@ -127,12 +130,7 @@ export const TENANTS_ROUTES: Routes = [
     children: [
       {
         path: 'algorithms',
-        children: [
-          {
-            path: 'linear-optimization',
-            component: LinearOptimizationSettingsComponent
-          }
-        ]
+        component: AlgorithmsSettingsWrapperComponent
       }
     ]
   }

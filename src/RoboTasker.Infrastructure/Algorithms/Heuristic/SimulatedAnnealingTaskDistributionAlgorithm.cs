@@ -1,19 +1,36 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RoboTasker.Application.Algorithms;
+using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Robots;
 using RoboTasker.Domain.Tasks;
+using RoboTasker.Domain.Tenants.Settings;
 
 namespace RoboTasker.Infrastructure.Algorithms.Heuristic;
 
-public class SimulatedAnnealingTaskDistributionAlgorithm : ITaskDistributionAlgorithm
+public class SimulatedAnnealingTaskDistributionAlgorithm(
+    ITenantRepository<TenantSettings> settingsRepository) : ITaskDistributionAlgorithm
 {
-    private const double InitialTemperature = 1000.0;
-    private const double CoolingRate = 0.95;
-    private const int IterationsPerTemp = 10;
-    private const double MinTemperature = 0.1;
+    private double InitialTemperature { get; set; }
+    private double CoolingRate { get; set; }
+    private int IterationsPerTemp { get; set; }
+    private double MinTemperature { get; set; }
     
     public async Task<Robot?> FindRobot(RobotTask task, IQueryable<Robot> robots)
     {
+        var settings = await settingsRepository.GetAsync(
+            t => t.TenantId == task.TenantId);
+
+        if (settings == null)
+        {
+            return null;
+        }
+
+        var annealingSettings = settings.SimulatedAnnealingAlgorithmSettings;
+        InitialTemperature = annealingSettings.InitialTemperature;
+        CoolingRate = annealingSettings.CoolingRate;
+        IterationsPerTemp = annealingSettings.IterationsPerTemp;
+        MinTemperature = annealingSettings.MinTemperature;
+        
         var allRobots = await robots.ToListAsync();
         
         var random = new Random();

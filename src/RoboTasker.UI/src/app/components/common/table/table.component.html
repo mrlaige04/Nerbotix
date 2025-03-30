@@ -26,6 +26,7 @@
 
   <div class="data-wrapper">
     <p-table [value]="data()"
+             showGridlines
              [(selection)]="selectedItems"
              (selectionChange)="onSelectionChange($event)"
              [dataKey]="dataKey()"

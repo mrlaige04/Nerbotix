@@ -5,12 +5,12 @@ using RoboTasker.Application.Common.Errors.Robots;
 using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Robots;
 
-namespace RoboTasker.Application.Algorithms.LinearOptimization.UpdateCategoryLinearParams;
+namespace RoboTasker.Application.Algorithms.Settings.LinearOptimization;
 
-public class UpdateCategoryLinearOptimizationParamsHandler(
-    ITenantRepository<RobotCategory> categoryRepository) : ICommandHandler<UpdateCategoryLinearOptimizationParamsCommand>
+public class UpdateLinearOptimizationSettingsHandler(
+    ITenantRepository<RobotCategory> categoryRepository) : ICommandHandler<UpdateLinearOptimizationSettingsCommand>
 {
-    public async Task<ErrorOr<Success>> Handle(UpdateCategoryLinearOptimizationParamsCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Success>> Handle(UpdateLinearOptimizationSettingsCommand request, CancellationToken cancellationToken)
     {
         var category = await categoryRepository.GetAsync(
             c => c.Id == request.CategoryId,
