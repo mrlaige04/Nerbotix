@@ -20,6 +20,7 @@ public class GetRobotsHandler(
                 Id = r.Id,
                 Name = r.Name,
                 TenantId = r.TenantId,
+                Status = r.Status,
                 Location = new RobotLocationResponse()
                 {
                     Latitude = r.Location.Latitude,

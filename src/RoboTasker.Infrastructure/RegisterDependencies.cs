@@ -13,14 +13,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using RoboTasker.Application.Algorithms;
 using RoboTasker.Application.BackgroundJobs;
 using RoboTasker.Application.Chatting;
 using RoboTasker.Application.Common.Data;
 using RoboTasker.Application.Common.Emails;
 using RoboTasker.Application.Services;
+using RoboTasker.Domain.Algorithms;
 using RoboTasker.Domain.Repositories;
 using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Tenants;
+using RoboTasker.Infrastructure.Algorithms;
 using RoboTasker.Infrastructure.Authentication;
 using RoboTasker.Infrastructure.Authentication.Providers;
 using RoboTasker.Infrastructure.Authentication.Services;
@@ -38,11 +41,17 @@ public static class RegisterDependencies
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddTaskDistribution(configuration);
         services.AddAppAuthentication(configuration);
         services.AddDatabase(configuration);
         services.AddEmailing(configuration);
         services.AddBackgroundJobs(configuration);
         services.AddChatting(configuration);
+    }
+
+    private static void AddTaskDistribution(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddKeyedScoped<ITaskDistributionAlgorithm, LoadBalancingTaskDistributionAlgorithm>(AlgorithmNames.LoadBalancing);
     }
 
     private static void AddEmailing(this IServiceCollection services, IConfiguration configuration)

@@ -12,6 +12,7 @@ public class UpdateTaskRequest
     public int? Priority { get; set; }
     public double? Complexity { get; set; }
     public TimeSpan? EstimatedDuration { get; set; }
+    public Guid? CategoryId { get; set; }
     
     [FromForm(Name = "requirements")]
     public string? RequirementsJson { get; set; } 

@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Http;
 using RoboTasker.Application.BackgroundJobs;
 using RoboTasker.Application.Common.Abstractions;
 using RoboTasker.Application.Common.Errors;
+using RoboTasker.Application.Common.Errors.Robots;
 using RoboTasker.Domain.Capabilities;
 using RoboTasker.Domain.Repositories.Abstractions;
+using RoboTasker.Domain.Robots;
 using RoboTasker.Domain.Services;
 using RoboTasker.Domain.Tasks;
 using RoboTasker.Domain.Tasks.Data;
@@ -17,6 +19,7 @@ public class CreateTaskHandler(
     ICurrentUser currentUser,
     IJobsService jobsService,
     IBaseRepository<Tenant> tenantRepository,
+    ITenantRepository<RobotCategory> categoryRepository,
     ITenantRepository<Capability> capabilityRepository,
     ITenantRepository<RobotTask> taskRepository) : ICommandHandler<CreateTaskCommand, TaskBaseResponse>
 {
@@ -36,6 +39,17 @@ public class CreateTaskHandler(
             Priority = request.Priority,
             Complexity = request.Complexity
         };
+        
+        var category = await categoryRepository.GetAsync(
+            c => c.Id == request.CategoryId,
+            cancellationToken: cancellationToken);
+
+        if (category == null)
+        {
+            return Error.NotFound(CategoryErrors.NotFound, CategoryErrors.NotFoundDescription);
+        }
+        
+        task.Category = category;
         
         foreach (var requirement in request.Requirements ?? [])
         {

@@ -7,6 +7,7 @@ export interface CreateTaskRequest {
   description?: string;
   estimatedDuration: string;
   priority: number;
+  categoryId: Guid;
   complexity: number;
   requirements?: CreateTaskRequirementRequest[];
   data?: CreateTaskDataRequest[];

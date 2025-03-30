@@ -19,6 +19,9 @@ public class RobotTask : TenantEntity
     public int Priority { get; set; }
     public double Complexity { get; set; }
 
+    public RobotCategory Category { get; set; } = null!;
+    public Guid CategoryId { get; set; }
+
     public IList<RobotTaskData> TaskData { get; set; } = [];
     public IList<RobotTaskRequirement> Requirements { get; set; } = [];
     public RobotTaskFiles? Archive { get; set; }

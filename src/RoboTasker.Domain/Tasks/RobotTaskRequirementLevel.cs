@@ -3,6 +3,5 @@
 public enum RobotTaskRequirementLevel
 {
     Mandatory,
-    Preferred,
     Optional,
 }

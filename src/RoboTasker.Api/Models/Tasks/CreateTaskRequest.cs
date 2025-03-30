@@ -13,6 +13,7 @@ public class CreateTaskRequest
     public TimeSpan EstimatedDuration { get; set; }
     public int Priority { get; set; }
     public double Complexity { get; set; }
+    public Guid CategoryId { get; set; }
 
     [FromForm(Name = "requirements")]
     public string? RequirementsJson { get; set; } 

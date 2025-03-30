@@ -21,7 +21,7 @@ public class ReEnqueueTaskHandler(
             return Error.NotFound(TaskErrors.NotFound, TaskErrors.NotFoundDescription);
         }
 
-        if (task.Status != RobotTaskStatus.Pending)
+        if (task is not { Status: RobotTaskStatus.Pending or RobotTaskStatus.WaitingForEnqueue })
         {
             return Error.Failure(TaskErrors.AlreadyAssigned, TaskErrors.AlreadyAssignedDescription);
         }
