@@ -100,7 +100,7 @@ public static class RegisterDependencies
     private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
-
+        Console.WriteLine(connectionString);
         services.AddScoped<ISaveChangesInterceptor, AssignTenantInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         

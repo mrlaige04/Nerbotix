@@ -1,6 +1,14 @@
 <div class="forgot-wrapper my-2">
   <div class="header">
-    <h2 class="text-center">Password recover</h2>
+    <h2 class="text">Reset Password</h2>
+
+    <p class="text-gray-300 mt-2">
+      @if (state() === ForgotRecoverState.ENTER_EMAIL) {
+        Enter your e-mail address and we'll send you a recover code to reset your password
+      } @else if (state() === ForgotRecoverState.ENTER_CODE) {
+        Enter recover code sent to your email address
+      }
+    </p>
   </div>
   <form [formGroup]="form" (ngSubmit)="submit()">
     <div class="content my-3">
@@ -12,12 +20,12 @@
       <div class="hints">
         @if (state() === ForgotRecoverState.ENTER_NEW_PASSWORD) {
           <p-message severity="secondary">
-            <span>Password requirements:</span>
+            <span class="font-medium">Password requirements:</span>
             <ul style="list-style-position: inside">
               @for (rule of passwordRules; track rule.key) {
                 @let hasError = passwordControl?.hasError(rule.key);
                 @let errorColor = passwordControl?.untouched ? '' : hasError ? 'text-red-500' : 'text-green-500';
-                <li class="{{ errorColor }}">
+                <li class="{{ errorColor }} font-normal">
                   {{ rule.message }}
                 </li>
               }
@@ -29,24 +37,38 @@
         @switch (state()) {
           @case (ForgotRecoverState.ENTER_EMAIL) {
             <div class="email mt-3">
-              <input type="text" (keydown.enter)="next()" class="w-full" pInputText placeholder="Enter email" formControlName="email">
+              <p-floatlabel variant="in">
+                <input type="text"
+                       (keydown.enter)="next()"
+                       id="email"
+                       class="w-full" pInputText
+                       formControlName="email">
+                <label for="email">Email address</label>
+              </p-floatlabel>
             </div>
           }
           @case (ForgotRecoverState.ENTER_CODE) {
-            <p-message text="Please enter the code sent to email"/>
-            <div class="email mt-3 flex justify-content-center">
-              <p-inputOtp (keydown.enter)="next()" [length]="6" size="large" formControlName="code"/>
+            <div class="email mt-3 flex">
+              <p-inputOtp styleClass="flex-grow-1" class="flex-grow-1"
+                          (keydown.enter)="next()" [length]="6"
+                          size="large" formControlName="code"/>
             </div>
           }
           @case (ForgotRecoverState.ENTER_NEW_PASSWORD) {
             <div class="new_password mt-3">
-              <input type="password" class="w-full" pInputText placeholder="Enter new password" formControlName="password">
+              <p-floatlabel variant="in">
+                <input id="new_pass" type="password" class="w-full" pInputText formControlName="password">
+                <label for="new_pass">New Password</label>
+              </p-floatlabel>
               @if (!passwordControl?.untouched && passwordControl?.hasError('required')) {
                 <span class="text-red-500">Password is required</span>
               }
             </div>
             <div class="confirm_new_password mt-2">
-              <input type="password" class="w-full" pInputText placeholder="Confirm new password" formControlName="confirmPassword">
+              <p-floatlabel variant="in">
+                <input id="confirm_pass" type="password" class="w-full" pInputText formControlName="confirmPassword">
+                <label for="confirm_pass">Confirm Password</label>
+              </p-floatlabel>
               <div class="errors text-red-500">
                 @let confirmPasswordHasRequiredError = confirmPasswordControl?.hasError('required');
                 @let confirmPasswordHasMismatchError = confirmPasswordControl?.hasError('compare');

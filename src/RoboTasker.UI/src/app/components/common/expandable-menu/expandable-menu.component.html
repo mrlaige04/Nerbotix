@@ -1,0 +1,27 @@
+<p-menu [model]="menus()" class="w-full" styleClass="border-none bg-transparent">
+  <ng-template #submenuheader let-item>
+    <div class="text-primary font-bold text-md">{{ item.label }}</div>
+  </ng-template>
+  <ng-template #item let-item>
+    @let isExpanded = item.expanded;
+    <div class="flex justify-content-between cursor-pointer"
+         *rbHasPermission="item.permission"
+         [routerLink]="item.routerLink"
+         routerLinkActive="routerLinkActive">
+      <a class="flex align-items-center p-2 px-3"
+         (click)="onNavigate(item.routerLink)">
+        <span [class]="item.icon"></span>
+        <span class="ml-2 text-lg">{{ item.label }}</span>
+      </a>
+      @if (item.items && item.items.length) {
+        <p-button text icon="pi pi-chevron-{{ isExpanded ? 'up' : 'down' }}"
+                  outlined styleClass="m-1"
+                  (onClick)="item.expanded = !isExpanded"/>
+      }
+    </div>
+
+    @if (item.items && item.items.length && isExpanded) {
+      <rb-expandable-menu [menus]="item.items"/>
+    }
+  </ng-template>
+</p-menu>

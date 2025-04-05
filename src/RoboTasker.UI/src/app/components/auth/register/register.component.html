@@ -1,23 +1,24 @@
 <div class="register-wrapper my-2">
   <div class="header">
-    <h2 class="text-center">Complete Registration</h2>
+    <h2>Complete Registration</h2>
+    <p class="text-gray-300 mt-2">
+      Enter password to complete the registration
+    </p>
   </div>
   <form [formGroup]="form" (ngSubmit)="submit()">
     <div class="content my-3">
-      <div class="error-message">
-
-      </div>
-      <div class="info p-2 border-1 border-gray-500 border-round bg-gray-700">
-        Email: {{ form.get('email')?.value }}
-      </div>
       <div class="fields mt-3">
-        <div class="password flex flex-column gap-1">
-          <label for="password">New Password</label>
-          <input pInputText type="password" formControlName="password" id="password">
+        <div class="password">
+          <p-floatlabel variant="in">
+            <label for="password">New Password</label>
+            <input pInputText type="password" class="w-full" formControlName="password" id="password">
+          </p-floatlabel>
         </div>
         <div class="confirm-password mt-2 flex flex-column gap-1">
-          <label for="confirm-password">Confirm Password</label>
-          <input pInputText type="password" formControlName="confirmPassword" id="confirm-password">
+          <p-floatlabel variant="in">
+            <label for="confirm-password">Confirm Password</label>
+            <input pInputText type="password" class="w-full" formControlName="confirmPassword" id="confirm-password">
+          </p-floatlabel>
         </div>
       </div>
       <div class="actions mt-2 w-full">

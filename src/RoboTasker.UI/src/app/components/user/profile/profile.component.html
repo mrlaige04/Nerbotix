@@ -1,7 +1,44 @@
-<div class="profile-wrapper">
-  <div class="profile">
-    <p>Id: {{ currentUser()?.id }}</p>
-    <p>Tenant: {{ currentUser()?.tenantId }}</p>
-    <p>User: {{ currentUser()?.email }}</p>
+<div class="profile-wrapper flex flex-column md:flex-row gap-2">
+  <div class="avatar flex flex-column">
+    <p-image class="w-min"
+             width="250"
+             [src]="'https://cdn.britannica.com/70/234870-050-D4D024BB/Orange-colored-cat-yawns-displaying-teeth.jpg'"/>
+    <p-fileupload #fu accept="image/*" auto mode="basic" chooseLabel="Change"
+                  styleClass="hidden" class="w-full"/>
+    <p-button label="Change" outlined icon="pi pi-upload" styleClass="w-full" (onClick)="fu.onBasicUploaderClick()"/>
+  </div>
+  <div class="user-info p-0 md:px-4 w-full">
+    <div class="grid">
+      <div class="col-6">
+        <div class="username">
+          <p-floatlabel variant="in">
+            <input class="w-full" pInputText id="username" type="text" [value]="currentUser()?.email">
+            <label for="username">Username</label>
+          </p-floatlabel>
+        </div>
+        <div class="email mt-3">
+          <p-floatlabel variant="in">
+            <input class="w-full" disabled pInputText id="email" type="email" [value]="currentUser()?.email">
+            <label for="email">Email</label>
+          </p-floatlabel>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="roles">
+          <p-floatlabel variant="in">
+            @let roles = createRolesString(currentUser()?.roles);
+            <input class="w-full" disabled pInputText id="roles" type="text" [value]="roles">
+            <label for="roles">Roles</label>
+          </p-floatlabel>
+        </div>
+        <div class="tenant mt-3">
+          <p-floatlabel variant="in">
+            <input class="w-full" disabled pInputText id="tenant" type="text" [value]="currentUser()?.tenantName">
+            <label for="tenant">Tenant</label>
+          </p-floatlabel>
+        </div>
+      </div>
+    </div>
+    <p-button label="Save" outlined styleClass="w-full mt-2"/>
   </div>
 </div>

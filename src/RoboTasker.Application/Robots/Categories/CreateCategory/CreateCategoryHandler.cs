@@ -24,7 +24,7 @@ public class CreateCategoryHandler(
         }
 
         if (await categoryRepository.ExistsAsync(c => 
-                EF.Functions.Like(c.Name, request.Name), cancellationToken: cancellationToken))
+                c.Name == request.Name, cancellationToken: cancellationToken))
         {
             return Error.Conflict(CategoryErrors.Conflict, CategoryErrors.ConflictDescription);   
         }

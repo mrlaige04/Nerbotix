@@ -38,15 +38,13 @@ public class CreateTenantHandler(
 
         var tenantId = Guid.NewGuid();
         currentUser.SetTenantId(tenantId);
+        
         var tenant = new Tenant
         {
             Id = tenantId,
             Name = request.Name,
             Email = request.Email,
-            Settings = new TenantSettings
-            {
-                TenantId = tenantId,
-            }
+            Settings = TenantSettings.CreateDefault(tenantId)
         };
         
         var createdTenant = await tenantRepository.AddAsync(tenant, cancellationToken);

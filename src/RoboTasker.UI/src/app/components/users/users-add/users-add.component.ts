@@ -12,6 +12,7 @@ import {Button} from 'primeng/button';
 import {RolesService} from '../../../services/tenants/roles.service';
 import {RoleBase} from '../../../models/tenants/roles/role-base';
 import {MultiSelect} from 'primeng/multiselect';
+import {FloatLabel} from 'primeng/floatlabel';
 
 @Component({
   selector: 'rb-users-add',
@@ -19,7 +20,8 @@ import {MultiSelect} from 'primeng/multiselect';
     ReactiveFormsModule,
     InputText,
     Button,
-    MultiSelect
+    MultiSelect,
+    FloatLabel
   ],
   templateUrl: './users-add.component.html',
   styleUrl: './users-add.component.scss'

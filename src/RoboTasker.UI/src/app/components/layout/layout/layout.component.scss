@@ -1,15 +1,17 @@
 .layout-container {
   min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
 }
 
 .layout-content-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100vh - 2.5rem);
-
   margin-left: 0;
   transition: margin-left var(--transition-duration);
   padding: 1.25rem 2rem;
+
+  min-height: calc(100vh - 4rem);
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
 
   &.opened {
     margin-left: var(--sidebar-width);
@@ -26,4 +28,3 @@
     padding: 1.25rem .5rem 1rem .5rem;
   }
 }
-

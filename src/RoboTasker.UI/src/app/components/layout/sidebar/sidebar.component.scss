@@ -1,5 +1,6 @@
 .sidebar {
-  height: 100vh;
+  margin-top: 4rem;
+  height: calc(100vh - 4rem);
   width: var(--sidebar-width);
   background: var(--p-menu-background);
   transition: transform var(--transition-duration);
@@ -16,7 +17,7 @@
 
   &.opened {
     transform: translateX(0);
-    -webkit-box-shadow: 5px 0px 7px -6px rgba(0,0,0,0.58);
+    -webkit-box-shadow: 5px 0 7px -6px rgba(0,0,0,0.58);
     -moz-box-shadow: 5px 0px 7px -6px rgba(0,0,0,0.58);
     box-shadow: 5px 0px 7px -6px rgba(0,0,0,0.58);
   }

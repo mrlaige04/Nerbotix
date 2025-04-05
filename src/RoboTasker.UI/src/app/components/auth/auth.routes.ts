@@ -6,9 +6,9 @@ import {ForgotComponent} from './forgot/forgot.component';
 import {RegisterComponent} from './register/register.component';
 
 export const AUTH_ROUTES: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: 'forgot', component: ForgotComponent },
-  { path: 'register', component: RegisterComponent },
+  { path: 'login', component: LoginComponent, title: 'Login' },
+  { path: 'forgot', component: ForgotComponent, title: 'Forgot Password' },
+  { path: 'register', component: RegisterComponent, title: 'Register' },
   { path: 'logout',
     redirectTo: () => {
       const authService = inject(AuthService);
