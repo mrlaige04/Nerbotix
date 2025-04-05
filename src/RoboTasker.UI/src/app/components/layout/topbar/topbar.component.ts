@@ -25,23 +25,6 @@ export class TopbarComponent extends BaseComponent {
   private layoutService = inject(LayoutService);
   private authService = inject(AuthService);
 
-  private readonly authenticatedUserMenu: MenuItem[] = [
-    { label: 'Profile', icon: 'pi pi-user', routerLink: '/user/profile' },
-    { label: 'Settings', icon: 'pi pi-cog', routerLink: '/user/settings' },
-    { label: 'Logout', icon: 'pi pi-sign-out', routerLink: '/auth/logout' },
-  ];
-  private readonly notAuthenticatedUserMenu: MenuItem[] = [
-    { label: 'Login', icon: 'pi pi-sign-in', routerLink: '/auth/login' },
-  ];
-
-  userMenuItems = computed(() => {
-    if (this.authService.isAuthenticated()) {
-      return this.authenticatedUserMenu;
-    }
-
-    return this.notAuthenticatedUserMenu;
-  });
-
   toggleSidebar(event: Event) {
     event.stopPropagation();
     this.layoutService.toggleSidebar();

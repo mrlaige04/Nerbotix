@@ -47,6 +47,7 @@ public class LoginHandler(
         var userFromRepo = await userRepository.GetAsync(
             u => u.Id == user.Id,
             q => q
+                .Include(u => u.Tenant)
                 .Include(u => u.Roles)
                 .ThenInclude(ur => ur.Role)
                 .ThenInclude(r => r.Permissions)
@@ -63,6 +64,7 @@ public class LoginHandler(
         {
             Id = user.Id,
             TenantId = user.TenantId,
+            TenantName = user.Tenant.Name,
             Email = user.Email!,
             Roles = user.Roles.Select(ur => new RoleBaseResponse
             {

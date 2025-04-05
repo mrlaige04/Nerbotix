@@ -8,12 +8,16 @@ public class RobotTask : TenantEntity
 {
     public string Name { get; set; } = null!;
     public string? Description { get; set; }
+    
 
+    public DateTime? StartedAt { get; set; }
     public RobotTaskStatus Status { get; set; } = RobotTaskStatus.Pending;
     public DateTimeOffset? CompletedAt { get; set; }
     
     public Robot? AssignedRobot { get; set; }
     public Guid? AssignedRobotId { get; set; }
+    
+    public DateTime AssignedAt { get; set; }
     
     public TimeSpan? EstimatedDuration { get; set; }
     public int Priority { get; set; }

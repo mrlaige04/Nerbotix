@@ -38,5 +38,11 @@ public class RobotConfiguration : IEntityTypeConfiguration<Robot>
             .WithOne(p => p.Robot)
             .HasForeignKey(p => p.RobotId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.HasMany(r => r.TasksQueue)
+            .WithOne(t => t.AssignedRobot)
+            .HasForeignKey(t => t.AssignedRobotId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
     }
 }

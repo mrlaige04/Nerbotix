@@ -9,6 +9,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {HttpErrorResponse} from '@angular/common/http';
 import {Message} from 'primeng/message';
 import {BaseComponent} from '../../common/base/base.component';
+import {FloatLabel} from 'primeng/floatlabel';
 
 @Component({
   selector: 'rb-login',
@@ -17,7 +18,8 @@ import {BaseComponent} from '../../common/base/base.component';
     RouterLink,
     InputText,
     ReactiveFormsModule,
-    Message
+    Message,
+    FloatLabel
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'

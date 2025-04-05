@@ -11,8 +11,7 @@ public static class PropertyTypeHelper
         {
             RobotPropertyType.String => string.Empty,
             RobotPropertyType.Boolean => bool.FalseString,
-            RobotPropertyType.Integer => 0.ToString(),
-            RobotPropertyType.Float => 0.ToString(CultureInfo.InvariantCulture),
+            RobotPropertyType.Number => 0.ToString(CultureInfo.InvariantCulture),
             RobotPropertyType.DateTime => DateTime.MinValue.ToString(CultureInfo.InvariantCulture),
             _ => string.Empty
         };

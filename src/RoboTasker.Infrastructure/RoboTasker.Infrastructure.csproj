@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Algorithms\AIBased\" />
       <Folder Include="Migrations\" />
     </ItemGroup>
 

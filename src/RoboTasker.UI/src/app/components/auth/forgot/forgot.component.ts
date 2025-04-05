@@ -12,6 +12,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {InputOtp} from 'primeng/inputotp';
 import {CustomValidators} from '../../../utils/validators/custom-validators';
 import {ResetPasswordRequest} from '../../../models/auth/reset-password-request';
+import {FloatLabel} from 'primeng/floatlabel';
 
 @Component({
   selector: 'rb-forgot',
@@ -22,6 +23,7 @@ import {ResetPasswordRequest} from '../../../models/auth/reset-password-request'
     ReactiveFormsModule,
     RouterLink,
     InputOtp,
+    FloatLabel,
   ],
   templateUrl: './forgot.component.html',
   styleUrl: './forgot.component.scss'

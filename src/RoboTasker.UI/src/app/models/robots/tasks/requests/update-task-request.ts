@@ -6,6 +6,7 @@ export interface UpdateTaskRequest {
   description?: string;
   priority?: number;
   complexity?: number;
+  categoryId?: Guid;
   estimatedDuration?: string;
   requirements?: CreateTaskRequirementRequest[];
   data?: CreateTaskDataRequest[];

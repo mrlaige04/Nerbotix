@@ -6,6 +6,6 @@ namespace RoboTasker.Application.Robots.Categories;
 public class CategoryPropertyResponse : TenantEntityResponse
 {
     public string Name { get; set; } = null!;
-    
+    public double Factor  { get; set; }
     public RobotPropertyType Type { get; set; }
 }

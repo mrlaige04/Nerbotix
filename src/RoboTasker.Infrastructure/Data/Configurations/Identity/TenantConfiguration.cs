@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RoboTasker.Domain.Tenants;
+using RoboTasker.Domain.Tenants.Settings;
 
 namespace RoboTasker.Infrastructure.Data.Configurations.Identity;
 
@@ -30,6 +31,12 @@ public class TenantConfiguration : IEntityTypeConfiguration<Tenant>
             .HasMany(x => x.Chats)
             .WithOne()
             .HasForeignKey(x => x.TenantId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder
+            .HasOne(t => t.Settings)
+            .WithOne()
+            .HasForeignKey<TenantSettings>(x => x.TenantId)
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.Property(x => x.Name).IsRequired();

@@ -9,13 +9,15 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {CustomValidators} from '../../../utils/validators/custom-validators';
 import {Button} from 'primeng/button';
 import {InputText} from 'primeng/inputtext';
+import {FloatLabel} from 'primeng/floatlabel';
 
 @Component({
   selector: 'rb-register',
   imports: [
     ReactiveFormsModule,
     Button,
-    InputText
+    InputText,
+    FloatLabel
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'

@@ -2,12 +2,17 @@
   <form [formGroup]="form" (ngSubmit)="submit()" class="form flex flex-column justify-content-between h-100">
     <div class="fields">
       <div class="email flex flex-column gap-1">
-        <label for="email">Email</label>
-        <input pInputText id="email" type="email" formControlName="email">
+        <p-floatlabel variant="in">
+          <label for="email">Email</label>
+          <input pInputText id="email" type="email" class="w-full" formControlName="email">
+        </p-floatlabel>
+
       </div>
       <div class="username flex flex-column gap-1 mt-2">
-        <label for="username">Username</label>
-        <input pInputText id="username" type="text" formControlName="username">
+        <p-floatlabel variant="in">
+          <label for="username">Username</label>
+          <input pInputText id="username" type="text" class="w-full" formControlName="username">
+        </p-floatlabel>
       </div>
       <div class="roles flex flex-column gap-1 mt-2">
         <label for="roles">Roles</label>

@@ -1,5 +1,5 @@
 <div class="user-edit-wrapper">
-  <h2>Editing: {{currentUser()?.email}}</h2>
+  <h2>{{currentUser()?.email}}</h2>
   <form [formGroup]="form" class="mt-4" (ngSubmit)="submit()">
     <div class="fields mt-2">
       <div class="main-info">
@@ -25,6 +25,7 @@
         <div class="roles-picker mt-1">
           <p-multi-select styleClass="w-full" dataKey="id" [options]="roles()"
                           optionLabel="name" formControlName="roles"
+                          appendTo="body"
                           [filter]="false"/>
         </div>
       </div>

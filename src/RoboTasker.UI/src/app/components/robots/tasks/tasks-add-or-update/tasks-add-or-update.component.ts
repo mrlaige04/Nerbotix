@@ -402,6 +402,7 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
       description: formValue.description!,
       priority: formValue.priority!,
       complexity: formValue.complexity!,
+      categoryId: Guid.parse(formValue.categoryId!),
       estimatedDuration: DateHelper.NormalizeDuration(formValue.estimatedDuration!),
       deletedRequirements: this.deletedRequirements(),
       deletedData: this.deletedData(),

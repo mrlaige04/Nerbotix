@@ -3,8 +3,7 @@
 public enum RobotPropertyType
 {
     Boolean,
-    Integer,
+    Number,
     String,
-    Float,
     DateTime
 }

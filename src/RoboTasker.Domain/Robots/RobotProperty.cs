@@ -10,6 +10,8 @@ public class RobotProperty : TenantEntity
 
     public IList<RobotPropertyValue> Values { get; set; } = [];
 
+    public double Factor { get; set; } = 1.0;
+
     public RobotCategory Category { get; set; } = null!;
     public Guid CategoryId { get; set; }
 }

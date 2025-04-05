@@ -5,7 +5,6 @@ import {Button} from 'primeng/button';
 import {AuthService} from '../../../services/auth/auth.service';
 import {BaseComponent} from '../../common/base/base.component';
 import {MenuItem} from 'primeng/api';
-import {Menu} from 'primeng/menu';
 import {Ripple} from 'primeng/ripple';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 import {PermissionsNames} from '../../../models/tenants/permissions/permissions-names';
@@ -14,27 +13,32 @@ import {JsonPipe} from '@angular/common';
 import {CurrentUserService} from '../../../services/user/current-user.service';
 import {RoleNames} from '../../../models/tenants/roles/roles-names';
 import {HasRoleDirective} from '../../../utils/directives/has-role.directive';
+import {UiSettingsService} from '../../../services/layout/ui-settings.service';
+import {ExpandableMenuComponent} from '../../common/expandable-menu/expandable-menu.component';
 
 @Component({
   selector: 'rb-sidebar',
   imports: [
     Divider,
     Button,
-    Menu,
     Ripple,
     RouterLink,
     RouterLinkActive,
     HasPermissionDirective,
     JsonPipe,
-    HasRoleDirective
+    HasRoleDirective,
+    ExpandableMenuComponent
   ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent extends BaseComponent implements OnInit {
   private layoutService = inject(LayoutService);
+  private uiSettingsService = inject(UiSettingsService);
   private authService = inject(AuthService);
   private currentUser = inject(CurrentUserService);
+
+  theme = this.uiSettingsService.theme;
 
   public sidebarOpened = this.layoutService.sidebarOpened;
   public isDesktop = this.layoutService.isDesktop;
@@ -98,13 +102,21 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       ]
     },
     {
-      label: 'Settings',
+      label: 'Others',
       items: [
         {
           label: 'Settings',
-          routerLink: 'user/settings',
+          routerLink: 'tenant/settings',
           icon: 'pi pi-cog',
-          permission: PermissionsNames.TenantSettingsRead
+          permission: PermissionsNames.TenantSettingsRead,
+          items: [
+            {
+              label: 'Algorithms',
+              routerLink: 'tenant/settings/algorithms',
+              icon: 'pi pi-cog',
+              permission: PermissionsNames.TenantSettingsRead
+            }
+          ]
         },
         {
           label: 'Support',
@@ -123,7 +135,7 @@ export class SidebarComponent extends BaseComponent implements OnInit {
           label: 'Tenants',
           routerLink: 'sa/tenants',
           icon: 'pi pi-users',
-          role: RoleNames.SuperAdmin
+          role: RoleNames.SuperAdmin,
         }
       ]
     }
@@ -133,10 +145,6 @@ export class SidebarComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     this.filteredMenu = this.filterMenuByPermissions(this.menu);
-  }
-
-  closeSidebar() {
-    this.layoutService.closeSidebar();
   }
 
   onNavigate(link: string) {

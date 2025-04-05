@@ -12,11 +12,6 @@ public class RobotTaskConfiguration : IEntityTypeConfiguration<RobotTask>
         builder.ToTable("robot_tasks");
         builder.HasKey(x => x.Id);
         
-        builder.HasOne(t => t.AssignedRobot)
-            .WithOne(r => r.CurrentTask)
-            .HasForeignKey<RobotTask>(t => t.AssignedRobotId)
-            .IsRequired(false);
-        
         builder.HasMany(t => t.TaskData)
             .WithOne(t => t.Task)
             .HasForeignKey(t => t.TaskId)

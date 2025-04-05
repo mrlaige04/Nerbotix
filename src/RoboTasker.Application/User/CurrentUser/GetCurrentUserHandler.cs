@@ -28,6 +28,7 @@ public class GetCurrentUserHandler(
             {
                 Id = u.Id,
                 TenantId = u.TenantId,
+                TenantName = u.Tenant.Name,
                 Email = u.Email!,
                 Roles = u.Roles.Select(ur => new RoleBaseResponse
                 {
@@ -46,6 +47,7 @@ public class GetCurrentUserHandler(
             },
             u => u.Id == userId,
             q => q
+                .Include(u => u.Tenant)
                 .Include(u => u.Roles)
                 .ThenInclude(r => r.Role)
                 .ThenInclude(r => r.Permissions)

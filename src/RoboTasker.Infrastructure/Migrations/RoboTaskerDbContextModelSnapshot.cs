@@ -297,9 +297,6 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("CurrentTaskId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime?>("LastActivity")
                         .HasColumnType("timestamp with time zone");
 
@@ -337,6 +334,9 @@ namespace RoboTasker.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool?>("LinearOptimizationMaximization")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -469,6 +469,9 @@ namespace RoboTasker.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<double>("Factor")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -604,6 +607,9 @@ namespace RoboTasker.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("AssignedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid?>("AssignedRobotId")
                         .HasColumnType("uuid");
 
@@ -632,6 +638,9 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Property<int>("Priority")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("StartedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
@@ -643,8 +652,7 @@ namespace RoboTasker.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignedRobotId")
-                        .IsUnique();
+                    b.HasIndex("AssignedRobotId");
 
                     b.HasIndex("CategoryId");
 
@@ -800,6 +808,29 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.HasIndex("PermissionId");
 
                     b.ToTable("roles_permissions", (string)null);
+                });
+
+            modelBuilder.Entity("RoboTasker.Domain.Tenants.Settings.TenantSettings", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId")
+                        .IsUnique();
+
+                    b.ToTable("tenant_settings", (string)null);
                 });
 
             modelBuilder.Entity("RoboTasker.Domain.Tenants.Tenant", b =>
@@ -1196,8 +1227,9 @@ namespace RoboTasker.Infrastructure.Migrations
             modelBuilder.Entity("RoboTasker.Domain.Tasks.RobotTask", b =>
                 {
                     b.HasOne("RoboTasker.Domain.Robots.Robot", "AssignedRobot")
-                        .WithOne("CurrentTask")
-                        .HasForeignKey("RoboTasker.Domain.Tasks.RobotTask", "AssignedRobotId");
+                        .WithMany("TasksQueue")
+                        .HasForeignKey("AssignedRobotId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("RoboTasker.Domain.Robots.RobotCategory", "Category")
                         .WithMany()
@@ -1279,6 +1311,118 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("RoboTasker.Domain.Tenants.Settings.TenantSettings", b =>
+                {
+                    b.HasOne("RoboTasker.Domain.Tenants.Tenant", null)
+                        .WithOne("Settings")
+                        .HasForeignKey("RoboTasker.Domain.Tenants.Settings.TenantSettings", "TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("RoboTasker.Domain.Tenants.Settings.TenantAntColonyAlgorithmSettings", "AntColonyAlgorithmSettings", b1 =>
+                        {
+                            b1.Property<Guid>("TenantSettingsId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<double>("Alpha")
+                                .HasColumnType("double precision");
+
+                            b1.Property<int>("AntCount")
+                                .HasColumnType("integer");
+
+                            b1.Property<double>("Beta")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("Evaporation")
+                                .HasColumnType("double precision");
+
+                            b1.Property<int>("Iterations")
+                                .HasColumnType("integer");
+
+                            b1.HasKey("TenantSettingsId");
+
+                            b1.ToTable("tenant_settings");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TenantSettingsId");
+                        });
+
+                    b.OwnsOne("RoboTasker.Domain.Tenants.Settings.TenantGeneticAlgorithmSettings", "GeneticAlgorithmSettings", b1 =>
+                        {
+                            b1.Property<Guid>("TenantSettingsId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("Generations")
+                                .HasColumnType("integer");
+
+                            b1.Property<double>("MutationRate")
+                                .HasColumnType("double precision");
+
+                            b1.Property<int>("PopulationSize")
+                                .HasColumnType("integer");
+
+                            b1.HasKey("TenantSettingsId");
+
+                            b1.ToTable("tenant_settings");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TenantSettingsId");
+                        });
+
+                    b.OwnsOne("RoboTasker.Domain.Tenants.Settings.TenantLoadBalancingAlgorithmSettings", "LoadBalancingAlgorithmSettings", b1 =>
+                        {
+                            b1.Property<Guid>("TenantSettingsId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<double>("ComplexityFactor")
+                                .HasColumnType("double precision");
+
+                            b1.HasKey("TenantSettingsId");
+
+                            b1.ToTable("tenant_settings");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TenantSettingsId");
+                        });
+
+                    b.OwnsOne("RoboTasker.Domain.Tenants.Settings.TenantSimulatedAnnealingAlgorithmSettings", "SimulatedAnnealingAlgorithmSettings", b1 =>
+                        {
+                            b1.Property<Guid>("TenantSettingsId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<double>("CoolingRate")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("InitialTemperature")
+                                .HasColumnType("double precision");
+
+                            b1.Property<int>("IterationsPerTemp")
+                                .HasColumnType("integer");
+
+                            b1.Property<double>("MinTemperature")
+                                .HasColumnType("double precision");
+
+                            b1.HasKey("TenantSettingsId");
+
+                            b1.ToTable("tenant_settings");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TenantSettingsId");
+                        });
+
+                    b.Navigation("AntColonyAlgorithmSettings")
+                        .IsRequired();
+
+                    b.Navigation("GeneticAlgorithmSettings")
+                        .IsRequired();
+
+                    b.Navigation("LoadBalancingAlgorithmSettings")
+                        .IsRequired();
+
+                    b.Navigation("SimulatedAnnealingAlgorithmSettings")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("RoboTasker.Domain.Tenants.User", b =>
                 {
                     b.HasOne("RoboTasker.Domain.Tenants.Tenant", "Tenant")
@@ -1340,14 +1484,14 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Navigation("Communication")
                         .IsRequired();
 
-                    b.Navigation("CurrentTask");
-
                     b.Navigation("CustomProperties");
 
                     b.Navigation("Location")
                         .IsRequired();
 
                     b.Navigation("Properties");
+
+                    b.Navigation("TasksQueue");
                 });
 
             modelBuilder.Entity("RoboTasker.Domain.Robots.RobotCategory", b =>
@@ -1395,6 +1539,9 @@ namespace RoboTasker.Infrastructure.Migrations
                     b.Navigation("PermissionGroups");
 
                     b.Navigation("Roles");
+
+                    b.Navigation("Settings")
+                        .IsRequired();
 
                     b.Navigation("Users");
                 });

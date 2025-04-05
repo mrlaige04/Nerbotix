@@ -10,6 +10,7 @@ import {catchError, finalize, of, tap} from 'rxjs';
 import {HttpErrorResponse} from '@angular/common/http';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {Message} from 'primeng/message';
+import {FloatLabel} from 'primeng/floatlabel';
 
 @Component({
   selector: 'rb-change-password',
@@ -17,7 +18,8 @@ import {Message} from 'primeng/message';
     Button,
     InputText,
     ReactiveFormsModule,
-    Message
+    Message,
+    FloatLabel
   ],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.scss'

@@ -5,5 +5,5 @@ namespace RoboTasker.Application.Algorithms;
 
 public interface ITaskDistributionAlgorithm
 {
-    Task<Robot?> FindRobot(RobotTask task, IList<Robot> robots);
+    Task<Robot?> FindRobot(RobotTask task, IQueryable<Robot> robots);
 }

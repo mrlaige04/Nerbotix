@@ -3,13 +3,11 @@
   min-height: 100vh !important;
 
   & .auth-page {
-    //background: var(--p-surface-900);
-
+    height: 100%;
     & .auth-wrapper {
       margin: auto;
       min-width: 30%;
       width: max-content;
-      min-height: 100vh !important;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -19,4 +17,13 @@
       }
     }
   }
+}
+
+.auth-content {
+  min-width: 35vw;
+}
+
+.img {
+  background-image: url("../../../../../public/auth_image.jpg");
+  background-size: cover;
 }

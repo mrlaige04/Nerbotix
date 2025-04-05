@@ -5,6 +5,7 @@ import {RoleBase} from '../tenants/roles/role-base';
 export interface CurrentUser {
   email: string;
   tenantId: Guid;
+  tenantName: string;
   id: Guid;
   permissions: PermissionBase[];
   roles: RoleBase[];
