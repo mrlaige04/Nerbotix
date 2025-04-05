@@ -403,3 +403,4 @@ FodyWeavers.xsd
 
 # Env files
 .env
+/.env
