@@ -1,0 +1,20 @@
+<div class="permissions-list-wrapper">
+  <rb-table [data]="items().items ?? []"
+            [columns]="columns"
+            [loading]="isLoading()"
+            [totalItems]="items().totalItems"
+            (pageChange)="onPageChange($event)"
+            (onAddClick)="openAddNew()"
+            dataKey="id"
+            [showRowActions]="true"
+            [showToolbar]="true">
+    <ng-template #rowActions let-rowData="rowData">
+      <div class="actions flex gap-1">
+        <p-button icon="pi pi-pencil" (onClick)="openEditPermission(rowData.id)"/>
+        @if (!rowData['isSystem']) {
+          <p-button (onClick)="openDeleteConfirmation(rowData.id, $event)" severity="danger" icon="pi pi-trash"/>
+        }
+      </div>
+    </ng-template>
+  </rb-table>
+</div>

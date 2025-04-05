@@ -1,0 +1,37 @@
+<div class="create-or-update-category-wrapper">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form flex flex-column justify-content-between h-100">
+    <div class="fields">
+      <div class="name flex flex-column gap-2">
+        <label for="name">Name</label>
+        <input pInputText id="name" type="text" formControlName="name">
+      </div>
+      <div class="properties mt-2">
+        <label>Properties</label>
+        <div class="properties-list" formArrayName="properties">
+          <p-button (onClick)="addNewProperty()" styleClass="my-2" label="Add" icon="pi pi-plus" outlined/>
+          @for (prop of propertiesArray.controls; track prop; let i = $index) {
+            <div class="new-prop-wrapper grid align-items-end" [formGroupName]="i">
+              <div class="prop-name flex flex-column gap-1 col-6 gap-1">
+                <label for="prop-name">Name</label>
+                <input pInputText type="text" id="prop-name" formControlName="name">
+              </div>
+              <div class="prop-type flex flex-column gap-1 col-4">
+                <label for="prop-type">Type</label>
+                <p-select [options]="propertyTypes"
+                          optionValue="key"
+                          dataKey="key"
+                          appendTo="body"
+                          class="w-full md:w-56 z-auto"
+                          formControlName="type" id="prop-type"></p-select>
+              </div>
+              <p-button (onClick)="removeProperty(i)" text icon="pi pi-trash" class="col-2"/>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="actions mt-2 w-100">
+      <p-button type="submit" label="Submit" class="w-100" styleClass="w-100"/>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,114 @@
+<div class="create-or-update-robot-wrapper">
+  <form class="my-2" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="tabs">
+      <p-tabs value="0" scrollable>
+        <p-tablist>
+          <p-tab value="0">Main Info</p-tab>
+          <p-tab value="1" [disabled]="properties() === null && !currentRobotId()">Properties</p-tab>
+          <p-tab value="2">Custom Properties</p-tab>
+          <p-tab value="3">Capabilities</p-tab>
+          <p-tab value="4" disabled>Communication</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+          <p-tabpanel value="0">
+            <div class="main-info">
+              <div class="name flex flex-column gap-1">
+                <label for="name">Name</label>
+                <input pInputText type="text" id="name" formControlName="name">
+              </div>
+              <div class="category mt-2 flex flex-column gap-1">
+                <label for="category">Category</label>
+                <p-select (onChange)="onCategoryChange($event)" [options]="categories()" optionLabel="name" optionValue="id" id="category" formControlName="categoryId"/>
+              </div>
+            </div>
+          </p-tabpanel>
+          <p-tabpanel value="1">
+            <div class="properties">
+              <div class="category-properties" formArrayName="properties">
+                @for (propertyControl of propertiesArray.controls; track propertyControl; let i = $index) {
+                  <div class="property" [formGroupName]="i">
+                    @let propId = propertiesArray.at(i).get('propertyId')?.value;
+                    @let prop = getProperty(propId);
+                    @let type = prop?.type;
+                    @let displayAsLabel = type !== CategoryPropertyType.Boolean;
+
+                    <div class="value flex flex-column gap-1 mt-2">
+                      @if (displayAsLabel) {
+                        <label>Property: {{prop?.name}} ({{CategoryPropertyType[type!]}})</label>
+                      }
+                      @switch(type) {
+                        @case (CategoryPropertyType.Boolean) {
+                          <div class="checkbox flex align-items-center gap-1">
+                            <p-checkbox id="checkbox" binary
+                                        [trueValue]="true"
+                                        [falseValue]="false"
+                                        formControlName="value"/>
+                            <label for="checkbox">{{prop?.name}} ({{CategoryPropertyType[type!]}})</label>
+                          </div>
+                        }
+                        @case (CategoryPropertyType.Number) {
+                          <p-input-number formControlName="value" mode="decimal" inputId="minmaxfraction" [minFractionDigits]="2"/>
+                        }
+                        @case (CategoryPropertyType.String) {
+                          <textarea pTextarea formControlName="value" rows="5"></textarea>
+                        }
+                        @case (CategoryPropertyType.DateTime) {
+                          <p-date-picker formControlName="value"/>
+                        }
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </p-tabpanel>
+          <p-tabpanel value="2">
+            <div class="custom-properties mt-1" formArrayName="customProperties">
+              <p-button (onClick)="addCustomProperty()" label="Add custom property" icon="pi pi-plus" outlined styleClass="mt-1 w-full"/>
+              @for (customControl of customPropertiesArray.controls; track customControl; let i = $index) {
+                <div class="custom-property flex lg:flex-row flex-column gap-2 mt-5 lg:mt-3 w-full align-items-end" [formGroupName]="i">
+                  <div class="custom-property-name w-full flex flex-column gap-1 flex-grow-1">
+                    <label for="custom-prop-name">Name</label>
+                    <input pInputText type="text" id="custom-prop-name" formControlName="name">
+                  </div>
+                  <div class="custom-property-value w-full flex flex-column gap-1 flex-grow-1">
+                    <label for="custom-prop-value">Value</label>
+                    <input pInputText type="text" id="custom-prop-value" formControlName="value">
+                  </div>
+                  <p-button (onClick)="removeCustomProperty(i)" icon="pi pi-trash" severity="danger"
+                            class="lg:w-3rem w-full" styleClass="lg:w-3rem w-full"/>
+                </div>
+              }
+            </div>
+          </p-tabpanel>
+          <p-tabpanel value="3">
+            <div class="capabilities w-full mt-1" formArrayName="capabilities">
+              @for (capabilityGroup of capabilities(); track capabilityGroup.id) {
+                <div class="capability-group mb-3">
+                  <h3>{{capabilityGroup.groupName}}</h3>
+                  @for (capabilityItem of capabilityGroup.capabilities; track capabilityItem.id) {
+                    @let isSelected = getIsSelectedItem(capabilityGroup.id, capabilityItem.id);
+                    <div class="capability-item flex align-items-center gap-2 mt-2 mb-2">
+                      <p-checkbox binary [ngModel]="isSelected" [ngModelOptions]="{ standalone: true }"
+                                  (onChange)="onCapabilityItemSelect($event, capabilityGroup.id, capabilityItem.id)"/>
+                      <span>{{capabilityItem.name}}</span>
+                      @if (capabilityItem.description) {
+                        ({{capabilityItem.description}})
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </p-tabpanel>
+          <p-tabpanel value="4">
+            Communication
+          </p-tabpanel>
+        </p-tabpanels>
+      </p-tabs>
+    </div>
+    <div class="actions mt-3">
+      <p-button type="submit" [disabled]="!form.valid" label="Submit"/>
+    </div>
+  </form>
+</div>

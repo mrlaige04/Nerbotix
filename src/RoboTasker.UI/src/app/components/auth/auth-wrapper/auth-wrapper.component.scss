@@ -1,0 +1,29 @@
+:host {
+  width: 100%;
+  min-height: 100vh !important;
+
+  & .auth-page {
+    height: 100%;
+    & .auth-wrapper {
+      margin: auto;
+      min-width: 30%;
+      width: max-content;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      @media screen and (max-width: 900px) {
+        min-width: 80%;
+      }
+    }
+  }
+}
+
+.auth-content {
+  min-width: 35vw;
+}
+
+.img {
+  background-image: url("../../../../../public/auth_image.jpg");
+  background-size: cover;
+}

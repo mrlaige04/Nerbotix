@@ -1,0 +1,241 @@
+<div class="create-or-update-task-wrapper">
+  <form class="my-2" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="tabs">
+      <p-tabs value="0" scrollable>
+        <p-tablist>
+          <p-tab value="0">Main Info</p-tab>
+          <p-tab value="1">Requirements</p-tab>
+          <p-tab value="2">Data</p-tab>
+          <p-tab value="3">Files</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+          <p-tabpanel value="0">
+            <div class="main-info">
+              <div class="general-section mt-2">
+                <div class="p-1">
+                  <div class="name flex flex-column gap-1">
+                    @let nameControl = form.get('name');
+                    @let nameControlTouched = !nameControl?.untouched;
+                    @let nameControlHasRequiredError = nameControl?.hasError('required');
+                    <label for="name">Name</label>
+                    <input pInputText type="text" id="name" formControlName="name">
+                    @if (nameControlTouched && nameControlHasRequiredError) {
+                      <p-message severity="error" variant="simple" size="small" text="Name is required" class="mb-1"/>
+                    }
+                    @if (nameControlTouched && !nameControlHasRequiredError && nameControl?.hasError('maxlength')) {
+                      <p-message severity="error" variant="simple" size="small" text="Max length is 50 chars" class="mb-1"/>
+                    }
+                  </div>
+                  <div class="description flex flex-column gap-1 mt-1">
+                    <label for="description">Description</label>
+                    <textarea pTextarea formControlName="description" id="description" rows="3" autoResize></textarea>
+                  </div>
+                  <div class="category flex flex-column gap-1 mt-1">
+                    <label for="category">Category</label>
+                    <p-select [options]="categories()"
+                              optionValue="id"
+                              optionLabel="name"
+                              id="category"
+                              formControlName="categoryId"/>
+                  </div>
+                </div>
+              </div>
+              <div class="other-info mt-2">
+                <h3>Other information</h3>
+                <div class="p-1">
+                  <div class="priority flex flex-column gap-1 mt-2">
+                    @let priorityControl = form.get('priority');
+                    @let priorityControlTouched = !priorityControl?.untouched;
+                    @let priorityControlHasRequiredError = priorityControl?.hasError('required');
+                    <label>Priority</label>
+                    <p-select [options]="priorityRange" formControlName="priority"></p-select>
+                    @if (priorityControlTouched && priorityControlHasRequiredError) {
+                      <p-message severity="error" variant="simple" size="small" text="Priority is required" class="mb-1"/>
+                    }
+                  </div>
+                  <div class="complexity flex flex-column gap-1 mt-2">
+                    @let complexityControl = form.get('complexity');
+                    @let complexityControlTouched = !complexityControl?.untouched;
+                    @let complexityControlHasRequiredError = complexityControl?.hasError('required');
+                    <label>Complexity</label>
+                    <p-inputNumber min="1" max="5" [step]="0.1" showButtons formControlName="complexity"/>
+                    @if (complexityControlTouched && complexityControlHasRequiredError) {
+                      <p-message severity="error" variant="simple" size="small" text="Complexity is required" class="mb-1"/>
+                    }
+                    @if (complexityControlTouched && !complexityControlHasRequiredError && complexityControl?.hasError('min')) {
+                      <p-message severity="error" variant="simple" size="small" text="Min value is 1" class="mb-1"/>
+                    }
+                    @if (complexityControlTouched && !complexityControlHasRequiredError && complexityControl?.hasError('max')) {
+                      <p-message severity="error" variant="simple" size="small" text="Max value is 5" class="mb-1"/>
+                    }
+                  </div>
+                  <div class="estimated-duration flex flex-column gap-1 mt-2">
+                    @let durationControl = form.get('estimatedDuration');
+                    @let durationControlTouched = !durationControl?.untouched;
+                    @let durationControlHasRequiredError = durationControl?.hasError('required');
+                    Estimated duration
+                    <div class="estimate flex gap-2">
+                      <p-input-mask formControlName="estimatedDuration" slotChar="_" mask="999:99" placeholder="HH:mm"
+                                    styleClass="w-full" class="w-full"/>
+                    </div>
+                    @if (durationControlTouched && durationControlHasRequiredError) {
+                      <p-message severity="error" variant="simple" size="small" text="Estimated duration is required" class="mb-1"/>
+                    }
+                    @if (durationControlTouched && !durationControlHasRequiredError && durationControl?.hasError('duration')) {
+                      <p-message severity="error" variant="simple" size="small"
+                                 text="Duration must in be in the following format: HHH:mm (HHH up to 999 hours and mm up to 59 minutes)" class="mb-1"/>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </p-tabpanel>
+          <p-tabpanel value="1">
+            <div class="requirements" formArrayName="requirements">
+              <p-button [disabled]="allAdded()" (onClick)="addRequirement()" label="Add requirement" icon="pi pi-plus" outlined styleClass="mt-1 w-full"/>
+              <div class="capabilities-list">
+                @for (requirementControl of requirementsArray.controls; track requirementControl; let i = $index) {
+                  <div class="requirement mt-3 flex flex-column lg:flex-row gap-1 align-items-start" [formGroupName]="i">
+                    @let reqKeyControl = requirementsArray.at(i).get('capabilityId');
+                    @let reqKeyControlTouched = !reqKeyControl?.untouched;
+                    @let reqKeyControlHasRequiredError = reqKeyControl?.hasError('required');
+                    @let reqValueControl = requirementsArray.at(i).get('level');
+                    @let reqValueControlTouched = !reqValueControl?.untouched;
+                    @let reqValueControlHasRequiredError = reqValueControl?.hasError('required');
+                    @let reqHasAnyVisibleError = !requirementsArray.at(i).untouched && !requirementsArray.at(i).valid;
+                    <div class="requirement-key flex-grow-1 flex flex-column gap-1">
+                      <label for="requirement-cap-id">Capability</label>
+                      <p-select [options]="groupedCapabilities()" group class="w-full md:w-56"
+                                (onChange)="onCapabilitySelect($event)"
+                                id="requirement-cap-id"
+                                formControlName="capabilityId"/>
+                      @if (reqKeyControlTouched && reqKeyControlHasRequiredError) {
+                        <p-message severity="error" variant="simple" size="small" text="Capability is required" class="mb-1"/>
+                      }
+                    </div>
+                    <div class="requirement-level flex-grow-1 flex flex-column gap-1">
+                      <label for="requirement-level">Level</label>
+                      <p-select [options]="requirementsLevels" optionValue="key" optionLabel="label"
+                                class="w-full" styleClass="w-full"
+                                id="requirement-level"
+                                formControlName="level"
+                      />
+                      @if (reqValueControlTouched && reqValueControlHasRequiredError) {
+                        <p-message severity="error" variant="simple" size="small" text="Capability is required" class="mb-1"/>
+                      }
+                    </div>
+                    <p-button (onClick)="removeRequirement(i)"
+                              icon="pi pi-trash" severity="danger"
+                              class="lg:w-3rem w-full mt-auto"
+                              [class.mb-auto]="reqHasAnyVisibleError"
+                              styleClass="lg:w-3rem w-full"/>
+                  </div>
+                }
+              </div>
+            </div>
+          </p-tabpanel>
+          <p-tabpanel value="2">
+            <div class="data" formArrayName="data">
+              <p-button (onClick)="addDataItem()" label="Add data" icon="pi pi-plus" outlined styleClass="mt-1 w-full"/>
+              <div class="data-list mt-3">
+                @for (dataControl of dataArray.controls; track dataControl; let i = $index) {
+                  <div class="data mt-3" [formGroupName]="i">
+                    @let dataKeyControl = dataArray.at(i).get('key');
+                    @let dataKeyControlTouched = !dataKeyControl?.untouched;
+                    @let dataKeyControlHasRequiredError = dataKeyControl?.hasError('required');
+                    @let dataTypeControl = dataArray.at(i).get('type');
+                    @let dataTypeControlTouched = !dataTypeControl?.untouched;
+                    @let dataTypeControlHasRequiredError = dataTypeControl?.hasError('required');
+                    @let dataValueControl = dataArray.at(i).get('value');
+                    @let dataValueControlTouched = !dataValueControl?.untouched;
+                    @let dataValueControlHasRequiredError = dataValueControl?.hasError('required');
+                    <div class="data-name flex flex-column gap-1">
+                      <label for="data-name">Key</label>
+                      <input pInputText id="data-name" type="text" formControlName="key">
+                      @if (dataKeyControlTouched && dataKeyControlHasRequiredError) {
+                        <p-message severity="error" variant="simple" size="small" text="Key is required" class="mb-1"/>
+                      }
+                      @if (dataKeyControlTouched && !dataKeyControlHasRequiredError && dataKeyControl?.hasError('maxlength')) {
+                        <p-message severity="error" variant="simple" size="small" text="Max length is 20 chars" class="mb-1"/>
+                      }
+                    </div>
+                    <div class="data-type flex flex-column gap-1 mt-1">
+                      <label for="data-type">Type</label>
+                      <p-select [options]="dataTypes" (onChange)="onDataTypeChange(i)"
+                                id="data-type" optionValue="key" formControlName="type"/>
+                      @if (dataTypeControlTouched && dataTypeControlHasRequiredError) {
+                        <p-message severity="error" variant="simple" size="small" text="Type is required" class="mb-1"/>
+                      }
+                    </div>
+                    <div class="data-value flex flex-column gap-1 mt-1">
+                      @let type = dataArray.at(i).get('type')?.value;
+                      <label for="data-input">Value</label>
+                      <div class="input w-full" id="data-input">
+                        @switch (type) {
+                          @case (TaskDataType.String) {
+                            <textarea pTextarea formControlName="value" class="w-full"></textarea>
+                          }
+                          @case (TaskDataType.Boolean) {
+                            @let isChecked = dataArray.at(i).get('value')?.value === 'True';
+                            <p-checkbox [falseValue]="false" [trueValue]="true" binary formControlName="value"/>                          }
+                          @case (TaskDataType.DateTime) {
+                            <p-date-picker formControlName="value" class="w-full"/>
+                          }
+                          @case (TaskDataType.Number) {
+                            <p-input-number formControlName="value" class="w-full"/>
+                          }
+                        }
+                        @if (dataValueControlTouched && dataValueControlHasRequiredError) {
+                          <p-message severity="error" variant="simple" size="small" text="Value is required" class="mb-2"/>
+                        }
+                      </div>
+                    </div>
+                    <p-button outlined (onClick)="removeDataItem(i)"
+                              icon="pi pi-trash"
+                              severity="danger"
+                              class="w-full"
+                              styleClass="w-full mt-3"/>
+                    <p-divider class="mb-2"/>
+                  </div>
+                }
+              </div>
+            </div>
+          </p-tabpanel>
+          <p-tabpanel value="3">
+            <div class="existing-files">
+              @for (file of existingFiles(); track file.fileName) {
+                @let isDeleted = isFileDeleted(file.fileName);
+                <div class="existing-file flex justify-content-between align-items-center">
+                  <div class="file">
+                    <span class="{{isDeleted ? 'line-through text-red-500' : ''}} transition-duration-300">
+                      {{file.fileName}} ({{file.size}} KB)
+                    </span>
+                  </div>
+                  <div class="file-action">
+                    @if (isDeleted) {
+                      <p-button (onClick)="undeleteFile(file.fileName)" icon="pi pi-undo" outlined severity="contrast"/>
+                    }
+                    @else {
+                      <p-button (onClick)="deleteFile(file.fileName)" icon="pi pi-trash" outlined severity="danger"/>
+                    }
+                  </div>
+                </div>
+                <p-divider/>
+              }
+            </div>
+            <div class="upload-files mt-3">
+              <p-fileupload maxFileSize="104857600" multiple (onSelect)="onFilesSelect($event)" mode="advanced" [showCancelButton]="false" [showUploadButton]="false">
+                <ng-template #empty>
+                  <div>Select or drag and drop files to here to upload.</div>
+                </ng-template>
+              </p-fileupload>
+            </div>
+          </p-tabpanel>
+        </p-tabpanels>
+      </p-tabs>
+    </div>
+    <div class="actions mt-3">
+      <p-button [disabled]="!form.valid" type="submit" label="Submit"/>
+    </div>
+  </form>
+</div>

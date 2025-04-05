@@ -1,0 +1,61 @@
+﻿services:
+  robotasker.api:
+    image: robotasker.api
+    build:
+      context: .
+      dockerfile: src/RoboTasker.Api/Dockerfile
+    networks:
+      - robotasker_network
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: Host=robotasker.db;Port=5432;Database=${ROBOTASKER_DB};Username=${ROBOTASKER_DB_USER};Password=${ROBOTASKER_DB_PASSWORD}
+      SuperAdmin__Email: ${SuperAdminEmail}
+      SuperAdmin__Password: ${SuperAdminPassword}
+    depends_on:
+      - robotasker.db
+    volumes:
+      - api-storage:/app/storage
+    command: ./wait-for-it.sh robotasker.db:5432 -- dotnet RoboTasker.Api.dll
+  
+  robotasker.ui:
+    build:
+      context: ./src/RoboTasker.UI
+      dockerfile: Dockerfile
+    networks:
+      - robotasker_network
+    ports:
+      - "4200:80"
+    depends_on:
+      - robotasker.api
+
+  robotasker.db:
+    image: postgis/postgis
+    restart: always
+    networks:
+      - robotasker_network
+    environment:
+      POSTGRES_DB: ${ROBOTASKER_DB}
+      POSTGRES_USER: ${ROBOTASKER_DB_USER}
+      POSTGRES_PASSWORD: ${ROBOTASKER_DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "robotasker"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+
+networks:
+  robotasker_network:
+    driver: bridge
+    name: robotasker_network
+    
+volumes:
+  pgdata:
+  api-storage:

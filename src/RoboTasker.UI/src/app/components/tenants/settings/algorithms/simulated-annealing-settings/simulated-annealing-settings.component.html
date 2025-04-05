@@ -1,0 +1,23 @@
+<div class="simulated-annealing-settings-wrapper">
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="initTemp flex flex-column gap-1">
+      <label for="initTemp">Initial Temperature</label>
+      <p-inputNumber id="initTemp" formControlName="initialTemperature" inputId="mimaxfraction" mode="decimal" [maxFractionDigits]="2"/>
+    </div>
+    <div class="coolingRate flex flex-column gap-1">
+      <label for="coolingRate">Cooling Rate</label>
+      <p-inputNumber id="coolingRate" formControlName="coolingRate" inputId="mimaxfraction" mode="decimal" [maxFractionDigits]="2"/>
+    </div>
+    <div class="iterationsPerTemp flex flex-column gap-1">
+      <label for="iterationsPerTemp">Iteration per Temperature</label>
+      <p-inputNumber id="iterationsPerTemp" formControlName="iterationsPerTemp" inputId="mimaxfraction" mode="decimal" [maxFractionDigits]="2"/>
+    </div>
+    <div class="minTemperature flex flex-column gap-1">
+      <label for="minTemperature">Min Temperature</label>
+      <p-inputNumber id="minTemperature" formControlName="minTemperature" inputId="mimaxfraction" mode="decimal" [maxFractionDigits]="2"/>
+    </div>
+    <div class="actions mt-2">
+      <p-button type="submit" label="Submit"/>
+    </div>
+  </form>
+</div>

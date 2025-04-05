@@ -1,0 +1,51 @@
+<div class="create-or-update-capability-wrapper">
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="tabs">
+      <p-tabs value="0" scrollable>
+        <p-tablist>
+          <p-tab value="0">Main Info</p-tab>
+          <p-tab value="1">Capabilities</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+          <p-tabpanel value="0">
+            <div class="main-info">
+              <div class="name flex flex-column gap-1">
+                <label for="name">Name</label>
+                <input pInputText type="text" id="name" formControlName="name">
+              </div>
+              <div class="name flex flex-column gap-1 mt-2">
+                <label for="description">Description</label>
+                <input pInputText type="text" id="description" formControlName="description">
+              </div>
+            </div>
+          </p-tabpanel>
+          <p-tabpanel value="1">
+            <div class="capabilities" formArrayName="capabilities">
+              <p-button (onClick)="addNewCapability()" label="Add new capability" icon="pi pi-plus" outlined styleClass="mt-1 w-full"/>
+              @for (capabilityControl of capabilitiesArray.controls; track capabilityControl; let i = $index) {
+                <div class="capability" [formGroupName]="i">
+                  <div class="value flex lg:flex-row flex-column gap-2 mt-5 lg:mt-3 w-full align-items-end">
+                    <div class="capability-name w-full flex flex-column gap-1 flex-grow-1">
+                      <label for="capability-name">Name</label>
+                      <input pInputText type="text" id="capability-name" formControlName="name">
+                    </div>
+                    <div class="capability-name w-full flex flex-column gap-1 flex-grow-1">
+                      <label for="capability-description">Description</label>
+                      <input pInputText type="text" id="capability-description" formControlName="description">
+                    </div>
+                    <p-button (onClick)="removeCapability(i)" icon="pi pi-trash" severity="danger"
+                              class="lg:w-3rem w-full" styleClass="lg:w-3rem w-full"
+                    />
+                  </div>
+                </div>
+              }
+            </div>
+          </p-tabpanel>
+        </p-tabpanels>
+      </p-tabs>
+    </div>
+    <div class="actions mt-3">
+      <p-button type="submit" [disabled]="!form.valid" label="Submit"/>
+    </div>
+  </form>
+</div>

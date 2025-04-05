@@ -1,0 +1,19 @@
+<div class="categories-list-wrapper">
+  <rb-table [data]="items().items ?? []"
+            [columns]="columns"
+            [loading]="isLoading()"
+            [totalItems]="items().totalItems"
+            (pageChange)="onPageChange($event)"
+            (selectionChange)="onItemsSelect($event)"
+            [showRowActions]="true"
+            (onAddClick)="openAddNew()"
+            [addPermission]="PermissionsNames.CategoriesCreate"
+            [showToolbar]="true">
+    <ng-template #rowActions let-rowData="rowData">
+      <div class="actions flex gap-1">
+        <p-button icon="pi pi-pencil" (onClick)="openEditCategory(rowData.id)" *rbHasPermission="PermissionsNames.CategoriesUpdate"/>
+        <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)" *rbHasPermission="PermissionsNames.CategoriesDelete"/>
+      </div>
+    </ng-template>
+  </rb-table>
+</div>

@@ -1,0 +1,41 @@
+<div class="linear-optimization-settings">
+  <h3>Linear optimization settings</h3>
+  <div class="category-selection mt-2">
+    <span>Please select category: </span>
+    <p-select [options]="categories()"
+              optionValue="id"
+              optionLabel="name"
+              (onChange)="onCategoryChange($event)"/>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="type-of-linear-optimization mt-2">
+      @if (categoryId()) {
+        <span>Type of the linear optimization task: </span>
+        <p-select [options]="[{ label: 'Maximization', isMaximization: true }, { label: 'Minimization', isMaximization: false }]"
+                  optionLabel="label"
+                  formControlName="isMaximization"
+                  class="mt-2 lg:mt-0"
+                  optionValue="isMaximization"
+        />
+      }
+    </div>
+
+    <div class="properties">
+      <div class="properties-list" formArrayName="properties">
+        @for (control of propertiesArray.controls; track control; let i = $index) {
+          @let name = control.get('name')?.value;
+          <div class="prop-factor flex flex-column gap-1 mt-2" [formGroupName]="i">
+            <span class="overflow-hidden text-overflow-ellipsis">{{ name }}</span>
+            <p-inputNumber inputId="mimaxfraction" mode="decimal" [maxFractionDigits]="2"
+                           formControlName="factor"/>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="actions mt-3">
+      <p-button type="submit" label="Save"/>
+    </div>
+  </form>
+</div>

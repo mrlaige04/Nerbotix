@@ -1,0 +1,17 @@
+.navbar-left {
+  .sidebar-toggle {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .navbar-left {
+    .sidebar-toggle {
+      display: block;
+    }
+
+    .logo {
+      display: none;
+    }
+  }
+}

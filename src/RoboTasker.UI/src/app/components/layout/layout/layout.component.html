@@ -1,0 +1,18 @@
+<div class="layout-container">
+  <rb-navbar/>
+  <rb-sidebar/>
+
+  <div class="layout-content-wrapper" [class.opened]="sidebarOpened()" (click)="closeSidebarIfMobile()">
+    <h2>{{ title() }}</h2>
+    <div class="layout-content max-h-max">
+      <h3 class="page-title my-3 text-3xl font-bold"></h3>
+      @if (wrapToCard()) {
+        <p-card>
+          <router-outlet/>
+        </p-card>
+      } @else {
+        <router-outlet/>
+      }
+    </div>
+  </div>
+</div>

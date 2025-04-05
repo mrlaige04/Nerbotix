@@ -1,0 +1,28 @@
+<div class="create-user-wrapper">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="form flex flex-column justify-content-between h-100">
+    <div class="fields">
+      <div class="email flex flex-column gap-1">
+        <p-floatlabel variant="in">
+          <label for="email">Email</label>
+          <input pInputText id="email" type="email" class="w-full" formControlName="email">
+        </p-floatlabel>
+
+      </div>
+      <div class="username flex flex-column gap-1 mt-2">
+        <p-floatlabel variant="in">
+          <label for="username">Username</label>
+          <input pInputText id="username" type="text" class="w-full" formControlName="username">
+        </p-floatlabel>
+      </div>
+      <div class="roles flex flex-column gap-1 mt-2">
+        <label for="roles">Roles</label>
+        <p-multi-select id="roles" [options]="roles()" optionLabel="name"
+                        appendTo="body"
+                        formControlName="roles" [filter]="false"/>
+      </div>
+    </div>
+    <div class="actions mt-2 w-100">
+      <p-button [disabled]="!form.valid" type="submit" label="Submit" class="w-100" styleClass="w-100"/>
+    </div>
+  </form>
+</div>

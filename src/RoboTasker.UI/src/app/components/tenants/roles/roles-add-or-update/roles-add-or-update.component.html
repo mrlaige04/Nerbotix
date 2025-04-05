@@ -1,0 +1,33 @@
+<div class="create-or-update-role-wrapper">
+  <form class="my-2" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="fields mt-2">
+      <div class="name flex flex-column gap-1">
+        <label for="name">Name</label>
+        <input pInputText id="name" formControlName="name">
+      </div>
+      <p-divider/>
+      <div class="permissions mt-2">
+        <h3 class="mb-3">Permissions</h3>
+        @for (group of permissions(); track group.id; let i = $index) {
+          <div class="group flex gap-2 align-items-center">
+            <span class="text-lg ml-1">{{group.name}}</span>
+          </div>
+          <div class="permissions-list mt-2 grid column-gap-4 m-3">
+            @for (permission of group.permissions; track permission.id; let i = $index) {
+              <div class="permission col-12 lg:col-3 flex gap-2 align-items-center mt-2">
+                @let isSelected = ifPermissionSelected(permission.id);
+                <p-toggleswitch [ngModel]="isSelected" [ngModelOptions]="{ standalone: true }"
+                                (onChange)="onPermissionToggleChange(permission.id, $event)"/>
+                <span>{{ permission.name }}</span>
+              </div>
+            }
+          </div>
+          <p-divider/>
+        }
+      </div>
+    </div>
+    <div class="actions mt-3">
+      <p-button label="Submit" type="submit" [disabled]="!form.valid"/>
+    </div>
+  </form>
+</div>

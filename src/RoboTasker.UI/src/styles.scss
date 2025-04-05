@@ -1,0 +1,23 @@
+@use "app/styles/fonts";
+@use "app/styles/vars";
+@use 'primeflex/primeflex';
+@use 'primeicons/primeicons';
+@use 'app/styles/overrides/overrides';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100vh;
+  width: 100%;
+  font-family: "Rubik", sans-serif;
+}
+
+h1, h2, h3, h4, h5, hgroup {
+  font-family: "Rubik", sans-serif;
+  font-weight: bold;
+}
+

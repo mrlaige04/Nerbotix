@@ -1,0 +1,37 @@
+<div class="robots-list-wrapper">
+  <rb-table [data]="items().items ?? []"
+            [columns]="columns"
+            [loading]="isLoading()"
+            [totalItems]="items().totalItems"
+            (pageChange)="onPageChange($event)"
+            (selectionChange)="onItemsSelect($event)"
+            (onAddClick)="openAddNew()"
+            dataKey="id"
+            [addPermission]="PermissionsNames.RobotsCreate"
+            [showRowActions]="true"
+            [showToolbar]="true">
+    <ng-template #body let-rowData="rowData">
+      <tr>
+        <td>{{rowData['name']}}</td>
+        <td>{{rowData['category']['name']}}</td>
+        <td>{{RobotStatus[rowData['status']]}}</td>
+        <td>
+          @let lat = rowData['location']['latitude'];
+          @let lon = rowData['location']['longitude'];
+
+          <a href="https://www.google.com/maps?q={{lat}},{{lon}}" target="_blank">
+            <i class="pi pi-map"></i>
+          </a>
+        </td>
+        <td>{{rowData['location']['timestamp'] | date }}</td>
+        <td>{{rowData['lastActivity'] ?? '-'}}</td>
+        <td>
+          <div class="actions flex gap-1">
+            <p-button icon="pi pi-pencil" (onClick)="openEditRobot(rowData.id)" *rbHasPermission="PermissionsNames.RobotsUpdate"/>
+            <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)" *rbHasPermission="PermissionsNames.RobotsDelete"/>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </rb-table>
+</div>
