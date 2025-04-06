@@ -10,8 +10,7 @@ using RoboTasker.Domain.Tasks.Data;
 namespace RoboTasker.Application.Robots.Tasks.GetTaskById;
 
 public class GetTaskByIdHandler(
-    ITenantRepository<RobotTask> taskRepository,
-    ITenantRepository<RobotTaskData> taskDataRepository) : IQueryHandler<GetTaskByIdQuery, TaskResponse>
+    ITenantRepository<RobotTask> taskRepository) : IQueryHandler<GetTaskByIdQuery, TaskResponse>
 {
     public async Task<ErrorOr<TaskResponse>> Handle(GetTaskByIdQuery request, CancellationToken cancellationToken)
     {
@@ -22,6 +21,7 @@ public class GetTaskByIdHandler(
                 Name = t.Name,
                 Description = t.Description,
                 TenantId = t.TenantId,
+                CategoryId = t.CategoryId,
                 ArchivePath = t.Archive != null ? t.Archive.Url : null,
                 Requirements = t.Requirements
                     .Select(r => new TaskRequirementResponse

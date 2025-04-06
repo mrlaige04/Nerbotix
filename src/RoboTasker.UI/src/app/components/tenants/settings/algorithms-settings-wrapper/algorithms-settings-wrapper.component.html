@@ -2,26 +2,30 @@
   @if (settings()) {
     <p-tabs value="0" scrollable>
       <p-tablist>
-        <p-tab value="0">Linear Optimization</p-tab>
-        <p-tab value="1">Load Balancing</p-tab>
-        <p-tab value="2">Genetic</p-tab>
-        <p-tab value="3">Ant Colony</p-tab>
-        <p-tab value="4">Simulated Annealing</p-tab>
+        <p-tab value="0">General</p-tab>
+        <p-tab value="1">Linear Optimization</p-tab>
+        <p-tab value="2">Load Balancing</p-tab>
+        <p-tab value="3">Genetic</p-tab>
+        <p-tab value="4">Ant Colony</p-tab>
+        <p-tab value="5">Simulated Annealing</p-tab>
       </p-tablist>
       <p-tabpanels>
         <p-tabpanel value="0">
-          <rb-linear-optimization-settings/>
+          <rb-algorithms-settings-general [settings]="settings()!"/>
         </p-tabpanel>
         <p-tabpanel value="1">
-          <rb-load-balancing-settings [settings]="settings()!.loadBalancing"/>
+          <rb-linear-optimization-settings/>
         </p-tabpanel>
         <p-tabpanel value="2">
-          <rb-genetic-settings [settings]="settings()!.genetic"/>
+          <rb-load-balancing-settings [settings]="settings()!.loadBalancing"/>
         </p-tabpanel>
         <p-tabpanel value="3">
-          <rb-ant-colony-settings [settings]="settings()!.antColony"/>
+          <rb-genetic-settings [settings]="settings()!.genetic"/>
         </p-tabpanel>
         <p-tabpanel value="4">
+          <rb-ant-colony-settings [settings]="settings()!.antColony"/>
+        </p-tabpanel>
+        <p-tabpanel value="5">
           <rb-simulated-annealing-settings [settings]="settings()!.simulatedAnnealing"/>
         </p-tabpanel>
       </p-tabpanels>

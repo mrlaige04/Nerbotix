@@ -25,10 +25,10 @@ public class UpdateSimulatedAnnealingSettingsHandler(
             return Error.Failure(TenantErrors.NotFound, TenantErrors.NotFoundDescription);
         }
         
-        settings.SimulatedAnnealingAlgorithmSettings.InitialTemperature = request.InitialTemperature;
-        settings.SimulatedAnnealingAlgorithmSettings.CoolingRate = request.CoolingRate;
-        settings.SimulatedAnnealingAlgorithmSettings.IterationsPerTemp = request.IterationsPerTemp;
-        settings.SimulatedAnnealingAlgorithmSettings.MinTemperature = request.MinTemperature;
+        settings.AlgorithmSettings.SimulatedAnnealingAlgorithmSettings.InitialTemperature = request.InitialTemperature;
+        settings.AlgorithmSettings.SimulatedAnnealingAlgorithmSettings.CoolingRate = request.CoolingRate;
+        settings.AlgorithmSettings.SimulatedAnnealingAlgorithmSettings.IterationsPerTemp = request.IterationsPerTemp;
+        settings.AlgorithmSettings.SimulatedAnnealingAlgorithmSettings.MinTemperature = request.MinTemperature;
         await settingsRepository.UpdateAsync(settings, cancellationToken: cancellationToken);
         
         return new Success();

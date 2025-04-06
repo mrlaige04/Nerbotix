@@ -45,7 +45,9 @@ export class LayoutComponent extends BaseComponent implements OnInit {
         return route;
       }),
       tap((route) => {
-        this.title.set(route.snapshot.title ?? '');
+        if (route.snapshot.data['hideTitle'] !== false) {
+          this.title.set(route.snapshot.title ?? '');
+        }
       }),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe();

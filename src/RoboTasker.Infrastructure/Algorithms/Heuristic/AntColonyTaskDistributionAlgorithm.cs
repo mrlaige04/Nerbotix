@@ -25,7 +25,7 @@ public class AntColonyTaskDistributionAlgorithm(ITenantRepository<TenantSettings
             return null;
         }
 
-        var antSettings = settings.AntColonyAlgorithmSettings;
+        var antSettings = settings.AlgorithmSettings.AntColonyAlgorithmSettings;
         AntCount = antSettings.AntCount;
         Iterations = antSettings.Iterations;
         Evaporation = antSettings.Evaporation;

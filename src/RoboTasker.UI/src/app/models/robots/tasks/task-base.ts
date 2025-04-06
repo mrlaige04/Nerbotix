@@ -11,4 +11,5 @@ export class TaskBase extends TenantEntity {
   estimatedDuration?: Date;
   priority!: number;
   complexity!: number;
+  categoryId!: Guid;
 }

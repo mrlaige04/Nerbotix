@@ -21,23 +21,5 @@ import {
   styleUrl: './tenant-settings-wrapper.component.scss'
 })
 export class TenantSettingsWrapperComponent extends BaseComponent {
-  menus: TenantSettingsItem[] = [
-    {
-      label: 'Algorithms',
-      icon: 'pi pi-forward',
-      routerLink: 'algorithms'
-    }
-  ];
-
-  toggleExpansion(menu: TenantSettingsItem) {
-    menu.expanded = !menu.expanded;
-  }
 }
 
-interface TenantSettingsItem {
-  label: string;
-  icon?: string;
-  routerLink?: string;
-  children?: TenantSettingsItem[];
-  expanded?: boolean;
-}

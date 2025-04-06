@@ -15,4 +15,6 @@ public class TaskBaseResponse : TenantEntityResponse
     public TimeSpan? EstimatedDuration { get; set; }
     public int Priority { get; set; }
     public double Complexity { get; set; }
+    
+    public Guid CategoryId { get; set; }
 }

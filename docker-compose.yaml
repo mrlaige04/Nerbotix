@@ -21,6 +21,7 @@
     command: ./wait-for-it.sh robotasker.db:5432 -- dotnet RoboTasker.Api.dll
   
   robotasker.ui:
+    image: robotasker.ui
     build:
       context: ./src/RoboTasker.UI
       dockerfile: Dockerfile
