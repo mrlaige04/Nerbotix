@@ -8,7 +8,10 @@ public class TemplateService
 
         foreach (var placeholder in placeholders)
         {
-            templateContent = templateContent.Replace($"[{placeholder.Key}]", placeholder.Value);
+            while (templateContent.Contains($"[{placeholder.Key}]"))
+            {
+                templateContent = templateContent.Replace($"[{placeholder.Key}]", placeholder.Value);
+            }
         }
         
         return templateContent;

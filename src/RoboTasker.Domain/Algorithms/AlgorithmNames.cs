@@ -1,4 +1,6 @@
-﻿namespace RoboTasker.Domain.Algorithms;
+﻿using System.Reflection;
+
+namespace RoboTasker.Domain.Algorithms;
 
 public class AlgorithmNames
 {
@@ -18,4 +20,12 @@ public class AlgorithmNames
     public const string GeneticTask = nameof(GeneticTask);
     public const string AntColony = nameof(AntColony);
     public const string SimulatedAnnealing = nameof(SimulatedAnnealing);
+    
+    public static string[] GetAll()
+    {
+        var fields = typeof(AlgorithmNames).GetFields(
+            BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+        
+        return fields.Select(f => f.Name).ToArray();
+    }
 }

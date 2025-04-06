@@ -1,0 +1,15 @@
+<div class="general-algorithms-settings-wrapper py-2">
+  <div class="preferred-algorithm flex flex-column gap-1">
+    <label for="pref-algo">Preferred algorithm</label>
+    <p-select [options]="groupedAlgorithms"
+              group
+              id="pref-algo"
+              styleClass="w-full"
+              [(ngModel)]="selectedAlgorithm">
+    </p-select>
+  </div>
+
+  <div class="actions mt-3">
+    <p-button (onClick)="submit()" label="Save" styleClass="w-full"/>
+  </div>
+</div>

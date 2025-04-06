@@ -1,4 +1,4 @@
-﻿namespace RoboTasker.Domain.Tenants.Settings;
+﻿namespace RoboTasker.Domain.Tenants.Settings.Algorithms;
 
 public class TenantAntColonyAlgorithmSettings
 {

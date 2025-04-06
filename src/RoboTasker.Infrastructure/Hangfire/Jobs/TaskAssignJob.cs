@@ -7,11 +7,13 @@ using RoboTasker.Domain.Repositories.Abstractions;
 using RoboTasker.Domain.Robots;
 using RoboTasker.Domain.Robots.Enums;
 using RoboTasker.Domain.Tasks;
+using RoboTasker.Domain.Tenants.Settings;
 
 namespace RoboTasker.Infrastructure.Hangfire.Jobs;
 
 public class TaskAssignJob(
     IServiceProvider serviceProvider,
+    ITenantRepository<TenantSettings> tenantSettingsRepository,
     ITenantRepository<Robot> robotRepository,
     ITenantRepository<RobotTask> taskRepository)
 {
@@ -36,9 +38,18 @@ public class TaskAssignJob(
         
         // TODO: Implement assignment here
         using var scope = serviceProvider.CreateScope();
+
+        var algorithmName = await tenantSettingsRepository.GetWithSelectorAsync(
+            a => a.AlgorithmSettings.PreferredAlgorithm,
+            s => s.TenantId == task.TenantId);
+
+        if (string.IsNullOrEmpty(algorithmName))
+        {
+            algorithmName = AlgorithmNames.Random;
+        }
         
         // TODO: implement selection from tenant settings
-        var algorithm = scope.ServiceProvider.GetKeyedService<ITaskDistributionAlgorithm>(AlgorithmNames.LinearOptimization);
+        var algorithm = scope.ServiceProvider.GetKeyedService<ITaskDistributionAlgorithm>(algorithmName);
         
         var query = await robotRepository.GetQuery();
 

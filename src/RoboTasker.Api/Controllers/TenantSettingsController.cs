@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RoboTasker.Application.Algorithms.Settings.AntColony;
+using RoboTasker.Application.Algorithms.Settings.GeneralSettings;
 using RoboTasker.Application.Algorithms.Settings.Genetic;
 using RoboTasker.Application.Algorithms.Settings.GetAlgorithmsSettings;
 using RoboTasker.Application.Algorithms.Settings.LinearOptimization;
@@ -17,6 +18,13 @@ public class TenantSettingsController(IMediator mediator) : BaseController
     {
         var query = new GetAlgorithmsSettingsQuery();
         var result = await mediator.Send(query);
+        return result.Match(Ok, Problem);
+    }
+
+    [HttpPut("algorithms/general")]
+    public async Task<IActionResult> UpdateGeneralSettings(UpdateGeneralAlgorithmSettingsCommand command)
+    {
+        var result = await mediator.Send(command);
         return result.Match(Ok, Problem);
     }
     

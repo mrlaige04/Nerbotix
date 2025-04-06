@@ -44,7 +44,7 @@ export class LoadBalancingSettingsComponent extends BaseComponent implements OnI
     const request: LoadBalancingAlgorithmSettings = {
       complexityFactor: this.form.value.complexityFactor!
     };
-    this.settingsService.updateLoadBalancing(request).pipe(
+    this.settingsService.updateLoadBalancingAlgorithm(request).pipe(
       catchError((error: HttpErrorResponse) => {
         const detail = error.error.detail;
         this.notificationService.showError('Error while updating settings', detail);

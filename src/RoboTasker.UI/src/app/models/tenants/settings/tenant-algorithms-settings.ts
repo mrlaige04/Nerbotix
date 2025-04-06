@@ -1,4 +1,5 @@
 export class TenantAlgorithmSettings {
+  preferredAlgorithm!: string;
   antColony!: AntColonyAlgorithmSettings;
   genetic!: GeneticAlgorithmSettings;
   loadBalancing!: LoadBalancingAlgorithmSettings;

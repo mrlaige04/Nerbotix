@@ -28,30 +28,31 @@ public class GetAlgorithmsSettingsHandler(
         return new TenantAlgorithmsSettingsResponse
         {
             Id = settings.Id,
+            PreferredAlgorithm = settings.AlgorithmSettings.PreferredAlgorithm,
             AntColony = new AntColonySettingsResponse
             {
-                AntCount = settings.AntColonyAlgorithmSettings.AntCount,
-                Alpha = settings.AntColonyAlgorithmSettings.Alpha,
-                Beta = settings.AntColonyAlgorithmSettings.Beta,
-                Evaporation = settings.AntColonyAlgorithmSettings.Evaporation,
-                Iterations = settings.AntColonyAlgorithmSettings.Iterations,
+                AntCount = settings.AlgorithmSettings.AntColonyAlgorithmSettings.AntCount,
+                Alpha = settings.AlgorithmSettings.AntColonyAlgorithmSettings.Alpha,
+                Beta = settings.AlgorithmSettings.AntColonyAlgorithmSettings.Beta,
+                Evaporation = settings.AlgorithmSettings.AntColonyAlgorithmSettings.Evaporation,
+                Iterations = settings.AlgorithmSettings.AntColonyAlgorithmSettings.Iterations,
             },
             Genetic = new GeneticSettingsResponse
             {
-                Generations = settings.GeneticAlgorithmSettings.Generations,
-                MutationRate = settings.GeneticAlgorithmSettings.MutationRate,
-                PopulationSize = settings.GeneticAlgorithmSettings.PopulationSize,
+                Generations = settings.AlgorithmSettings.GeneticAlgorithmSettings.Generations,
+                MutationRate = settings.AlgorithmSettings.GeneticAlgorithmSettings.MutationRate,
+                PopulationSize = settings.AlgorithmSettings.GeneticAlgorithmSettings.PopulationSize,
             },
             LoadBalancing = new LoadBalancingSettingsResponse
             {
-                ComplexityFactor = settings.LoadBalancingAlgorithmSettings.ComplexityFactor,
+                ComplexityFactor = settings.AlgorithmSettings.LoadBalancingAlgorithmSettings.ComplexityFactor,
             },
             SimulatedAnnealing = new SimulatedAnnealingSettingsResponse
             {
-                CoolingRate = settings.SimulatedAnnealingAlgorithmSettings.CoolingRate,
-                InitialTemperature = settings.SimulatedAnnealingAlgorithmSettings.InitialTemperature,
-                MinTemperature = settings.SimulatedAnnealingAlgorithmSettings.MinTemperature,
-                IterationsPerTemp = settings.SimulatedAnnealingAlgorithmSettings.IterationsPerTemp,
+                CoolingRate = settings.AlgorithmSettings.SimulatedAnnealingAlgorithmSettings.CoolingRate,
+                InitialTemperature = settings.AlgorithmSettings.SimulatedAnnealingAlgorithmSettings.InitialTemperature,
+                MinTemperature = settings.AlgorithmSettings.SimulatedAnnealingAlgorithmSettings.MinTemperature,
+                IterationsPerTemp = settings.AlgorithmSettings.SimulatedAnnealingAlgorithmSettings.IterationsPerTemp,
             }
         };
     }

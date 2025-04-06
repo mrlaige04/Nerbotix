@@ -16,6 +16,9 @@ import {AntColonySettingsComponent} from '../algorithms/ant-colony-settings/ant-
 import {
   SimulatedAnnealingSettingsComponent
 } from '../algorithms/simulated-annealing-settings/simulated-annealing-settings.component';
+import {
+  AlgorithmsSettingsGeneralComponent
+} from '../algorithms/algorithms-settings-general/algorithms-settings-general.component';
 
 @Component({
   selector: 'rb-algorithms-settings-wrapper',
@@ -30,7 +33,8 @@ import {
     TabPanel,
     GeneticSettingsComponent,
     AntColonySettingsComponent,
-    SimulatedAnnealingSettingsComponent
+    SimulatedAnnealingSettingsComponent,
+    AlgorithmsSettingsGeneralComponent
   ],
   templateUrl: './algorithms-settings-wrapper.component.html',
   styleUrl: './algorithms-settings-wrapper.component.scss'
@@ -47,7 +51,7 @@ export class AlgorithmsSettingsWrapperComponent extends BaseComponent implements
 
   private loadSettings() {
     this.showLoader();
-    this.settingsService.getSettings().pipe(
+    this.settingsService.getAlgorithmSettings().pipe(
       catchError((error: HttpErrorResponse) => {
         const detail = error.error.detail;
         this.notificationService.showError('Error while getting settings', detail);

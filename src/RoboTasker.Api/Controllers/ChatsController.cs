@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RoboTasker.Application.Chatting.CreateChat;
 using RoboTasker.Application.Chatting.DeleteChat;
+using RoboTasker.Application.Chatting.GetChatInfo;
 using RoboTasker.Application.Chatting.GetChats;
 using RoboTasker.Application.Chatting.Messages.GetMessages;
 
@@ -15,6 +16,14 @@ public class ChatsController(IMediator mediator) : BaseController
     public async Task<IActionResult> CreateChat(CreateChatCommand command, CancellationToken cancellationToken = default)
     {
         var result = await mediator.Send(command, cancellationToken);
+        return result.Match(Ok, Problem);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetChatInfo(Guid id, CancellationToken cancellationToken = default)
+    {
+        var query = new GetChatInfoQuery(id);
+        var result = await mediator.Send(query, cancellationToken);
         return result.Match(Ok, Problem);
     }
 

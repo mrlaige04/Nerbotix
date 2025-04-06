@@ -2,7 +2,7 @@
   <div class="sidebar-content">
     <div class="menu">
       @let menu = isSuperAdmin() ? superAdminMenu : filteredMenu;
-      <rb-expandable-menu [menus]="menu"/>
+      <rb-expandable-menu (onNavigated)="onNavigate($event)" [activeMenu]="activeMenu()" [menus]="menu"/>
     </div>
     <div class="footer">
       <p-divider/>

@@ -1319,25 +1319,26 @@ namespace RoboTasker.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("RoboTasker.Domain.Tenants.Settings.TenantAntColonyAlgorithmSettings", "AntColonyAlgorithmSettings", b1 =>
+                    b.OwnsOne("RoboTasker.Domain.Tenants.Settings.Algorithms.TenantAlgorithmSettings", "AlgorithmSettings", b1 =>
                         {
                             b1.Property<Guid>("TenantSettingsId")
                                 .HasColumnType("uuid");
 
-                            b1.Property<double>("Alpha")
-                                .HasColumnType("double precision");
+                            b1.Property<DateTime>("CreatedAt")
+                                .HasColumnType("timestamp with time zone");
 
-                            b1.Property<int>("AntCount")
-                                .HasColumnType("integer");
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid");
 
-                            b1.Property<double>("Beta")
-                                .HasColumnType("double precision");
+                            b1.Property<string>("PreferredAlgorithm")
+                                .IsRequired()
+                                .HasColumnType("text");
 
-                            b1.Property<double>("Evaporation")
-                                .HasColumnType("double precision");
+                            b1.Property<Guid>("TenantId")
+                                .HasColumnType("uuid");
 
-                            b1.Property<int>("Iterations")
-                                .HasColumnType("integer");
+                            b1.Property<DateTime?>("UpdatedAt")
+                                .HasColumnType("timestamp with time zone");
 
                             b1.HasKey("TenantSettingsId");
 
@@ -1345,81 +1346,112 @@ namespace RoboTasker.Infrastructure.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("TenantSettingsId");
+
+                            b1.OwnsOne("RoboTasker.Domain.Tenants.Settings.Algorithms.TenantAntColonyAlgorithmSettings", "AntColonyAlgorithmSettings", b2 =>
+                                {
+                                    b2.Property<Guid>("TenantAlgorithmSettingsTenantSettingsId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<double>("Alpha")
+                                        .HasColumnType("double precision");
+
+                                    b2.Property<int>("AntCount")
+                                        .HasColumnType("integer");
+
+                                    b2.Property<double>("Beta")
+                                        .HasColumnType("double precision");
+
+                                    b2.Property<double>("Evaporation")
+                                        .HasColumnType("double precision");
+
+                                    b2.Property<int>("Iterations")
+                                        .HasColumnType("integer");
+
+                                    b2.HasKey("TenantAlgorithmSettingsTenantSettingsId");
+
+                                    b2.ToTable("tenant_settings");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("TenantAlgorithmSettingsTenantSettingsId");
+                                });
+
+                            b1.OwnsOne("RoboTasker.Domain.Tenants.Settings.Algorithms.TenantGeneticAlgorithmSettings", "GeneticAlgorithmSettings", b2 =>
+                                {
+                                    b2.Property<Guid>("TenantAlgorithmSettingsTenantSettingsId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<int>("Generations")
+                                        .HasColumnType("integer");
+
+                                    b2.Property<double>("MutationRate")
+                                        .HasColumnType("double precision");
+
+                                    b2.Property<int>("PopulationSize")
+                                        .HasColumnType("integer");
+
+                                    b2.HasKey("TenantAlgorithmSettingsTenantSettingsId");
+
+                                    b2.ToTable("tenant_settings");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("TenantAlgorithmSettingsTenantSettingsId");
+                                });
+
+                            b1.OwnsOne("RoboTasker.Domain.Tenants.Settings.Algorithms.TenantLoadBalancingAlgorithmSettings", "LoadBalancingAlgorithmSettings", b2 =>
+                                {
+                                    b2.Property<Guid>("TenantAlgorithmSettingsTenantSettingsId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<double>("ComplexityFactor")
+                                        .HasColumnType("double precision");
+
+                                    b2.HasKey("TenantAlgorithmSettingsTenantSettingsId");
+
+                                    b2.ToTable("tenant_settings");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("TenantAlgorithmSettingsTenantSettingsId");
+                                });
+
+                            b1.OwnsOne("RoboTasker.Domain.Tenants.Settings.Algorithms.TenantSimulatedAnnealingAlgorithmSettings", "SimulatedAnnealingAlgorithmSettings", b2 =>
+                                {
+                                    b2.Property<Guid>("TenantAlgorithmSettingsTenantSettingsId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<double>("CoolingRate")
+                                        .HasColumnType("double precision");
+
+                                    b2.Property<double>("InitialTemperature")
+                                        .HasColumnType("double precision");
+
+                                    b2.Property<int>("IterationsPerTemp")
+                                        .HasColumnType("integer");
+
+                                    b2.Property<double>("MinTemperature")
+                                        .HasColumnType("double precision");
+
+                                    b2.HasKey("TenantAlgorithmSettingsTenantSettingsId");
+
+                                    b2.ToTable("tenant_settings");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("TenantAlgorithmSettingsTenantSettingsId");
+                                });
+
+                            b1.Navigation("AntColonyAlgorithmSettings")
+                                .IsRequired();
+
+                            b1.Navigation("GeneticAlgorithmSettings")
+                                .IsRequired();
+
+                            b1.Navigation("LoadBalancingAlgorithmSettings")
+                                .IsRequired();
+
+                            b1.Navigation("SimulatedAnnealingAlgorithmSettings")
+                                .IsRequired();
                         });
 
-                    b.OwnsOne("RoboTasker.Domain.Tenants.Settings.TenantGeneticAlgorithmSettings", "GeneticAlgorithmSettings", b1 =>
-                        {
-                            b1.Property<Guid>("TenantSettingsId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<int>("Generations")
-                                .HasColumnType("integer");
-
-                            b1.Property<double>("MutationRate")
-                                .HasColumnType("double precision");
-
-                            b1.Property<int>("PopulationSize")
-                                .HasColumnType("integer");
-
-                            b1.HasKey("TenantSettingsId");
-
-                            b1.ToTable("tenant_settings");
-
-                            b1.WithOwner()
-                                .HasForeignKey("TenantSettingsId");
-                        });
-
-                    b.OwnsOne("RoboTasker.Domain.Tenants.Settings.TenantLoadBalancingAlgorithmSettings", "LoadBalancingAlgorithmSettings", b1 =>
-                        {
-                            b1.Property<Guid>("TenantSettingsId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<double>("ComplexityFactor")
-                                .HasColumnType("double precision");
-
-                            b1.HasKey("TenantSettingsId");
-
-                            b1.ToTable("tenant_settings");
-
-                            b1.WithOwner()
-                                .HasForeignKey("TenantSettingsId");
-                        });
-
-                    b.OwnsOne("RoboTasker.Domain.Tenants.Settings.TenantSimulatedAnnealingAlgorithmSettings", "SimulatedAnnealingAlgorithmSettings", b1 =>
-                        {
-                            b1.Property<Guid>("TenantSettingsId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<double>("CoolingRate")
-                                .HasColumnType("double precision");
-
-                            b1.Property<double>("InitialTemperature")
-                                .HasColumnType("double precision");
-
-                            b1.Property<int>("IterationsPerTemp")
-                                .HasColumnType("integer");
-
-                            b1.Property<double>("MinTemperature")
-                                .HasColumnType("double precision");
-
-                            b1.HasKey("TenantSettingsId");
-
-                            b1.ToTable("tenant_settings");
-
-                            b1.WithOwner()
-                                .HasForeignKey("TenantSettingsId");
-                        });
-
-                    b.Navigation("AntColonyAlgorithmSettings")
-                        .IsRequired();
-
-                    b.Navigation("GeneticAlgorithmSettings")
-                        .IsRequired();
-
-                    b.Navigation("LoadBalancingAlgorithmSettings")
-                        .IsRequired();
-
-                    b.Navigation("SimulatedAnnealingAlgorithmSettings")
+                    b.Navigation("AlgorithmSettings")
                         .IsRequired();
                 });
 

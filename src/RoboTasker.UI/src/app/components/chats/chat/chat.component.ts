@@ -24,10 +24,13 @@ import {Message} from '../../../models/chatting/message';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../../../services/auth/auth.service';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {tap} from 'rxjs';
+import {catchError, finalize, of, tap} from 'rxjs';
 import {DatePipe} from '@angular/common';
 import {ContextMenu} from 'primeng/contextmenu';
 import {MenuItem} from 'primeng/api';
+import {HttpErrorResponse} from '@angular/common/http';
+import {ChatInfo} from '../../../models/chatting/chat-info';
+import {Menu} from 'primeng/menu';
 
 @Component({
   selector: 'rb-chat',
@@ -40,7 +43,8 @@ import {MenuItem} from 'primeng/api';
     FormsModule,
     DatePipe,
     ContextMenu,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    Menu
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss'
@@ -67,9 +71,17 @@ export class ChatComponent extends BaseComponent implements OnInit, AfterViewChe
   messages = signal<Message[]>([]);
 
   chatId = signal<Guid | null>(null);
-  chat = signal<any | null>(null);
+  chat = signal<ChatInfo | null>(null);
 
   selectedMessage = signal<Message | null>(null);
+
+  settingsMenu: MenuItem[] = [
+    {
+      label: 'Delete',
+      icon: 'pi pi-trash',
+      command: () => this.deleteChat()
+    }
+  ];
 
   typingUser = signal<string | null>(null);
 
@@ -95,6 +107,7 @@ export class ChatComponent extends BaseComponent implements OnInit, AfterViewChe
     }
 
     this.chatId.set(id);
+    this.loadChatInfo();
     const chatConnectionUrl = `${this.apiConfig.url}/chat?chatId=${id}`;
     const accessToken = this.authService.accessToken();
     this.connection = new HubConnectionBuilder()
@@ -115,6 +128,27 @@ export class ChatComponent extends BaseComponent implements OnInit, AfterViewChe
       .catch((e) => console.log(e));
 
     this.loadMessages();
+  }
+
+  private loadChatInfo() {
+    this.showLoader();
+    this.chatService.getChatInfo(this.chatId()!).pipe(
+      catchError((error: HttpErrorResponse) => {
+        const detail = error.error.detail;
+        this.notificationService.showError('Error while getting chat info', detail);
+        return of(null);
+      }),
+      tap(async (info) => {
+        if (!info) {
+          await this.router.navigate(['/']);
+          return;
+        }
+
+        this.chat.set(info);
+      }),
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.hideLoader())
+    ).subscribe();
   }
 
   private loadMessages() {
@@ -178,6 +212,42 @@ export class ChatComponent extends BaseComponent implements OnInit, AfterViewChe
       lastMessage: message.message,
       updatedAt: new Date()
     });
+  }
+
+  private deleteChat() {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this chat?',
+      icon: 'pi pi-exclamation-triangle',
+      header: 'Delete a chat?',
+      rejectButtonProps: {
+        label: 'No',
+        severity: 'success',
+        outlined: true
+      },
+      acceptButtonProps: {
+        label: 'Yes',
+        severity: 'danger'
+      },
+      accept: () => {
+        this.showLoader();
+        this.chatService.deleteChat(this.chatId()!)
+          .pipe(
+            catchError((error: HttpErrorResponse) => {
+              const detail = error.error.detail;
+              this.notificationService.showError('Error while deleting chat', detail);
+              return of(null);
+            }),
+            tap((res) => {
+              if (res) {
+                this.chatService.refreshChatList.next();
+                this.router.navigateByUrl('chats');
+              }
+            }),
+            takeUntilDestroyed(this.destroyRef),
+            finalize(() => this.hideLoader())
+          ).subscribe();
+      }
+    })
   }
 
   private onDeleteMessage(id: Guid) {

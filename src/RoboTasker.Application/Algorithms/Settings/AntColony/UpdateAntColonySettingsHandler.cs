@@ -25,11 +25,11 @@ public class UpdateAntColonySettingsHandler(
             return Error.Failure(TenantErrors.NotFound, TenantErrors.NotFoundDescription);
         }
         
-        settings.AntColonyAlgorithmSettings.AntCount = request.AntCount;
-        settings.AntColonyAlgorithmSettings.Iterations = request.Iterations;
-        settings.AntColonyAlgorithmSettings.Evaporation = request.Evaporation;
-        settings.AntColonyAlgorithmSettings.Alpha = request.Alpha;
-        settings.AntColonyAlgorithmSettings.Beta = request.Beta;
+        settings.AlgorithmSettings.AntColonyAlgorithmSettings.AntCount = request.AntCount;
+        settings.AlgorithmSettings.AntColonyAlgorithmSettings.Iterations = request.Iterations;
+        settings.AlgorithmSettings.AntColonyAlgorithmSettings.Evaporation = request.Evaporation;
+        settings.AlgorithmSettings.AntColonyAlgorithmSettings.Alpha = request.Alpha;
+        settings.AlgorithmSettings.AntColonyAlgorithmSettings.Beta = request.Beta;
         await settingsRepository.UpdateAsync(settings, cancellationToken);
         
         return new Success();

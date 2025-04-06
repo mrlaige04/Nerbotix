@@ -53,7 +53,7 @@ export class GeneticSettingsComponent extends BaseComponent implements OnInit{
       generations: this.form.value.generations!,
     };
 
-    this.settingsService.updateGenetic(request).pipe(
+    this.settingsService.updateGeneticAlgorithm(request).pipe(
       catchError((error: HttpErrorResponse) => {
         const detail = error.error.detail;
         this.notificationService.showError('Error while updating settings', detail);

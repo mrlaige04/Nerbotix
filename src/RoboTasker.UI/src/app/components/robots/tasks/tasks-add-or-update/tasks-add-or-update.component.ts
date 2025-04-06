@@ -207,6 +207,7 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
       description: task.description,
       priority: task.priority,
       complexity: task.complexity,
+      categoryId: task.categoryId.toString()
     });
 
     let estimatedDuration = task.estimatedDuration?.toString();
