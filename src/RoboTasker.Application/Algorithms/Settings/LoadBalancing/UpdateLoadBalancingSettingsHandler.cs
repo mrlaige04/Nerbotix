@@ -25,7 +25,7 @@ public class UpdateLoadBalancingSettingsHandler(
             return Error.Failure(TenantErrors.NotFound, TenantErrors.NotFoundDescription);
         }
         
-        settings.LoadBalancingAlgorithmSettings.ComplexityFactor = request.ComplexityFactor;
+        settings.AlgorithmSettings.LoadBalancingAlgorithmSettings.ComplexityFactor = request.ComplexityFactor;
         await settingsRepository.UpdateAsync(settings, cancellationToken);
 
         return new Success();

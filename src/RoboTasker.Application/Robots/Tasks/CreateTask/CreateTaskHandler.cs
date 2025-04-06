@@ -1,6 +1,7 @@
 ﻿using System.IO.Compression;
 using ErrorOr;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using RoboTasker.Application.BackgroundJobs;
 using RoboTasker.Application.Common.Abstractions;
 using RoboTasker.Application.Common.Errors;
@@ -18,6 +19,7 @@ namespace RoboTasker.Application.Robots.Tasks.CreateTask;
 public class CreateTaskHandler(
     ICurrentUser currentUser,
     IJobsService jobsService,
+    IConfiguration configuration,
     IBaseRepository<Tenant> tenantRepository,
     ITenantRepository<RobotCategory> categoryRepository,
     ITenantRepository<Capability> capabilityRepository,
@@ -33,6 +35,7 @@ public class CreateTaskHandler(
 
         var task = new RobotTask
         {
+            Id = Guid.NewGuid(),
             Name = request.Name,
             Description = request.Description,
             EstimatedDuration = request.EstimatedDuration,
@@ -85,7 +88,7 @@ public class CreateTaskHandler(
 
         if (request.Files is { Count: > 0 })
         {
-            task.Archive = await UploadFiles(request.Files);
+            task.Archive = await UploadFiles(task.Id, request.Files);
         }
 
         var createdTask = await taskRepository.AddAsync(task, cancellationToken);
@@ -99,17 +102,17 @@ public class CreateTaskHandler(
         };
     }
 
-    private async Task<RobotTaskFiles> UploadFiles(IFormFileCollection files)
+    private async Task<RobotTaskFiles> UploadFiles(Guid taskId, IFormFileCollection files)
     {
+        var root = configuration["Storage:Root"]!;
         var userId = currentUser.GetUserId();
-        var directory = Path.Combine(Path.GetTempPath(), "Archives", userId!.Value.ToString());
+        var directory = Path.Combine(root, userId!.Value.ToString(), "TaskData");
         if (!Directory.Exists(directory))
         {
             Directory.CreateDirectory(directory);
         }
         
-        var id = Guid.NewGuid();
-        var path = Path.Combine(directory, $"{id}.zip");
+        var path = Path.Combine(directory, $"{taskId}.zip");
         await using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write); 
         using var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true);
 

@@ -23,7 +23,7 @@ public class GeneticTaskDistributionAlgorithm(ITenantRepository<TenantSettings> 
             return null;
         }
 
-        var geneticSettings = settings.GeneticAlgorithmSettings;
+        var geneticSettings = settings.AlgorithmSettings.GeneticAlgorithmSettings;
         PopulationSize = geneticSettings.PopulationSize;
         Generations = geneticSettings.Generations;
         MutationRate = geneticSettings.MutationRate;

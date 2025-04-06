@@ -20,6 +20,7 @@ public class GetTasksHandler(
                 Name = t.Name,
                 Description = t.Description,
                 Priority = t.Priority,
+                CategoryId = t.CategoryId,
                 Status = t.Status,
                 AssignedRobotId = t.AssignedRobotId,
                 Complexity = t.Complexity,

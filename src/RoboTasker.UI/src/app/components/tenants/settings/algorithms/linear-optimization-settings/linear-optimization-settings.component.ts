@@ -116,7 +116,7 @@ export class LinearOptimizationSettingsComponent extends BaseComponent implement
     };
 
     this.showLoader();
-    this.tenantSettingsService.updateLinearOptimizationAlgoParams(request).pipe(
+    this.tenantSettingsService.updateLinearOptimizationAlgorithm(request).pipe(
       catchError((error: HttpErrorResponse) => {
         const detail = error.error.detail;
         this.notificationService.showError('Error while loading properties', detail);

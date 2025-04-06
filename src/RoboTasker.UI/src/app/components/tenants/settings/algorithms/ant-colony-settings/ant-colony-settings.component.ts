@@ -58,7 +58,7 @@ export class AntColonySettingsComponent extends BaseComponent implements OnInit{
       alpha: this.form.value.alpha!,
       beta: this.form.value.beta!,
     };
-    this.settingsService.updateAntColony(request).pipe(
+    this.settingsService.updateAntColonyAlgorithm(request).pipe(
       catchError((error: HttpErrorResponse) => {
         const detail = error.error.detail;
         this.notificationService.showError('Error while updating settings', detail);

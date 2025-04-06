@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
 import {LayoutService} from '../../../services/layout/layout.service';
 import {Divider} from 'primeng/divider';
 import {Button} from 'primeng/button';
@@ -6,15 +6,16 @@ import {AuthService} from '../../../services/auth/auth.service';
 import {BaseComponent} from '../../common/base/base.component';
 import {MenuItem} from 'primeng/api';
 import {Ripple} from 'primeng/ripple';
-import {RouterLink, RouterLinkActive} from '@angular/router';
+import {NavigationEnd, RouterLink, RouterLinkActive} from '@angular/router';
 import {PermissionsNames} from '../../../models/tenants/permissions/permissions-names';
 import {HasPermissionDirective} from '../../../utils/directives/has-permission.directive';
 import {JsonPipe} from '@angular/common';
 import {CurrentUserService} from '../../../services/user/current-user.service';
 import {RoleNames} from '../../../models/tenants/roles/roles-names';
 import {HasRoleDirective} from '../../../utils/directives/has-role.directive';
-import {UiSettingsService} from '../../../services/layout/ui-settings.service';
 import {ExpandableMenuComponent} from '../../common/expandable-menu/expandable-menu.component';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {filter, tap} from 'rxjs';
 
 @Component({
   selector: 'rb-sidebar',
@@ -34,14 +35,11 @@ import {ExpandableMenuComponent} from '../../common/expandable-menu/expandable-m
 })
 export class SidebarComponent extends BaseComponent implements OnInit {
   private layoutService = inject(LayoutService);
-  private uiSettingsService = inject(UiSettingsService);
   private authService = inject(AuthService);
   private currentUser = inject(CurrentUserService);
-
-  theme = this.uiSettingsService.theme;
+  private destroyRef = inject(DestroyRef);
 
   public sidebarOpened = this.layoutService.sidebarOpened;
-  public isDesktop = this.layoutService.isDesktop;
   public isSuperAdmin = this.authService.isSuperAdmin;
 
   constructor() {
@@ -106,14 +104,13 @@ export class SidebarComponent extends BaseComponent implements OnInit {
       items: [
         {
           label: 'Settings',
-          routerLink: 'tenant/settings',
           icon: 'pi pi-cog',
           permission: PermissionsNames.TenantSettingsRead,
           items: [
             {
               label: 'Algorithms',
               routerLink: 'tenant/settings/algorithms',
-              icon: 'pi pi-cog',
+              icon: 'pi pi-microchip-ai',
               permission: PermissionsNames.TenantSettingsRead
             }
           ]
@@ -143,16 +140,53 @@ export class SidebarComponent extends BaseComponent implements OnInit {
 
   filteredMenu: RbMenuItem[] = [];
 
+  activeMenu = signal<RbMenuItem | null>(null);
+
   ngOnInit() {
     this.filteredMenu = this.filterMenuByPermissions(this.menu);
+    this.setInitialActiveMenu();
+
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        tap(() => this.setInitialActiveMenu()),
+        takeUntilDestroyed(this.destroyRef)
+      ).subscribe();
   }
 
-  onNavigate(link: string) {
-    if (!this.layoutService.isDesktop) {
-      this.layoutService.closeSidebar();
+  private setInitialActiveMenu() {
+    const currentUrl = this.router.url;
+    const path = this.findMenuPath(this.filteredMenu, currentUrl);
+
+    if (path.length) {
+      this.activeMenu.set(path[path.length - 1]);
+      path.forEach(i => i.expanded = true);
+    } else {
+      this.activeMenu.set(null);
+    }
+  }
+
+  private findMenuPath(menu: RbMenuItem[], currentUrl: string): RbMenuItem[] {
+    for (const item of menu) {
+      const itemLink = item.routerLink ?? '';
+
+      if (itemLink && currentUrl.includes(itemLink)) {
+        return [item];
+      }
+
+      if (item.items?.length) {
+        const childPath = this.findMenuPath(item.items, currentUrl);
+        if (childPath.length) {
+          return [item, ...childPath];
+        }
+      }
     }
 
-    this.router.navigateByUrl(link);
+    return [];
+  }
+
+  onNavigate(item: RbMenuItem) {
+    this.activeMenu.set(item);
   }
 
   filterMenuByPermissions(menu: RbMenuItem[]): RbMenuItem[] {

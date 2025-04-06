@@ -8,6 +8,7 @@ import {PaginatedList} from '../../models/common/paginated-list';
 import {Guid} from 'guid-typescript';
 import {Success} from '../../models/success';
 import {Message} from '../../models/chatting/message';
+import {ChatInfo} from '../../models/chatting/chat-info';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +23,16 @@ export class ChatService {
     updatedAt: Date
   }>();
 
+  public refreshChatList = new Subject<void>();
+
   createChat(data: CreateChatRequest): Observable<ChatBase> {
     const url = this.baseUrl;
     return this.base.post<CreateChatRequest, ChatBase>(url, data);
+  }
+
+  getChatInfo(id: Guid): Observable<ChatInfo> {
+    const url = `${this.baseUrl}/${id}`;
+    return this.base.get<ChatInfo>(url);
   }
 
   getChats(data: PaginationRequest) : Observable<PaginatedList<ChatBase>> {

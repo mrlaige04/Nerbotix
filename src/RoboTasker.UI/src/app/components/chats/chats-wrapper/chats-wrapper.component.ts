@@ -6,23 +6,21 @@ import {Divider} from 'primeng/divider';
 import {Button} from 'primeng/button';
 import {Avatar} from 'primeng/avatar';
 import {ChatService} from '../../../services/chatting/chat.service';
-import {UsersService} from '../../../services/users/users.service';
-import {CurrentUserService} from '../../../services/user/current-user.service';
 import {BaseComponent} from '../../common/base/base.component';
-import {UserBase} from '../../../models/users/user-base';
 import {catchError, finalize, of, tap} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ChatBase} from '../../../models/chatting/chat-base';
 import {DynamicDialogRef} from 'primeng/dynamicdialog';
 import {ChatAddComponent} from '../chat-add/chat-add.component';
 import {ContextMenu} from 'primeng/contextmenu';
-import {ConfirmationService, MenuItem, MenuItemCommandEvent} from 'primeng/api';
+import { MenuItem } from 'primeng/api';
 import {Guid} from 'guid-typescript';
 import {HttpErrorResponse} from '@angular/common/http';
-import {NgSwitch, NgSwitchCase} from '@angular/common';
+import { NgTemplateOutlet} from '@angular/common';
 import {HasPermissionDirective} from '../../../utils/directives/has-permission.directive';
 import {PermissionsNames} from '../../../models/tenants/permissions/permissions-names';
 import {IsSuperAdminDirective} from '../../../utils/directives/is-super-admin.directive';
+import {Drawer} from 'primeng/drawer';
 
 @Component({
   selector: 'rb-chats-wrapper',
@@ -34,10 +32,10 @@ import {IsSuperAdminDirective} from '../../../utils/directives/is-super-admin.di
     RouterLink,
     Avatar,
     ContextMenu,
-    NgSwitch,
-    NgSwitchCase,
     HasPermissionDirective,
-    IsSuperAdminDirective
+    IsSuperAdminDirective,
+    NgTemplateOutlet,
+    Drawer
   ],
   templateUrl: './chats-wrapper.component.html',
   styleUrl: './chats-wrapper.component.scss'
@@ -49,33 +47,22 @@ export class ChatsWrapperComponent extends BaseComponent implements OnInit, OnDe
   private dialogRef: DynamicDialogRef<ChatAddComponent> | undefined;
 
   chats = signal<ChatBase[]>([]);
+  currentChatId = signal<Guid | null>(null);
 
   pageNumber = signal<number>(1);
   pageSize = signal<number>(10);
 
-  currentChatId = signal<Guid | null>(null);
+  sideBarListOpened = signal<boolean>(false);
 
-  @ViewChild('cm') cm: ContextMenu | undefined;
-
-  contextMenuItems: MenuItem[] = [
-    {
-      label: 'Delete',
-      icon: 'pi pi-trash',
-      command: () => {
-        if (this.selectedChat()) {
-          this.deleteChat(this.selectedChat()!.id);
-        }
-      }
-    }
-  ];
-
-  selectedChat = signal<ChatBase | undefined>(undefined);
+  isDesktop: boolean = this.layoutService.isDesktop;
 
   ngOnInit() {
     this.layoutService.wrapToCard.set(false);
     this.getChats();
 
-    this.chatsService.chatLinkUpdated.subscribe((chat) => {
+    this.chatsService.chatLinkUpdated.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe((chat) => {
       const existingChat = this.chats().find(c => c.id === chat.id);
       if (!existingChat) {
         return;
@@ -86,6 +73,10 @@ export class ChatsWrapperComponent extends BaseComponent implements OnInit, OnDe
       existingChat!.updatedAt = chat.updatedAt;
       this.chats.set([existingChat!, ...filteredChats]);
     });
+
+    this.chatsService.refreshChatList.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => this.getChats());
   }
 
   private getChats() {
@@ -123,52 +114,15 @@ export class ChatsWrapperComponent extends BaseComponent implements OnInit, OnDe
     ).subscribe();
   }
 
-  onContextMenu(chat: ChatBase, event: Event) {
-    this.selectedChat.set(chat);
-    this.cm?.show(event);
-  }
-
-  onCmHide() {
-    this.selectedChat.set(undefined);
-  }
-
-  deleteChat(id: Guid) {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this chat?',
-      icon: 'pi pi-exclamation-triangle',
-      rejectButtonProps: {
-        label: 'No',
-        severity: 'success'
-      },
-      acceptButtonProps: {
-        label: 'Yes',
-        severity: 'danger'
-      },
-      accept: () => {
-        this.showLoader();
-        this.chatsService.deleteChat(id)
-          .pipe(
-            catchError((error: HttpErrorResponse) => {
-              const detail = error.error.detail;
-              this.notificationService.showError('Error while deleting chat', detail);
-              return of(null);
-            }),
-            tap((res) => {
-              if (res) {
-                this.getChats();
-                this.router.navigateByUrl('chats');
-              }
-            }),
-            takeUntilDestroyed(this.destroyRef),
-            finalize(() => this.hideLoader())
-          ).subscribe();
-      }
-    })
+  goToChatList() {
+    this.currentChatId.set(null);
+    this.router.navigate(['chat']);
   }
 
   goToChat(chat: ChatBase) {
     if (chat.id !== this.currentChatId()) {
       this.currentChatId.set(chat.id);
+      this.sideBarListOpened.set(false);
       this.router.navigateByUrl('chats', { skipLocationChange: true }).then(() => {
         this.router.navigate(['chats', chat.id]);
       });

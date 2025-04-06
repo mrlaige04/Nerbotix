@@ -6,7 +6,6 @@ export const CHATS_ROUTES: Routes = [
   {
     path: '',
     component: ChatsWrapperComponent,
-    title: 'Chats',
     children: [
       {
         path: ':id',

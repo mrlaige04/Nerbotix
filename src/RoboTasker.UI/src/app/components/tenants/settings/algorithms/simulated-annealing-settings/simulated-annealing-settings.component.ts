@@ -56,7 +56,7 @@ export class SimulatedAnnealingSettingsComponent extends BaseComponent implement
       iterationsPerTemp: this.form.value.iterationsPerTemp!,
       minTemperature: this.form.value.minTemperature!
     };
-    this.settingsService.updateSimulatedAnnealing(request).pipe(
+    this.settingsService.updateSimulatedAnnealingAlgorithm(request).pipe(
       catchError((error: HttpErrorResponse) => {
         const detail = error.error.detail;
         this.notificationService.showError('Error while updating settings', detail);

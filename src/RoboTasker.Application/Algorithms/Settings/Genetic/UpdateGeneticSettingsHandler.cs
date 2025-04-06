@@ -26,9 +26,9 @@ public class UpdateGeneticSettingsHandler(
             return Error.Failure(TenantErrors.NotFound, TenantErrors.NotFoundDescription);
         }
 
-        settings.GeneticAlgorithmSettings.PopulationSize = request.PopulationSize;
-        settings.GeneticAlgorithmSettings.MutationRate = request.MutationRate;
-        settings.GeneticAlgorithmSettings.Generations = request.Generations;
+        settings.AlgorithmSettings.GeneticAlgorithmSettings.PopulationSize = request.PopulationSize;
+        settings.AlgorithmSettings.GeneticAlgorithmSettings.MutationRate = request.MutationRate;
+        settings.AlgorithmSettings.GeneticAlgorithmSettings.Generations = request.Generations;
         await settingsRepository.UpdateAsync(settings, cancellationToken);
         
         return new Success();

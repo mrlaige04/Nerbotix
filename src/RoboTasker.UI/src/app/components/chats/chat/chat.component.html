@@ -4,13 +4,14 @@
       <div class="chat flex gap-4 p-1 align-items-center">
         <p-avatar icon="pi pi-user"/>
         <div class="chat-info">
-          <h3 class="title">Test</h3>
-          <div class="active-users"></div>
+          <h3 class="title">{{ chat()?.name }}</h3>
+          <div class="active-users text-sm text-gray-500 mt-1">{{ chat()?.userCount }} users</div>
         </div>
-        <div class="active-users"></div>
       </div>
       <div class="actions">
-        <p-button icon="pi pi-ellipsis-v" text outlined rounded/>
+        <p-menu #menu popup [model]="settingsMenu"/>
+        <p-button icon="pi pi-ellipsis-v" text outlined
+                  rounded (onClick)="menu.toggle($event)"/>
       </div>
     </div>
     <p-divider/>

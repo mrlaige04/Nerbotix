@@ -9,8 +9,7 @@ using RoboTasker.Domain.Tenants;
 namespace RoboTasker.Application.Users.UpdateUser;
 
 public class UpdateUserHandler(
-    ITenantRepository<Domain.Tenants.User> userRepository,
-    ITenantRepository<Role> roleRepository) : ICommandHandler<UpdateUserCommand, UserBaseResponse>
+    ITenantRepository<Domain.Tenants.User> userRepository) : ICommandHandler<UpdateUserCommand, UserBaseResponse>
 {
     public async Task<ErrorOr<UserBaseResponse>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {

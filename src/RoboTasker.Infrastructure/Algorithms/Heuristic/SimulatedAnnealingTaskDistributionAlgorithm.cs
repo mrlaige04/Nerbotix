@@ -25,7 +25,7 @@ public class SimulatedAnnealingTaskDistributionAlgorithm(
             return null;
         }
 
-        var annealingSettings = settings.SimulatedAnnealingAlgorithmSettings;
+        var annealingSettings = settings.AlgorithmSettings.SimulatedAnnealingAlgorithmSettings;
         InitialTemperature = annealingSettings.InitialTemperature;
         CoolingRate = annealingSettings.CoolingRate;
         IterationsPerTemp = annealingSettings.IterationsPerTemp;

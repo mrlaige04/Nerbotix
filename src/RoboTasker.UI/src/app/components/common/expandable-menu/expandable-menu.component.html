@@ -1,18 +1,17 @@
-<p-menu [model]="menus()" class="w-full" styleClass="border-none bg-transparent">
+<p-menu [model]="menus()" class="w-full select-none" styleClass="border-none bg-transparent select-none">
   <ng-template #submenuheader let-item>
     <div class="text-primary font-bold text-md">{{ item.label }}</div>
   </ng-template>
   <ng-template #item let-item>
     @let isExpanded = item.expanded;
-    <div class="flex justify-content-between cursor-pointer"
+    <div class="flex justify-content-between cursor-pointer border-round {{ !isActive(item) || 'bg-gray-600' }}">
+      <a class="flex flex-grow-1 align-items-center p-2 px-3"
          *rbHasPermission="item.permission"
-         [routerLink]="item.routerLink"
-         routerLinkActive="routerLinkActive">
-      <a class="flex align-items-center p-2 px-3"
-         (click)="onNavigate(item.routerLink)">
+         (click)="onNavigate(item)">
         <span [class]="item.icon"></span>
         <span class="ml-2 text-lg">{{ item.label }}</span>
       </a>
+
       @if (item.items && item.items.length) {
         <p-button text icon="pi pi-chevron-{{ isExpanded ? 'up' : 'down' }}"
                   outlined styleClass="m-1"
@@ -21,7 +20,7 @@
     </div>
 
     @if (item.items && item.items.length && isExpanded) {
-      <rb-expandable-menu [menus]="item.items"/>
+      <rb-expandable-menu (onNavigated)="onNavigated.emit($event)" [menus]="item.items" [activeMenu]="activeMenu()"/>
     }
   </ng-template>
 </p-menu>

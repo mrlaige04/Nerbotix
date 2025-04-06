@@ -20,7 +20,7 @@ public class LoadBalancingTaskDistributionAlgorithm(
             return null;
         }
         
-        var complexityFactor = settings.LoadBalancingAlgorithmSettings.ComplexityFactor;
+        var complexityFactor = settings.AlgorithmSettings.LoadBalancingAlgorithmSettings.ComplexityFactor;
         
         var selectedRobot = await robots
             .OrderBy(r => r.TasksQueue.Sum(t => 

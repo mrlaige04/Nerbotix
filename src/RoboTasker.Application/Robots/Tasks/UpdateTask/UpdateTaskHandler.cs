@@ -2,6 +2,7 @@
 using ErrorOr;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using RoboTasker.Application.Common.Abstractions;
 using RoboTasker.Application.Common.Errors.Robots;
 using RoboTasker.Domain.Capabilities;
@@ -15,6 +16,7 @@ namespace RoboTasker.Application.Robots.Tasks.UpdateTask;
 
 public class UpdateTaskHandler(
     ICurrentUser currentUser,
+    IConfiguration configuration,
     ITenantRepository<RobotTask> taskRepository,
     ITenantRepository<RobotCategory> robotCategoryRepository,
     ITenantRepository<Capability> capabilityRepository) : ICommandHandler<UpdateTaskCommand, TaskBaseResponse>
@@ -150,7 +152,7 @@ public class UpdateTaskHandler(
         {
             if (task.Archive == null)
             {
-                task.Archive = await CreateArchiveAsync(request.Files);
+                task.Archive = await CreateArchiveAsync(task.Id, request.Files);
             }
             else
             {
@@ -167,22 +169,22 @@ public class UpdateTaskHandler(
         };
     }
 
-    private async Task<RobotTaskFiles?> CreateArchiveAsync(IFormFileCollection? files)
+    private async Task<RobotTaskFiles?> CreateArchiveAsync(Guid taskId, IFormFileCollection? files)
     {
         if (files == null || files.Count == 0)
         {
             return null;
         }
         
+        var root = configuration["Storage:Root"]!;
         var userId = currentUser.GetUserId();
-        var directory = Path.Combine(Path.GetTempPath(), "Archives", userId!.Value.ToString());
+        var directory = Path.Combine(root, userId!.Value.ToString(), "TaskData");
         if (!Directory.Exists(directory))
         {
             Directory.CreateDirectory(directory);
         }
         
-        var id = Guid.NewGuid();
-        var path = Path.Combine(directory, $"{id}.zip");
+        var path = Path.Combine(directory, $"{taskId}.zip");
         await using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write); 
         using var archive = new ZipArchive(fileStream, ZipArchiveMode.Create, true);
 
@@ -203,8 +205,9 @@ public class UpdateTaskHandler(
 
     private async Task<RobotTaskFiles?> UpdateArchiveAsync(string path, string[]? deleteFiles, IFormFileCollection? createFiles)
     {
+        var root = configuration["Storage:Root"]!;
         var userId = currentUser.GetUserId();
-        var directory = Path.Combine(Path.GetTempPath(), "Archives", userId!.Value.ToString());
+        var directory = Path.Combine(root, "TaskData", userId!.Value.ToString());
 
         if (!Directory.Exists(directory))
         {
@@ -216,7 +219,7 @@ public class UpdateTaskHandler(
             await File.Create(path).DisposeAsync();
         }
 
-        var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        var tempDir = Path.Combine(root, userId.Value.ToString(), "Temp", Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempDir);
 
         try
@@ -245,17 +248,20 @@ public class UpdateTaskHandler(
                 }
             }
 
-            var newArchivePath = Path.Combine(directory, $"{Guid.NewGuid()}.zip");
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
 
-            ZipFile.CreateFromDirectory(tempDir, newArchivePath, CompressionLevel.Optimal, false);
+            ZipFile.CreateFromDirectory(tempDir, path, CompressionLevel.Optimal, false);
 
             Directory.Delete(tempDir, true);
 
             return new RobotTaskFiles
             {
-                Url = newArchivePath,
-                FileName = Path.GetFileName(newArchivePath),
-                Size = new FileInfo(newArchivePath).Length,
+                Url = path,
+                FileName = Path.GetFileName(path),
+                Size = new FileInfo(path).Length,
             };
         }
         catch (Exception e)

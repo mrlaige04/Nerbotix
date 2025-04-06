@@ -32,6 +32,7 @@ using RoboTasker.Infrastructure.Data.Prefill;
 using RoboTasker.Infrastructure.Emailing;
 using RoboTasker.Infrastructure.Hangfire;
 using RoboTasker.Infrastructure.Hangfire.Jobs;
+using RoboTasker.Infrastructure.Storage;
 
 namespace RoboTasker.Infrastructure;
 
@@ -45,6 +46,7 @@ public static class RegisterDependencies
         services.AddEmailing(configuration);
         services.AddBackgroundJobs(configuration);
         services.AddChatting(configuration);
+        services.AddStorage(configuration);
     }
 
     private static void AddTaskDistribution(this IServiceCollection services, IConfiguration configuration)
@@ -68,6 +70,15 @@ public static class RegisterDependencies
         
         // AI-based
         
+    }
+
+    private static void AddStorage(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.Configure<StorageOptions>(configuration.GetSection(StorageOptions.SectionName));
+        
+        var options = configuration.GetSection(StorageOptions.SectionName).Get<StorageOptions>();
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentException.ThrowIfNullOrEmpty(options.Root);
     }
 
     private static void AddEmailing(this IServiceCollection services, IConfiguration configuration)
@@ -156,8 +167,12 @@ public static class RegisterDependencies
             .AddTokenProvider<NumericEmailTokenProvider<User>>("NumericEmail")
             .AddEntityFrameworkStores<RoboTaskerDbContext>();
 
+        services.Configure<DataProtectionTokenProviderOptions>(o =>
+        {
+            o.TokenLifespan = TimeSpan.FromMinutes(15);
+        });
+        
         services.AddScoped<TokenService>();
-
         services.AddScoped<IUserEmailSender, UserEmailSender>();
     }
 

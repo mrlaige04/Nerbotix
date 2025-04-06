@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using Microsoft.EntityFrameworkCore;
 using RoboTasker.Application.Common.Abstractions;
 using RoboTasker.Application.Common.Errors.Robots;
 using RoboTasker.Domain.Repositories.Abstractions;
@@ -13,6 +14,7 @@ public class DeleteTaskHandler(
     {
         var task = await taskRepository.GetAsync(
             c => c.Id == request.Id,
+            q => q.Include(t => t.Archive),
             cancellationToken: cancellationToken);
         
         if (task == null)
@@ -21,6 +23,11 @@ public class DeleteTaskHandler(
         }
         
         await taskRepository.DeleteAsync(task, cancellationToken);
+
+        if (task.Archive != null)
+        {
+            File.Delete(task.Archive.Url);
+        }
         
         return new Success();
     }
