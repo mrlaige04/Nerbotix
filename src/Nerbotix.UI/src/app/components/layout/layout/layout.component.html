@@ -1,0 +1,20 @@
+<div class="layout-container">
+  <nb-navbar/>
+  <nb-sidebar/>
+
+  <div class="layout-content-wrapper" [class.opened]="sidebarOpened()" (click)="closeSidebarIfMobile()">
+    @if (title()) {
+      <h2 class="title">{{ title() }}</h2>
+    }
+
+    <div class="layout-content max-h-max">
+      @if (wrapToCard()) {
+        <p-card>
+          <router-outlet/>
+        </p-card>
+      } @else {
+        <router-outlet/>
+      }
+    </div>
+  </div>
+</div>

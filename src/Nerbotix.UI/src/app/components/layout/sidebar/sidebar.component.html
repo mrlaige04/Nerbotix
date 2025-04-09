@@ -1,0 +1,12 @@
+<div class="sidebar" [class.opened]="sidebarOpened()">
+  <div class="sidebar-content">
+    <div class="menu">
+      @let menu = isSuperAdmin() ? superAdminMenu : filteredMenu;
+      <nb-expandable-menu (onNavigated)="onNavigate($event)" [activeMenu]="activeMenu()" [menus]="menu"/>
+    </div>
+    <div class="footer">
+      <p-divider/>
+      <p-button text label="Logout" styleClass="w-full" (onClick)="logout()"/>
+    </div>
+  </div>
+</div>

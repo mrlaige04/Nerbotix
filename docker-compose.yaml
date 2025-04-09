@@ -1,61 +1,61 @@
 ﻿services:
-  robotasker.api:
-    image: robotasker.api
+  nerbotix.api:
+    image: nerbotix.api
     build:
       context: .
-      dockerfile: src/RoboTasker.Api/Dockerfile
+      dockerfile: src/Nerbotix.Api/Dockerfile
     networks:
-      - robotasker_network
+      - nerbotix_network
     ports:
       - "8080:8080"
       - "8081:8081"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      ConnectionStrings__DefaultConnection: Host=robotasker.db;Port=5432;Database=${ROBOTASKER_DB};Username=${ROBOTASKER_DB_USER};Password=${ROBOTASKER_DB_PASSWORD}
+      ConnectionStrings__DefaultConnection: Host=nerbotix.db;Port=5432;Database=${NERBOTIX_DB};Username=${NERBOTIX_DB_USER};Password=${NERBOTIX_DB_PASSWORD}
       SuperAdmin__Email: ${SuperAdminEmail}
       SuperAdmin__Password: ${SuperAdminPassword}
     depends_on:
-      - robotasker.db
+      - nerbotix.db
     volumes:
       - api-storage:/app/storage
-    command: ./wait-for-it.sh robotasker.db:5432 -- dotnet RoboTasker.Api.dll
+    command: ./wait-for-it.sh nerbotix.db:5432 -- dotnet Nerbotix.Api.dll
   
-  robotasker.ui:
-    image: robotasker.ui
+  nerbotix.ui:
+    image: nerbotix.ui
     build:
-      context: ./src/RoboTasker.UI
+      context: ./src/Nerbotix.UI
       dockerfile: Dockerfile
     networks:
-      - robotasker_network
+      - nerbotix_network
     ports:
       - "4200:80"
     depends_on:
-      - robotasker.api
+      - nerbotix.api
 
-  robotasker.db:
+  nerbotix.db:
     image: postgis/postgis
     restart: always
     networks:
-      - robotasker_network
+      - nerbotix_network
     environment:
-      POSTGRES_DB: ${ROBOTASKER_DB}
-      POSTGRES_USER: ${ROBOTASKER_DB_USER}
-      POSTGRES_PASSWORD: ${ROBOTASKER_DB_PASSWORD}
+      POSTGRES_DB: ${NERBOTIX_DB}
+      POSTGRES_USER: ${NERBOTIX_DB_USER}
+      POSTGRES_PASSWORD: ${NERBOTIX_DB_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "robotasker"]
+      test: ["CMD", "pg_isready", "-U", "nerbotix"]
       interval: 10s
       retries: 5
       start_period: 30s
       timeout: 5s
 
 networks:
-  robotasker_network:
+  nerbotix_network:
     driver: bridge
-    name: robotasker_network
+    name: nerbotix_network
     
 volumes:
   pgdata:
