@@ -18,7 +18,6 @@
       - nerbotix.db
     volumes:
       - api-storage:/app/storage
-    command: ./wait-for-it.sh nerbotix.db:5432 -- dotnet Nerbotix.Api.dll
   
   nerbotix.ui:
     image: nerbotix.ui
