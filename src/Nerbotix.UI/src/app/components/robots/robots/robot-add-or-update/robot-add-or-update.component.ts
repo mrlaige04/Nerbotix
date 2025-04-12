@@ -70,7 +70,7 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
   form = this.fb.group({
     name: this.fb.control('', Validators.required),
     categoryId: this.fb.control('', Validators.required),
-    properties: this.fb.array([], [Validators.required]),
+    properties: this.fb.array([]),
     customProperties: this.fb.array([]),
     capabilities: this.fb.array([])
   });
