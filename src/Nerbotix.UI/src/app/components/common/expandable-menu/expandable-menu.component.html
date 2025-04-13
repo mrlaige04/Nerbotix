@@ -4,7 +4,7 @@
   </ng-template>
   <ng-template #item let-item>
     @let isExpanded = item.expanded;
-    <div class="flex justify-content-between cursor-pointer border-round {{ !isActive(item) || 'bg-gray-600' }}">
+    <div class="flex justify-content-between cursor-pointer border-round {{ !isActive(item) || 'bg-gray-400' }}">
       <a class="flex flex-grow-1 align-items-center p-2 px-3"
          *nbHasPermission="item.permission"
          (click)="onNavigate(item)">

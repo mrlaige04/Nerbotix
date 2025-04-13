@@ -1,0 +1,6 @@
+@if (!isLoading() && options()) {
+  <div echarts class="base-chart"
+       [theme]="isDarkTheme ? 'dark' : null"
+       [loading]="isLoading()"
+       [options]="finalOptions()"></div>
+}

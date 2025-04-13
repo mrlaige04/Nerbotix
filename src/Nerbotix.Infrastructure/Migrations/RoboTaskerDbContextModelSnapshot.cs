@@ -3,8 +3,8 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Nerbotix.Infrastructure.Data;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -111,7 +111,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Capabilities.Capability", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Capabilities.Capability", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -143,7 +143,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("capabilities", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Capabilities.CapabilityGroup", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Capabilities.CapabilityGroup", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -170,7 +170,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("capability_groups", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Capabilities.RobotCapability", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Capabilities.RobotCapability", b =>
                 {
                     b.Property<Guid>("RobotId")
                         .HasColumnType("uuid");
@@ -197,7 +197,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("robots_capabilities", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Chatting.Chat", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Chatting.Chat", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -223,7 +223,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("chats", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Chatting.ChatMessage", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Chatting.ChatMessage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -258,7 +258,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("chat_messages", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Chatting.ChatUser", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Chatting.ChatUser", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -285,7 +285,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("chats_users", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.Robot", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.Robot", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -326,7 +326,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("robots", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotCategory", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotCategory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -356,7 +356,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("robot_categories", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotCommunication", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotCommunication", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -389,7 +389,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotCustomProperty", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotCustomProperty", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -423,7 +423,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("robot_custom_properties", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotLocation", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotLocation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -458,7 +458,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("RobotLocation");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotProperty", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotProperty", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -493,7 +493,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("robot_category_properties", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotPropertyValue", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotPropertyValue", b =>
                 {
                     b.Property<Guid>("RobotId")
                         .HasColumnType("uuid");
@@ -524,7 +524,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("robot_properties_values", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tasks.Data.RobotTaskData", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tasks.Data.RobotTaskData", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -560,7 +560,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("task_data", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tasks.Data.RobotTaskFiles", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tasks.Data.RobotTaskFiles", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -601,7 +601,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("task_archives", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tasks.RobotTask", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tasks.RobotTask", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -613,7 +613,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Property<Guid?>("AssignedRobotId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CategoryId")
+                    b.Property<Guid?>("CategoryId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset?>("CompletedAt")
@@ -659,7 +659,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("robot_tasks", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tasks.RobotTaskRequirement", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tasks.RobotTaskRequirement", b =>
                 {
                     b.Property<Guid>("TaskId")
                         .HasColumnType("uuid");
@@ -689,7 +689,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("task_requirements", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.Permission", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.Permission", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -724,7 +724,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("permissions", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.PermissionGroup", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.PermissionGroup", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -754,7 +754,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("permission_groups", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.Role", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -795,7 +795,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("roles", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.RolePermission", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.RolePermission", b =>
                 {
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uuid");
@@ -810,7 +810,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("roles_permissions", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.Settings.TenantSettings", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.Settings.TenantSettings", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -833,7 +833,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("tenant_settings", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.Tenant", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.Tenant", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -864,7 +864,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("tenants", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.User", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -946,7 +946,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.UserRole", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.UserRole", b =>
                 {
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
@@ -972,9 +972,9 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("users_roles", (string)null);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.Communications.HttpCommunication", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.Communications.HttpCommunication", b =>
                 {
-                    b.HasBaseType("RoboTasker.Domain.Robots.RobotCommunication");
+                    b.HasBaseType("Nerbotix.Domain.Robots.RobotCommunication");
 
                     b.Property<string>("ApiEndpoint")
                         .IsRequired()
@@ -987,9 +987,9 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.HasDiscriminator().HasValue(1);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.Communications.MqttCommunication", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.Communications.MqttCommunication", b =>
                 {
-                    b.HasBaseType("RoboTasker.Domain.Robots.RobotCommunication");
+                    b.HasBaseType("Nerbotix.Domain.Robots.RobotCommunication");
 
                     b.Property<string>("MqttBrokerAddress")
                         .IsRequired()
@@ -1010,23 +1010,23 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.HasDiscriminator().HasValue(0);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.Communications.TcpCommunication", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.Communications.TcpCommunication", b =>
                 {
-                    b.HasBaseType("RoboTasker.Domain.Robots.RobotCommunication");
+                    b.HasBaseType("Nerbotix.Domain.Robots.RobotCommunication");
 
                     b.HasDiscriminator().HasValue(2);
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.Communications.WebSocketCommunication", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.Communications.WebSocketCommunication", b =>
                 {
-                    b.HasBaseType("RoboTasker.Domain.Robots.RobotCommunication");
+                    b.HasBaseType("Nerbotix.Domain.Robots.RobotCommunication");
 
                     b.HasDiscriminator().HasValue(3);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tenants.Role", null)
+                    b.HasOne("Nerbotix.Domain.Tenants.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1035,7 +1035,7 @@ namespace Nerbotix.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tenants.User", null)
+                    b.HasOne("Nerbotix.Domain.Tenants.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1044,7 +1044,7 @@ namespace Nerbotix.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tenants.User", null)
+                    b.HasOne("Nerbotix.Domain.Tenants.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1053,16 +1053,16 @@ namespace Nerbotix.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tenants.User", null)
+                    b.HasOne("Nerbotix.Domain.Tenants.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Capabilities.Capability", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Capabilities.Capability", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Capabilities.CapabilityGroup", "Group")
+                    b.HasOne("Nerbotix.Domain.Capabilities.CapabilityGroup", "Group")
                         .WithMany("Capabilities")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1071,15 +1071,15 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("Group");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Capabilities.RobotCapability", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Capabilities.RobotCapability", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Capabilities.Capability", "Capability")
+                    b.HasOne("Nerbotix.Domain.Capabilities.Capability", "Capability")
                         .WithMany("Robots")
                         .HasForeignKey("CapabilityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RoboTasker.Domain.Robots.Robot", "Robot")
+                    b.HasOne("Nerbotix.Domain.Robots.Robot", "Robot")
                         .WithMany("Capabilities")
                         .HasForeignKey("RobotId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1090,18 +1090,18 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("Robot");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Chatting.Chat", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Chatting.Chat", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tenants.Tenant", null)
+                    b.HasOne("Nerbotix.Domain.Tenants.Tenant", null)
                         .WithMany("Chats")
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Chatting.ChatMessage", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Chatting.ChatMessage", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Chatting.Chat", "Chat")
+                    b.HasOne("Nerbotix.Domain.Chatting.Chat", "Chat")
                         .WithMany("Messages")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1110,15 +1110,15 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("Chat");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Chatting.ChatUser", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Chatting.ChatUser", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Chatting.Chat", "Chat")
+                    b.HasOne("Nerbotix.Domain.Chatting.Chat", "Chat")
                         .WithMany("Users")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RoboTasker.Domain.Tenants.User", "User")
+                    b.HasOne("Nerbotix.Domain.Tenants.User", "User")
                         .WithMany("Chats")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1129,9 +1129,9 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.Robot", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.Robot", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Robots.RobotCategory", "Category")
+                    b.HasOne("Nerbotix.Domain.Robots.RobotCategory", "Category")
                         .WithMany("Robots")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1140,20 +1140,20 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotCommunication", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotCommunication", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Robots.Robot", "Robot")
+                    b.HasOne("Nerbotix.Domain.Robots.Robot", "Robot")
                         .WithOne("Communication")
-                        .HasForeignKey("RoboTasker.Domain.Robots.RobotCommunication", "RobotId")
+                        .HasForeignKey("Nerbotix.Domain.Robots.RobotCommunication", "RobotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Robot");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotCustomProperty", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotCustomProperty", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Robots.Robot", "Robot")
+                    b.HasOne("Nerbotix.Domain.Robots.Robot", "Robot")
                         .WithMany("CustomProperties")
                         .HasForeignKey("RobotId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1162,20 +1162,20 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("Robot");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotLocation", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotLocation", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Robots.Robot", "Robot")
+                    b.HasOne("Nerbotix.Domain.Robots.Robot", "Robot")
                         .WithOne("Location")
-                        .HasForeignKey("RoboTasker.Domain.Robots.RobotLocation", "RobotId")
+                        .HasForeignKey("Nerbotix.Domain.Robots.RobotLocation", "RobotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Robot");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotProperty", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotProperty", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Robots.RobotCategory", "Category")
+                    b.HasOne("Nerbotix.Domain.Robots.RobotCategory", "Category")
                         .WithMany("Properties")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1184,15 +1184,15 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotPropertyValue", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotPropertyValue", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Robots.RobotProperty", "Property")
+                    b.HasOne("Nerbotix.Domain.Robots.RobotProperty", "Property")
                         .WithMany("Values")
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RoboTasker.Domain.Robots.Robot", "Robot")
+                    b.HasOne("Nerbotix.Domain.Robots.Robot", "Robot")
                         .WithMany("Properties")
                         .HasForeignKey("RobotId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1203,9 +1203,9 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("Robot");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tasks.Data.RobotTaskData", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tasks.Data.RobotTaskData", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tasks.RobotTask", "Task")
+                    b.HasOne("Nerbotix.Domain.Tasks.RobotTask", "Task")
                         .WithMany("TaskData")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1214,43 +1214,42 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tasks.Data.RobotTaskFiles", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tasks.Data.RobotTaskFiles", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tasks.RobotTask", "Task")
+                    b.HasOne("Nerbotix.Domain.Tasks.RobotTask", "Task")
                         .WithOne("Archive")
-                        .HasForeignKey("RoboTasker.Domain.Tasks.Data.RobotTaskFiles", "TaskId")
+                        .HasForeignKey("Nerbotix.Domain.Tasks.Data.RobotTaskFiles", "TaskId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tasks.RobotTask", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tasks.RobotTask", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Robots.Robot", "AssignedRobot")
+                    b.HasOne("Nerbotix.Domain.Robots.Robot", "AssignedRobot")
                         .WithMany("TasksQueue")
                         .HasForeignKey("AssignedRobotId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("RoboTasker.Domain.Robots.RobotCategory", "Category")
+                    b.HasOne("Nerbotix.Domain.Robots.RobotCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("AssignedRobot");
 
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tasks.RobotTaskRequirement", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tasks.RobotTaskRequirement", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Capabilities.Capability", "Capability")
+                    b.HasOne("Nerbotix.Domain.Capabilities.Capability", "Capability")
                         .WithMany()
                         .HasForeignKey("CapabilityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RoboTasker.Domain.Tasks.RobotTask", "Task")
+                    b.HasOne("Nerbotix.Domain.Tasks.RobotTask", "Task")
                         .WithMany("Requirements")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1261,9 +1260,9 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.Permission", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.Permission", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tenants.PermissionGroup", "Group")
+                    b.HasOne("Nerbotix.Domain.Tenants.PermissionGroup", "Group")
                         .WithMany("Permissions")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1272,18 +1271,18 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("Group");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.PermissionGroup", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.PermissionGroup", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tenants.Tenant", null)
+                    b.HasOne("Nerbotix.Domain.Tenants.Tenant", null)
                         .WithMany("PermissionGroups")
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.Role", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.Role", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tenants.Tenant", "Tenant")
+                    b.HasOne("Nerbotix.Domain.Tenants.Tenant", "Tenant")
                         .WithMany("Roles")
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1292,15 +1291,15 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.RolePermission", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.RolePermission", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tenants.Permission", "Permission")
+                    b.HasOne("Nerbotix.Domain.Tenants.Permission", "Permission")
                         .WithMany("Roles")
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RoboTasker.Domain.Tenants.Role", "Role")
+                    b.HasOne("Nerbotix.Domain.Tenants.Role", "Role")
                         .WithMany("Permissions")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1311,15 +1310,15 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.Settings.TenantSettings", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.Settings.TenantSettings", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tenants.Tenant", null)
+                    b.HasOne("Nerbotix.Domain.Tenants.Tenant", null)
                         .WithOne("Settings")
-                        .HasForeignKey("RoboTasker.Domain.Tenants.Settings.TenantSettings", "TenantId")
+                        .HasForeignKey("Nerbotix.Domain.Tenants.Settings.TenantSettings", "TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("RoboTasker.Domain.Tenants.Settings.Algorithms.TenantAlgorithmSettings", "AlgorithmSettings", b1 =>
+                    b.OwnsOne("Nerbotix.Domain.Tenants.Settings.Algorithms.TenantAlgorithmSettings", "AlgorithmSettings", b1 =>
                         {
                             b1.Property<Guid>("TenantSettingsId")
                                 .HasColumnType("uuid");
@@ -1347,7 +1346,7 @@ namespace Nerbotix.Infrastructure.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("TenantSettingsId");
 
-                            b1.OwnsOne("RoboTasker.Domain.Tenants.Settings.Algorithms.TenantAntColonyAlgorithmSettings", "AntColonyAlgorithmSettings", b2 =>
+                            b1.OwnsOne("Nerbotix.Domain.Tenants.Settings.Algorithms.TenantAntColonyAlgorithmSettings", "AntColonyAlgorithmSettings", b2 =>
                                 {
                                     b2.Property<Guid>("TenantAlgorithmSettingsTenantSettingsId")
                                         .HasColumnType("uuid");
@@ -1375,7 +1374,7 @@ namespace Nerbotix.Infrastructure.Migrations
                                         .HasForeignKey("TenantAlgorithmSettingsTenantSettingsId");
                                 });
 
-                            b1.OwnsOne("RoboTasker.Domain.Tenants.Settings.Algorithms.TenantGeneticAlgorithmSettings", "GeneticAlgorithmSettings", b2 =>
+                            b1.OwnsOne("Nerbotix.Domain.Tenants.Settings.Algorithms.TenantGeneticAlgorithmSettings", "GeneticAlgorithmSettings", b2 =>
                                 {
                                     b2.Property<Guid>("TenantAlgorithmSettingsTenantSettingsId")
                                         .HasColumnType("uuid");
@@ -1397,7 +1396,7 @@ namespace Nerbotix.Infrastructure.Migrations
                                         .HasForeignKey("TenantAlgorithmSettingsTenantSettingsId");
                                 });
 
-                            b1.OwnsOne("RoboTasker.Domain.Tenants.Settings.Algorithms.TenantLoadBalancingAlgorithmSettings", "LoadBalancingAlgorithmSettings", b2 =>
+                            b1.OwnsOne("Nerbotix.Domain.Tenants.Settings.Algorithms.TenantLoadBalancingAlgorithmSettings", "LoadBalancingAlgorithmSettings", b2 =>
                                 {
                                     b2.Property<Guid>("TenantAlgorithmSettingsTenantSettingsId")
                                         .HasColumnType("uuid");
@@ -1413,7 +1412,7 @@ namespace Nerbotix.Infrastructure.Migrations
                                         .HasForeignKey("TenantAlgorithmSettingsTenantSettingsId");
                                 });
 
-                            b1.OwnsOne("RoboTasker.Domain.Tenants.Settings.Algorithms.TenantSimulatedAnnealingAlgorithmSettings", "SimulatedAnnealingAlgorithmSettings", b2 =>
+                            b1.OwnsOne("Nerbotix.Domain.Tenants.Settings.Algorithms.TenantSimulatedAnnealingAlgorithmSettings", "SimulatedAnnealingAlgorithmSettings", b2 =>
                                 {
                                     b2.Property<Guid>("TenantAlgorithmSettingsTenantSettingsId")
                                         .HasColumnType("uuid");
@@ -1455,9 +1454,9 @@ namespace Nerbotix.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.User", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.User", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tenants.Tenant", "Tenant")
+                    b.HasOne("Nerbotix.Domain.Tenants.Tenant", "Tenant")
                         .WithMany("Users")
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -1465,21 +1464,21 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.UserRole", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.UserRole", b =>
                 {
-                    b.HasOne("RoboTasker.Domain.Tenants.Role", "Role")
+                    b.HasOne("Nerbotix.Domain.Tenants.Role", "Role")
                         .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RoboTasker.Domain.Tenants.Tenant", "Tenant")
+                    b.HasOne("Nerbotix.Domain.Tenants.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RoboTasker.Domain.Tenants.User", "User")
+                    b.HasOne("Nerbotix.Domain.Tenants.User", "User")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1492,24 +1491,24 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Capabilities.Capability", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Capabilities.Capability", b =>
                 {
                     b.Navigation("Robots");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Capabilities.CapabilityGroup", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Capabilities.CapabilityGroup", b =>
                 {
                     b.Navigation("Capabilities");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Chatting.Chat", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Chatting.Chat", b =>
                 {
                     b.Navigation("Messages");
 
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.Robot", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.Robot", b =>
                 {
                     b.Navigation("Capabilities");
 
@@ -1526,19 +1525,19 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("TasksQueue");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotCategory", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotCategory", b =>
                 {
                     b.Navigation("Properties");
 
                     b.Navigation("Robots");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Robots.RobotProperty", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotProperty", b =>
                 {
                     b.Navigation("Values");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tasks.RobotTask", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tasks.RobotTask", b =>
                 {
                     b.Navigation("Archive");
 
@@ -1547,24 +1546,24 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("TaskData");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.Permission", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.Permission", b =>
                 {
                     b.Navigation("Roles");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.PermissionGroup", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.PermissionGroup", b =>
                 {
                     b.Navigation("Permissions");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.Role", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.Role", b =>
                 {
                     b.Navigation("Permissions");
 
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.Tenant", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.Tenant", b =>
                 {
                     b.Navigation("Chats");
 
@@ -1578,7 +1577,7 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("RoboTasker.Domain.Tenants.User", b =>
+            modelBuilder.Entity("Nerbotix.Domain.Tenants.User", b =>
                 {
                     b.Navigation("Chats");
 

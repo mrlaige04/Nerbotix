@@ -4,6 +4,8 @@ using Nerbotix.Application;
 using Nerbotix.Infrastructure;
 using Nerbotix.Infrastructure.Chatting;
 
+Console.Clear();
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplication();

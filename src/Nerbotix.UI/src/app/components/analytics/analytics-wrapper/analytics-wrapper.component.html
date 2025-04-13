@@ -1,0 +1,15 @@
+<div class="analytics-wrapper">
+  <div class="content grid p-2">
+    @if (!isSuperAdmin()) {
+      <nb-tasks-statuses-analytic class="col-12 md:col-6"/>
+      <nb-robots-statuses-analytic class="col-12 md:col-6"/>
+
+      <nb-tasks-count-month-analytic class="col-12 md:col-8"/>
+      <nb-active-tasks-analytic class="col-12 md:col-4"/>
+
+      <nb-robot-count-by-categories-analytic class="col-12 md:col-4"/>
+    } @else {
+
+    }
+  </div>
+</div>

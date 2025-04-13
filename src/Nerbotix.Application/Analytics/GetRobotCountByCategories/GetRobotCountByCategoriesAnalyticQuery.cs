@@ -1,0 +1,5 @@
+using Nerbotix.Application.Common.Abstractions;
+
+namespace Nerbotix.Application.Analytics.GetRobotCountByCategories;
+
+public record GetRobotCountByCategoriesAnalyticQuery : ITenantQuery<GetRobotCountByCategoriesAnalyticResponse>;
