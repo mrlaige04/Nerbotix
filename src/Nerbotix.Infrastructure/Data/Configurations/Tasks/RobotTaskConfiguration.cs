@@ -30,6 +30,8 @@ public class RobotTaskConfiguration : IEntityTypeConfiguration<RobotTask>
         
         builder.HasOne(t => t.Category)
             .WithMany()
-            .HasForeignKey(t => t.CategoryId);
+            .HasForeignKey(t => t.CategoryId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
     }
 }

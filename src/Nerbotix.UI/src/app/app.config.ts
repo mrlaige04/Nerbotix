@@ -14,11 +14,23 @@ import {DialogService} from 'primeng/dynamicdialog';
 import {provideEchartsCore} from 'ngx-echarts';
 import * as echarts from 'echarts/core';
 import {CanvasRenderer} from 'echarts/renderers';
-import {GridComponent} from 'echarts/components';
-import {BarChart} from 'echarts/charts';
+import {GridComponent, LegendComponent, TooltipComponent} from 'echarts/components';
+import {BarChart, PieChart} from 'echarts/charts';
+import {registerTheme} from 'echarts/core';
 
-echarts.use([GridComponent, CanvasRenderer]);
-echarts.use([BarChart]);
+echarts.use([GridComponent, CanvasRenderer, TooltipComponent, LegendComponent]);
+echarts.use([BarChart, PieChart]);
+
+registerTheme('dark', {
+  backgroundColor: 'transparent',
+  legend: { textStyle: { color: '#fff' } },
+  grid: {
+    left: '40px',
+    top: '40px',
+    right: '40px',
+    bottom: '40px',
+  }
+});
 
 export const appConfig: ApplicationConfig = {
   providers: [

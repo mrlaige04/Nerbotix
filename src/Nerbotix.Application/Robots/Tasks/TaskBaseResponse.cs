@@ -16,5 +16,5 @@ public class TaskBaseResponse : TenantEntityResponse
     public int Priority { get; set; }
     public double Complexity { get; set; }
     
-    public Guid CategoryId { get; set; }
+    public Guid? CategoryId { get; set; }
 }

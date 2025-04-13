@@ -3,13 +3,25 @@ import {UIChart} from 'primeng/chart';
 import {Divider} from 'primeng/divider';
 import {LayoutService} from '../../services/layout/layout.service';
 import {NgxEchartsDirective} from 'ngx-echarts';
+import {TasksStatusesAnalyticComponent} from '../analytics/tasks-statuses-analytic/tasks-statuses-analytic.component';
+import {
+  RobotsStatusesAnalyticComponent
+} from '../analytics/robots-statuses-analytic/robots-statuses-analytic.component';
+import {
+  TasksCountMonthAnalyticComponent
+} from '../analytics/tasks-count-month-analytic/tasks-count-month-analytic.component';
+import {ActiveTasksAnalyticComponent} from '../analytics/active-tasks-analytic/active-tasks-analytic.component';
 
 @Component({
   selector: 'nb-home',
   imports: [
     UIChart,
     Divider,
-    NgxEchartsDirective
+    NgxEchartsDirective,
+    TasksStatusesAnalyticComponent,
+    RobotsStatusesAnalyticComponent,
+    TasksCountMonthAnalyticComponent,
+    ActiveTasksAnalyticComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'

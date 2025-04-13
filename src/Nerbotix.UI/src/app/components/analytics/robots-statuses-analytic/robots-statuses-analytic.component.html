@@ -1,0 +1,7 @@
+<div class="robots-statuses-analytic-wrapper">
+  <p-card header="Robots">
+    @if (!isLoading()) {
+      <nb-base-analytic [isLoading]="isLoading()" [options]="options"/>
+    }
+  </p-card>
+</div>

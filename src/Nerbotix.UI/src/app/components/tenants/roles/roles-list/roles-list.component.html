@@ -13,7 +13,7 @@
       <div class="actions flex gap-1">
         <p-button icon="pi pi-pencil" (onClick)="openEditRole(rowData.id)" *nbHasPermission="PermissionsNames.RolesUpdate"/>
         @if (!rowData['isSystem']) {
-          <p-button (onClick)="openDeleteConfirmation(rowData.id, $event)" severity="danger" icon="pi pi-trash" *nbHasPermission="PermissionsNames.RolesDelete"/>
+          <p-button (onClick)="openCancelConfirmation(rowData.id, $event)" severity="danger" icon="pi pi-trash" *nbHasPermission="PermissionsNames.RolesDelete"/>
         }
       </div>
     </ng-template>

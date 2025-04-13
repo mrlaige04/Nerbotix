@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>RoboTasker.Application</RootNamespace>
+        <RootNamespace>Nerbotix.Application</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

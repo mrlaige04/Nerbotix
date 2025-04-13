@@ -18,17 +18,23 @@ import {TenantsWrapperComponent} from './components/tenants/tenants-wrapper/tena
 import {ForbiddenComponent} from './components/layout/forbidden/forbidden.component';
 import {SaWrapperComponent} from './components/sa/sa-wrapper/sa-wrapper.component';
 import {isSuperAdminGuard} from './utils/guards/is-super-admin.guard';
+import {AnalyticsWrapperComponent} from './components/analytics/analytics-wrapper/analytics-wrapper.component';
 
 export const routes: Routes = [
   {
     path: '',
-    title: 'Welcome to NerbotiX',
     component: LayoutComponent,
     canActivate: [isAuthenticatedGuard],
     children: [
       {
         path: '',
+        title: 'Welcome to NerbotiX',
         component: HomeComponent
+      },
+      {
+        path: 'dashboard',
+        title: 'Dashboard',
+        component: AnalyticsWrapperComponent
       },
       {
         path: 'user',

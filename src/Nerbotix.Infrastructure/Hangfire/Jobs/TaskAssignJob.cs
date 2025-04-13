@@ -59,10 +59,15 @@ public class TaskAssignJob(
                 .ThenInclude(rp => rp.Property)
             .Include(c => c.CustomProperties)
             .Include(r => r.TasksQueue)
-            .Where(r => r.TenantId == task.TenantId && r.CategoryId == task.CategoryId);
+            .Where(r => 
+                r.Status == RobotStatus.Idle && 
+                r.TenantId == task.TenantId && 
+                r.CategoryId == task.CategoryId);
 
         if (!await idleRobots.AnyAsync())
         {
+            task.Status = RobotTaskStatus.Pending;
+            await taskRepository.UpdateAsync(task);
             return;
         }
         
@@ -82,6 +87,8 @@ public class TaskAssignJob(
         
         if (!await capableRobots.AnyAsync())
         {
+            task.Status = RobotTaskStatus.Pending;
+            await taskRepository.UpdateAsync(task);
             return;
         }
 

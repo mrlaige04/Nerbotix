@@ -4,4 +4,8 @@ export class EnumHelper {
       .filter(([key, value]) => typeof value === "number")
       .map(([key, value]) => ({ key: value as number, label: key }));
   }
+
+  public static getValueByName<T>(obj: T, name: string): T[keyof T] {
+    return obj[name as keyof T];
+  }
 }

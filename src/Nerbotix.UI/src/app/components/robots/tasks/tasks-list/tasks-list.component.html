@@ -41,7 +41,9 @@
               <p-button icon="pi pi-sync" severity="info" (onClick)="reEnqueue(rowData.id)" *nbHasPermission="PermissionsNames.TasksUpdate"/>
             }
 
-            <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)" *nbHasPermission="PermissionsNames.TasksDelete"/>
+            @if (rowData.status !== TaskStatus.Canceled) {
+              <p-button icon="pi pi-times" severity="danger" (onClick)="openCancelConfirmation(rowData.id, $event)" *nbHasPermission="PermissionsNames.TasksDelete"/>
+            }
           </div>
         </td>
       </tr>

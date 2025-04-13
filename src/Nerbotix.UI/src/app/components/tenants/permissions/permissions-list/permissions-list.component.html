@@ -12,7 +12,7 @@
       <div class="actions flex gap-1">
         <p-button icon="pi pi-pencil" (onClick)="openEditPermission(rowData.id)"/>
         @if (!rowData['isSystem']) {
-          <p-button (onClick)="openDeleteConfirmation(rowData.id, $event)" severity="danger" icon="pi pi-trash"/>
+          <p-button (onClick)="openCancelConfirmation(rowData.id, $event)" severity="danger" icon="pi pi-trash"/>
         }
       </div>
     </ng-template>

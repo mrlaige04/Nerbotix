@@ -207,7 +207,7 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
       description: task.description,
       priority: task.priority,
       complexity: task.complexity,
-      categoryId: task.categoryId.toString()
+      categoryId: task.categoryId?.toString()
     });
 
     let estimatedDuration = task.estimatedDuration?.toString();
@@ -215,7 +215,8 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
 
     if (parts && parts.length === 3) {
       let totalHours = parts[0]*24+parts[1];
-      estimatedDuration = `${totalHours < 100 ? `0${totalHours}` : totalHours}:${parts[2]}`;
+      estimatedDuration = `${totalHours.toString().padStart(3, '0')}:${parts[2].toString().padStart(2, '0')}`;
+
       this.form.patchValue({
         estimatedDuration: estimatedDuration,
       });
@@ -378,7 +379,7 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
     const request: CreateTaskRequest = {
       description: formValue.description,
       name: formValue.name,
-      categoryId: Guid.parse(formValue.categoryId!),
+      categoryId: Guid.parse(formValue.categoryId!.toString()),
       priority: formValue.priority,
       complexity: formValue.complexity,
       estimatedDuration: DateHelper.NormalizeDuration(formValue.estimatedDuration!),
@@ -403,7 +404,7 @@ export class TasksAddOrUpdateComponent extends BaseComponent implements OnInit {
       description: formValue.description!,
       priority: formValue.priority!,
       complexity: formValue.complexity!,
-      categoryId: Guid.parse(formValue.categoryId!),
+      categoryId: Guid.parse(formValue.categoryId!.toString()),
       estimatedDuration: DateHelper.NormalizeDuration(formValue.estimatedDuration!),
       deletedRequirements: this.deletedRequirements(),
       deletedData: this.deletedData(),

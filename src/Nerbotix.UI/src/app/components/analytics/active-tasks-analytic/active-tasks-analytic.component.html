@@ -1,0 +1,9 @@
+<div class="active-tasks-analytic-wrapper h-full">
+  <p-card header="Pending Tasks" styleClass="h-full">
+    <nb-table [data]="tasks()"
+              [totalItems]="tasks().length"
+              [columns]="columns"
+              [showGridlines]="false"
+              [hidePagination]="true"/>
+  </p-card>
+</div>

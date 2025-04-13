@@ -48,6 +48,16 @@ export class SidebarComponent extends BaseComponent implements OnInit {
 
   menu: RbMenuItem[] = [
     {
+      label: 'Home',
+      items: [
+        {
+          label: 'Dashboard',
+          routerLink: 'dashboard',
+          icon: 'pi pi-chart-bar',
+        }
+      ]
+    },
+    {
       label: 'Robots',
       items: [
         {
@@ -114,16 +124,10 @@ export class SidebarComponent extends BaseComponent implements OnInit {
               permission: PermissionsNames.TenantSettingsRead
             }
           ]
-        },
-        {
-          label: 'Support',
-          routerLink: 'support',
-          icon: 'pi pi-info-circle'
         }
       ]
     },
   ];
-
   superAdminMenu: RbMenuItem[] = [
     {
       label: 'Tenant Management',
@@ -133,11 +137,15 @@ export class SidebarComponent extends BaseComponent implements OnInit {
           routerLink: 'sa/tenants',
           icon: 'pi pi-users',
           role: RoleNames.SuperAdmin,
+        },
+        {
+          label: 'Dashboard',
+          routerLink: 'dashboard',
+          icon: 'pi pi-chart-bar',
         }
       ]
     }
   ];
-
   filteredMenu: RbMenuItem[] = [];
 
   activeMenu = signal<RbMenuItem | null>(null);
@@ -156,7 +164,9 @@ export class SidebarComponent extends BaseComponent implements OnInit {
 
   private setInitialActiveMenu() {
     const currentUrl = this.router.url;
-    const path = this.findMenuPath(this.filteredMenu, currentUrl);
+    const path = this.findMenuPath(this.authService.isSuperAdmin()
+      ? this.superAdminMenu
+      : this.filteredMenu, currentUrl);
 
     if (path.length) {
       this.activeMenu.set(path[path.length - 1]);

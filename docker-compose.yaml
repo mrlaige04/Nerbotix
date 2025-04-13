@@ -18,6 +18,7 @@
       - nerbotix.db
     volumes:
       - api-storage:/app/storage
+    restart: always
   
   nerbotix.ui:
     image: nerbotix.ui

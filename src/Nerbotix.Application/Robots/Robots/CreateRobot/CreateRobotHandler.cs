@@ -45,9 +45,9 @@ public class CreateRobotHandler(
         
         var allCategoryPropertiesProvided = category.Properties
             .Select(c => c.Id)
-            .Any(c => request.Properties.Any(p => p.PropertyId == c));
+            .All(c => request.Properties.Any(p => p.PropertyId == c));
 
-        if (!allCategoryPropertiesProvided)
+        if (category.Properties.Count != 0 && !allCategoryPropertiesProvided)
         {
             return Error.Failure(RobotErrors.NotAllPropertiesProvided, RobotErrors.NotAllPropertiesProvidedDescription);
         }
