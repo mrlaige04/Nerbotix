@@ -87,6 +87,9 @@ export class TableComponent extends BaseComponent implements AfterViewInit, Afte
   pageSize = signal<number>(this.pageSizeInput());
   pageSizeOptions = signal<number[]>(this.pageSizeOptionsInput());
 
+  hidePagination = input<boolean>(false);
+  showGridlines = input<boolean>(true);
+
   rowsToSkip = computed(() => (this.pageNumber() - 1) * this.pageSize());
 
   data = input.required<any[]>();

@@ -18,6 +18,7 @@ public static class DatabaseExtensions
         {
             await context.Database.MigrateAsync();
             await context.Database.EnsureCreatedAsync();
+            await app.EnsureSuperAdminCreated();
         }
     }
 

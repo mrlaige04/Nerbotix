@@ -33,7 +33,7 @@ export class TasksService {
     formData.append('name', data.name);
     formData.append('description', data.description ?? '');
     formData.append('estimatedDuration', data.estimatedDuration);
-    formData.append('categoryId', data.categoryId.toString());
+    formData.append('categoryId', data.categoryId?.toString() ?? '');
     formData.append('priority', data.priority.toString());
     formData.append('complexity', data.complexity.toString());
     formData.append('requirements', JSON.stringify(data.requirements));

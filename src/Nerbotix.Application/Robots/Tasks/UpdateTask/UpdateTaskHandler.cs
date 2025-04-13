@@ -36,7 +36,7 @@ public class UpdateTaskHandler(
             return Error.NotFound(TaskErrors.NotFound, TaskErrors.NotFoundDescription);
         }
 
-        if (request.CategoryId.HasValue)
+        if (request.CategoryId.HasValue && request.CategoryId != task.CategoryId)
         {
             var category = await robotCategoryRepository.GetAsync(
                 c => c.Id == request.CategoryId,

@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>ffc64c4d-edb9-487b-8bec-1524563ec422</UserSecretsId>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-        <RootNamespace>RoboTasker.Api</RootNamespace>
+        <RootNamespace>Nerbotix.Api</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

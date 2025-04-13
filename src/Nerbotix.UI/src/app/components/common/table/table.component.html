@@ -26,7 +26,7 @@
 
   <div class="data-wrapper">
     <p-table [value]="data()"
-             showGridlines
+             [showGridlines]="showGridlines()"
              [(selection)]="selectedItems"
              (selectionChange)="onSelectionChange($event)"
              [dataKey]="dataKey()"
@@ -92,12 +92,15 @@
       </ng-template>
     </p-table>
   </div>
-  <div class="pagination-wrapper">
-    <p-paginator [rows]="pageSize()"
-                 [first]="rowsToSkip()"
-                 [totalRecords]="totalItems()"
-                 [rowsPerPageOptions]="pageSizeOptions()"
-                 (onPageChange)="onPageChange($event)"
-    />
-  </div>
+
+  @if (!hidePagination()) {
+    <div class="pagination-wrapper">
+      <p-paginator [rows]="pageSize()"
+                   [first]="rowsToSkip()"
+                   [totalRecords]="totalItems()"
+                   [rowsPerPageOptions]="pageSizeOptions()"
+                   (onPageChange)="onPageChange($event)"
+      />
+    </div>
+  }
 </div>

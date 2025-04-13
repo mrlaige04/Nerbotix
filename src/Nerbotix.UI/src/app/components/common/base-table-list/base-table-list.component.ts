@@ -51,7 +51,7 @@ export abstract class BaseTableListComponent<T extends IEntity<Guid>> extends Ba
     this.selectedItems.set(items);
   }
 
-  openDeleteConfirmation(id: Guid, event: Event) {
+  openCancelConfirmation(id: Guid, event: Event) {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       header: 'Confirmation',
@@ -63,15 +63,15 @@ export abstract class BaseTableListComponent<T extends IEntity<Guid>> extends Ba
         severity: 'secondary'
       },
       acceptButtonProps: {
-        label: 'Delete',
+        label: 'Confirm',
         severity: 'danger'
       },
-      message: 'Are you sure you want to delete this item?',
+      message: 'Are you sure you want to cancel this task?',
       accept: () => {
         this.deleteItem(id).pipe(
           catchError((err: HttpErrorResponse) => {
             const detail = err.error.detail;
-            this.notificationService.showError('Error while deleting', detail);
+            this.notificationService.showError('Error while cancelling', detail);
             return of(null);
           }),
           tap((result) => {

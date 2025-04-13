@@ -1,0 +1,7 @@
+<div class="robot-count-by-categories-analytic-wrapper">
+  <p-card header="Robots by Categories">
+    @if (!isLoading()) {
+      <nb-base-analytic [isLoading]="isLoading()" [options]="options"/>
+    }
+  </p-card>
+</div>

@@ -35,6 +35,8 @@ export class LayoutComponent extends BaseComponent implements OnInit {
   title = signal<string | null>('Nerbotix');
 
   ngOnInit() {
+    this.setInitialTitle();
+
     this.router.events.pipe(
       filter(ev => ev instanceof NavigationEnd),
       map(() => {
@@ -51,6 +53,15 @@ export class LayoutComponent extends BaseComponent implements OnInit {
       }),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe();
+  }
+
+  private setInitialTitle() {
+    let route = this.activatedRoute.snapshot;
+    while (route.firstChild) {
+      route = route.firstChild;
+    }
+
+    this.title.set(route.title ?? 'Nerbotix');
   }
 
   closeSidebarIfMobile() {

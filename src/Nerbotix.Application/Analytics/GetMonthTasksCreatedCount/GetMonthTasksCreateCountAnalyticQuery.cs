@@ -1,0 +1,5 @@
+using Nerbotix.Application.Common.Abstractions;
+
+namespace Nerbotix.Application.Analytics.GetMonthTasksCreatedCount;
+
+public record GetMonthTasksCreateCountAnalyticQuery : ITenantQuery<GetMonthTasksCreateCountAnalyticResponse>;

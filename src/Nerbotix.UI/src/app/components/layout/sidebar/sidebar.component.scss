@@ -17,9 +17,9 @@
 
   &.opened {
     transform: translateX(0);
-    -webkit-box-shadow: 5px 0 7px -6px rgba(0,0,0,0.58);
-    -moz-box-shadow: 5px 0px 7px -6px rgba(0,0,0,0.58);
-    box-shadow: 5px 0px 7px -6px rgba(0,0,0,0.58);
+    -webkit-box-shadow: 5px 0 3.5px -6px rgba(0,0,0,0.58);
+    -moz-box-shadow: 5px 0px 3.5px -6px rgba(0,0,0,0.58);
+    box-shadow: 5px 0px 3.5px -6px rgba(0,0,0,0.58);
   }
 
   & .sidebar-content {

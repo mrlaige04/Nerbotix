@@ -4,7 +4,6 @@ import {GlobalLoaderComponent} from './components/common/global-loader/global-lo
 import {Toast} from 'primeng/toast';
 import {ConfirmPopup} from 'primeng/confirmpopup';
 import {ConfirmDialog} from 'primeng/confirmdialog';
-import {UiSettingsService} from './services/layout/ui-settings.service';
 import {AuthService} from './services/auth/auth.service';
 import {CurrentUserService} from './services/user/current-user.service';
 import {catchError, of, tap} from 'rxjs';
@@ -18,7 +17,6 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  private settingsService = inject(UiSettingsService);
   private authService = inject(AuthService);
   private currentUserService = inject(CurrentUserService);
   private destroyRef = inject(DestroyRef);
@@ -29,7 +27,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     if (this.authService.isAuthenticated()) {
       this.currentUserService.getCurrentUser().pipe(
-        catchError( (error: HttpErrorResponse) => {
+        catchError((error: HttpErrorResponse) => {
           this.router.navigate(['auth']);
           return of(null);
         }),
