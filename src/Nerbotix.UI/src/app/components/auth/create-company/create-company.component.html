@@ -1,0 +1,42 @@
+<div class="create-company-wrapper my-2">
+  <div class="header">
+    <h2>Create new company</h2>
+    <p class="text-gray-400 mt-2">Enter details about your new company</p>
+  </div>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="error-message mt-2">
+      @if (errorMessage()) {
+        <p-message [text]="errorMessage()!" severity="error"/>
+      }
+    </div>
+    @if (step() === CreateCompanyState.SUCCESS) {
+      <p-message severity="success"
+                 styleClass="max-w-30rem"
+                 text="Your company was successfully created.
+       Please check your inbox to complete registration"
+      />
+
+      <p-button routerLink="/auth/login" label="To login" styleClass="w-full mt-3"/>
+    } @else {
+      <div class="content my-3">
+        <div class="fields mt-3">
+          <div class="company-email">
+            <p-floatlabel variant="in">
+              <label for="email">Company Email</label>
+              <input pInputText type="email" class="w-full" id="email" formControlName="email">
+            </p-floatlabel>
+          </div>
+          <div class="company-name mt-2">
+            <p-floatlabel variant="in">
+              <label for="name">Company Name</label>
+              <input pInputText type="text" class="w-full" id="name" formControlName="name">
+            </p-floatlabel>
+          </div>
+        </div>
+        <div class="actions mt-3 w-full">
+          <p-button type="submit" class="w-full" styleClass="w-full" label="Create company"/>
+        </div>
+      </div>
+    }
+  </form>
+</div>

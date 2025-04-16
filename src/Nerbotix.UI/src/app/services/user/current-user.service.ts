@@ -2,6 +2,7 @@ import {inject, Injectable, signal} from '@angular/core';
 import {CurrentUser} from '../../models/user/current-user';
 import {Observable, tap} from 'rxjs';
 import {BaseHttp} from '../base/base-http';
+import {Success} from '../../models/success';
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +41,19 @@ export class CurrentUserService {
   setCurrentUser(currentUser: CurrentUser) {
     localStorage.setItem(this.storageKey, JSON.stringify(currentUser));
     this._currentUser.set(currentUser);
+  }
+
+  uploadAvatar(file: File): Observable<Success> {
+    const url = `${this.baseUrl}/profile-picture`;
+    const formData = new FormData();
+    formData.set('file', file);
+
+    return this.base.put<FormData, string>(url, formData);
+  }
+
+  deleteAvatar(): Observable<Success> {
+    const url = `${this.baseUrl}/profile-picture`;
+    return this.base.delete<Success>(url);
   }
 
   clearCurrentUser() {

@@ -4,7 +4,7 @@ import {Image} from 'primeng/image';
 import {Button} from 'primeng/button';
 import {FloatLabel} from 'primeng/floatlabel';
 import {InputText} from 'primeng/inputtext';
-import {FileUpload} from 'primeng/fileupload';
+import {FileSelectEvent, FileUpload} from 'primeng/fileupload';
 import {RoleBase} from '../../../models/tenants/roles/role-base';
 import {CurrentUser} from '../../../models/user/current-user';
 import {catchError, finalize, of, tap} from 'rxjs';
@@ -24,7 +24,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 })
 export class ProfileComponent extends BaseComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
-  currentUser = signal<CurrentUser | null>(null);
+  override currentUser = signal<CurrentUser | null>(null);
 
   ngOnInit() {
     this.showLoader();
@@ -40,6 +40,36 @@ export class ProfileComponent extends BaseComponent implements OnInit {
       }),
       takeUntilDestroyed(this.destroyRef),
       finalize(() => this.hideLoader())
+    ).subscribe();
+  }
+
+  uploadAvatar(event: FileSelectEvent) {
+    if (!event.currentFiles.length) {
+      return;
+    }
+
+    this.currentUserService.uploadAvatar(event.currentFiles.at(0)!).pipe(
+      catchError(_ => of(null)),
+      tap(res => {
+        if (res) {
+          this.notificationService.showSuccess('OK', 'Avatar changed');
+          window.location.reload();
+        }
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe();
+  }
+
+  deleteAvatar() {
+    this.currentUserService.deleteAvatar().pipe(
+      catchError(_ => of(null)),
+      tap(res => {
+        if (res) {
+          this.notificationService.showSuccess('OK', 'Avatar deleted');
+          window.location.reload();
+        }
+      }),
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe();
   }
 

@@ -11,6 +11,7 @@ import {CurrentUserService} from '../user/current-user.service';
 import {LoginResponse} from '../../models/auth/login-response';
 import {RegisterRequest} from '../../models/auth/register-request';
 import {jwtDecode} from 'jwt-decode'
+import {CreateCompanyRequest} from '../../models/auth/create-company-request';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,11 @@ export class AuthService {
 
   private _isSuperAdmin = signal<boolean>(this.getSavedIsSuperAdmin());
   public isSuperAdmin = this._isSuperAdmin.asReadonly();
+
+  createCompany(data: CreateCompanyRequest): Observable<Success> {
+    const url = `${this.baseUrl}/new-company`;
+    return this.base.post<CreateCompanyRequest, Success>(url, data);
+  }
 
   register(data: RegisterRequest): Observable<Success> {
     const url = `${this.baseUrl}/register`;

@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
 
-  title = 'RoboTasker';
+  title = 'Nerbotix';
 
   ngOnInit() {
     if (this.authService.isAuthenticated()) {

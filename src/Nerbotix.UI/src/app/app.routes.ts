@@ -24,6 +24,7 @@ export const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
+    title: 'Nerbotix',
     canActivate: [isAuthenticatedGuard],
     children: [
       {

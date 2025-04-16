@@ -1,14 +1,16 @@
-﻿using Nerbotix.Application.Common.Emails;
+﻿using Microsoft.Extensions.Configuration;
+using Nerbotix.Application.Common.Emails;
 using Nerbotix.Application.Services;
 using Nerbotix.Domain.Tenants;
 
 namespace Nerbotix.Infrastructure.Emailing;
 
-public class UserEmailSender(TemplateService templateService, IEmailSender emailSender) : IUserEmailSender
+public class UserEmailSender(IConfiguration configuration, TemplateService templateService, IEmailSender emailSender) : IUserEmailSender
 {
     public async Task SendRegistrationEmail(User user, string token)
     {
-        var link = new Uri($"http://localhost:4200/auth/register?email={user.Email}&token={token}");
+        var frontendUrl = configuration.GetConnectionString("FrontendUrl");
+        var link = new Uri($"{frontendUrl}/auth/register?email={user.Email}&token={token}");
         var placeholders = new Dictionary<string, string>()
         {
             { "link", link.ToString() }
@@ -16,7 +18,7 @@ public class UserEmailSender(TemplateService templateService, IEmailSender email
         
         var content = await templateService.RenderTemplate(TemplateNames.Register, placeholders);
         
-        await emailSender.SendEmailAsync(user.Email!, "Welcome to RoboTasker!", content, true);
+        await emailSender.SendEmailAsync(user.Email!, "Welcome to Nerbotix!", content, true);
     }
 
     public async Task SendResetPasswordEmail(User user, string code)
@@ -32,7 +34,8 @@ public class UserEmailSender(TemplateService templateService, IEmailSender email
 
     public async Task SendUserInvitationEmail(User user, string token, string tenantName)
     {
-        var link = new Uri($"http://localhost:4200/auth/register?email={user.Email}&token={token}");
+        var frontendUrl = configuration.GetConnectionString("FrontendUrl");
+        var link = new Uri($"{frontendUrl}/auth/register?email={user.Email}&token={token}");
         var placeholders = new Dictionary<string, string>()
         {
             { "link", link.ToString() },

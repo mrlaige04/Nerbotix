@@ -23,6 +23,8 @@ export class BaseComponent {
   protected changeDetectorRef = inject(ChangeDetectorRef);
   protected currentUserService = inject(CurrentUserService);
 
+  protected currentUser = this.currentUserService.currentUser;
+
   showLoader() {
     this.globalLoader.showLoader();
   }

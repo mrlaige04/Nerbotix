@@ -40,7 +40,6 @@ export class UserEditComponent extends BaseComponent implements OnInit {
   });
 
   currentUserId = signal<Guid | null>(null);
-  currentUser = signal<User | null>(null);
 
   roles = signal<RoleBase[]>([]);
 
@@ -88,7 +87,6 @@ export class UserEditComponent extends BaseComponent implements OnInit {
           return;
         }
 
-        this.currentUser.set(user);
         this.initializeFormFromUser(user);
       }),
       takeUntilDestroyed(this.destroyRef),

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nerbotix.Api.Attributes;
 using Nerbotix.Api.Models.Users;
+using Nerbotix.Application.User.GetProfilePicture;
 using Nerbotix.Application.Users.CreateUser;
 using Nerbotix.Application.Users.DeleteUser;
 using Nerbotix.Application.Users.GetUserById;
@@ -46,6 +47,19 @@ public class UsersController(IMediator mediator) : BaseController
         command.Id = id;
         var result = await mediator.Send(command);
         return result.Match(Ok, Problem);
+    }
+
+    [HttpGet("{id:guid}/avatar"), AllowAnonymous]
+    public async Task<IActionResult> GetUserAvatar(Guid id)
+    {
+        var result = await mediator.Send(new GetProfilePictureQuery(id));
+        var fs = result.Value;
+        if (fs != null)
+        {
+            return File(fs, "image/jpeg");
+        }
+        
+        return NotFound();
     }
     
     [HttpDelete("{id:guid}"), Permission(permissions: PermissionNames.UsersDelete)]

@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Nerbotix.Application.Common.Abstractions;
@@ -11,35 +11,28 @@ using Nerbotix.Domain.Services;
 using Nerbotix.Domain.Tenants;
 using Nerbotix.Domain.Tenants.Settings;
 
-namespace Nerbotix.Application.SuperAdmin.Tenants.CreateTenant;
+namespace Nerbotix.Application.Auth.CreateCompany;
 
-public class CreateTenantHandler(
-    UserManager<Domain.Tenants.User> userManager,
-    ITenantRepository<Role> roleRepository, 
-    ITenantSeeder seeder,
-    ICurrentUser currentUser,
+public class CreateCompanyHandler(
+    IBaseRepository<Tenant> tenantRepository,
+    ITenantRepository<Role> roleRepository,
     ITenantRepository<Domain.Tenants.User> userRepository,
-    IBaseRepository<Tenant> tenantRepository, IUserEmailSender userEmailSender) 
-    : ICommandHandler<CreateTenantCommand, TenantBaseResponse>
+    ICurrentUser currentUser,
+    ITenantSeeder seeder,
+    UserManager<Domain.Tenants.User> userManager,
+    IUserEmailSender userEmailSender) : ICommandHandler<CreateCompanyCommand>
 {
-    public async Task<ErrorOr<TenantBaseResponse>> Handle(CreateTenantCommand request, CancellationToken cancellationToken)
+    public async Task<ErrorOr<Success>> Handle(CreateCompanyCommand request, CancellationToken cancellationToken)
     {
-        if (await tenantRepository.ExistsAsync(t => 
-                    EF.Functions.Like(t.Email, $"%{request.Email}%") || 
-                    EF.Functions.Like(t.Name, $"{request.Name}"),
+        if (await tenantRepository.ExistsAsync(
+                t => EF.Functions.Like(t.Name, request.Name) ||
+                     EF.Functions.Like(t.Email, request.Email), 
                 cancellationToken: cancellationToken))
         {
             return Error.Conflict(TenantErrors.Conflict, TenantErrors.ConflictDescription);
         }
-
-        if (await userManager.FindByEmailAsync(request.Email) != null)
-        {
-            return Error.Conflict(TenantErrors.Conflict, "User with the same email already exists.");
-        }
-
-        var tenantId = Guid.NewGuid();
-        currentUser.SetTenantId(tenantId);
         
+        var tenantId = Guid.NewGuid();
         var tenant = new Tenant
         {
             Id = tenantId,
@@ -49,17 +42,16 @@ public class CreateTenantHandler(
         };
         
         var createdTenant = await tenantRepository.AddAsync(tenant, cancellationToken);
-
+        
         currentUser.SetTenantId(createdTenant.Id);
         await seeder.SeedRolesAndPermissionsAsync(createdTenant.Id);
         
         var user = Domain.Tenants.User.Create(request.Email);
         user.TenantId = createdTenant.Id;
         await userManager.CreateAsync(user);
-        
+
         var adminRole = await roleRepository.GetAsync(
             r => r.Name == RoleNames.Admin,
-            q => q.IgnoreQueryFilters(),
             cancellationToken: cancellationToken);
         
         user.Roles.Add(new UserRole
@@ -73,11 +65,6 @@ public class CreateTenantHandler(
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         await userEmailSender.SendRegistrationEmail(user, token);
         
-        return new TenantBaseResponse
-        {
-            Id = createdTenant.Id,
-            Name = createdTenant.Name,
-            Email = createdTenant.Email,
-        };
+        return new Success();
     }
 }

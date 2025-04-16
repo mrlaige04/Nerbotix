@@ -1,11 +1,18 @@
 <div class="profile-wrapper flex flex-column md:flex-row gap-2">
   <div class="avatar flex flex-column">
     <p-image class="w-min"
-             width="300"
-             [src]="'https://cdn.britannica.com/70/234870-050-D4D024BB/Orange-colored-cat-yawns-displaying-teeth.jpg'"/>
-    <p-fileupload #fu accept="image/*" auto mode="basic" chooseLabel="Change"
-                  styleClass="hidden" class="w-full"/>
-    <p-button label="Change" outlined icon="pi pi-upload" styleClass="w-full" (onClick)="fu.onBasicUploaderClick()"/>
+             width="200"
+             height="200"
+             #image
+             (onImageError)="image.src = 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png'"
+             [src]="currentUser()?.avatarUrl"/>
+    <div class="flex align-items-center">
+      <p-fileupload #fu accept="image/*" auto mode="basic" chooseLabel="Change"
+                    (onSelect)="uploadAvatar($event)"
+                    styleClass="hidden" class=""/>
+      <p-button label="Change" outlined icon="pi pi-upload" styleClass="w-full" (onClick)="fu.onBasicUploaderClick()"/>
+      <p-button icon="pi pi-trash" class="ml-2" severity="danger" (onClick)="deleteAvatar()"/>
+    </div>
   </div>
   <div class="user-info p-0 md:px-4 w-full">
     <div class="grid">

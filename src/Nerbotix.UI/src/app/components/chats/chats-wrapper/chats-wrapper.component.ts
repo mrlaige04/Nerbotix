@@ -59,6 +59,7 @@ export class ChatsWrapperComponent extends BaseComponent implements OnInit, OnDe
   ngOnInit() {
     this.layoutService.wrapToCard.set(false);
     this.getChats();
+    this.detectInitialChat();
 
     this.chatsService.chatLinkUpdated.pipe(
       takeUntilDestroyed(this.destroyRef)
@@ -77,6 +78,18 @@ export class ChatsWrapperComponent extends BaseComponent implements OnInit, OnDe
     this.chatsService.refreshChatList.pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(() => this.getChats());
+  }
+
+  private detectInitialChat() {
+    let route = this.activatedRoute;
+    while (route.firstChild) {
+      route = route.firstChild;
+    }
+
+    const id = route.snapshot.params['id'];
+    if (id) {
+      this.goToChat({ id } as any as ChatBase);
+    }
   }
 
   private getChats() {
@@ -116,7 +129,7 @@ export class ChatsWrapperComponent extends BaseComponent implements OnInit, OnDe
 
   goToChatList() {
     this.currentChatId.set(null);
-    this.router.navigate(['chat']);
+    this.router.navigate(['chats']);
   }
 
   goToChat(chat: ChatBase) {
