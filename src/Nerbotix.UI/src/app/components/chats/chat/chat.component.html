@@ -5,7 +5,8 @@
         <p-avatar icon="pi pi-user"/>
         <div class="chat-info">
           <h3 class="title">{{ chat()?.name }}</h3>
-          <div class="active-users text-sm text-gray-500 mt-1">{{ chat()?.userCount }} users</div>
+          @let isSingularForm = chat()?.userCount === 1;
+          <div class="active-users text-sm text-gray-500 mt-1">{{ chat()?.userCount }} {{isSingularForm ? 'user' : 'users'}}</div>
         </div>
       </div>
       <div class="actions">

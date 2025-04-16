@@ -61,7 +61,9 @@ export class LayoutComponent extends BaseComponent implements OnInit {
       route = route.firstChild;
     }
 
-    this.title.set(route.title ?? 'Nerbotix');
+    if (route.data['hideTitle'] !== false) {
+      this.title.set(route.title ?? 'Nerbotix');
+    }
   }
 
   closeSidebarIfMobile() {

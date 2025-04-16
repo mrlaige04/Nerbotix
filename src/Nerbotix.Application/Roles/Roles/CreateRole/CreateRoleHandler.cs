@@ -22,7 +22,8 @@ public class CreateRoleHandler(
         
         var role = new Role
         {
-            Name = request.Name
+            Name = request.Name,
+            ConcurrencyStamp = Guid.NewGuid().ToString(),
         };
         
         foreach (var addPermission in request.Permissions)

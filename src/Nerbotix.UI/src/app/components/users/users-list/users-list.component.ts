@@ -27,8 +27,6 @@ export class UsersListComponent extends BaseTableListComponent<UserBase> impleme
   override destroyRef = inject(DestroyRef);
   private dialogRef: DynamicDialogRef<UsersAddComponent> | undefined;
 
-  currentUser = this.currentUserService.currentUser;
-
   constructor() {
     super();
     this.columns = [

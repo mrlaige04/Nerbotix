@@ -125,7 +125,7 @@ export class ChatComponent extends BaseComponent implements OnInit, AfterViewChe
 
     this.connection.start()
       .then(() => console.log('connection started'))
-      .catch((e) => console.log(e));
+      .catch((e) => {});
 
     this.loadMessages();
   }

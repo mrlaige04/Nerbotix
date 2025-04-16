@@ -22,4 +22,7 @@ public static class UserErrors
     
     public const string SuperAdminDelete = "SuperAdmin.Delete";
     public const string SuperAdminDeleteDescription = "You cannot delete a super admin user.";
+    
+    public const string AdminDelete = "Admin.Delete";
+    public const string AdminDeleteDescription = "You cannot delete an admin user.";
 }

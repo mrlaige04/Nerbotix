@@ -12,6 +12,7 @@ public class AppDbContextSeeder(
     ILogger<AppDbContextSeeder> logger,
     ITenantRepository<Permission> permissionRepository,
     ITenantRepository<PermissionGroup> permissionGroupRepository,
+    ITenantRepository<Role> roleRepository,
     RoleManager<Role> roleManager) : ITenantSeeder
 {
     public async Task SeedRolesAndPermissionsAsync(Guid tenantId)
@@ -77,13 +78,15 @@ public class AppDbContextSeeder(
                 TenantId = tenantId,
                 Name = RoleNames.Admin,
                 IsSystem = true,
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
                 Permissions = allPermissions.Select(p => new RolePermission
                 {
                     Permission = p
                 }).ToList()
             };
-            await roleManager.CreateAsync(adminRole);
-
+            
+            await roleRepository.AddAsync(adminRole);
+            
             var chatPermissions = allPermissions
                 .Where(p => p.Group.Name == PermissionNames.ChatGroup);
             var userRole = new Role
@@ -91,13 +94,14 @@ public class AppDbContextSeeder(
                 TenantId = tenantId,
                 Name = RoleNames.User,
                 IsSystem = true,
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
                 Permissions = chatPermissions.Select(p => new RolePermission
                 {
                     Permission = p
                 }).ToList()
             };
-            await roleManager.CreateAsync(userRole);
-            
+            await roleRepository.AddAsync(userRole);
+
             await transaction.CommitAsync();
         }
         catch (Exception e)

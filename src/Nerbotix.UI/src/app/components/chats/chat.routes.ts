@@ -9,7 +9,8 @@ export const CHATS_ROUTES: Routes = [
     children: [
       {
         path: ':id',
-        component: ChatComponent
+        component: ChatComponent,
+        title: '',
       }
     ]
   }

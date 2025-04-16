@@ -9,4 +9,5 @@ export interface CurrentUser {
   id: Guid;
   permissions: PermissionBase[];
   roles: RoleBase[];
+  avatarUrl?: string;
 }
