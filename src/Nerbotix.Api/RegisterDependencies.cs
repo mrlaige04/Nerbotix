@@ -2,6 +2,7 @@
 using Microsoft.OpenApi.Models;
 using Nerbotix.Api.Infrastructure;
 using Nerbotix.Api.Services;
+using Nerbotix.Application.Services;
 using Nerbotix.Domain.Services;
 
 namespace Nerbotix.Api;
@@ -60,6 +61,7 @@ public static class RegisterDependencies
         services.AddExceptionHandler<RoboExceptionHandler>();
 
         services.AddScoped<ICurrentUser, CurrentUser>();
+        services.AddScoped<IUrlService, UrlService>();
         
         return services;
     }

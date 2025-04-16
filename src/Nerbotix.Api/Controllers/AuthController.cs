@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nerbotix.Application.Auth.CreateCompany;
 using Nerbotix.Infrastructure.Authentication.ChangePassword;
 using Nerbotix.Infrastructure.Authentication.ForgotPassword;
 using Nerbotix.Infrastructure.Authentication.Login;
@@ -13,6 +14,13 @@ namespace Nerbotix.Api.Controllers;
 [Route("[controller]")]
 public class AuthController(IMediator mediator) : BaseController
 {
+    [HttpPost("new-company")]
+    public async Task<IActionResult> CreateNewCompany(CreateCompanyCommand createCompanyCommand)
+    {
+        var result = await mediator.Send(createCompanyCommand);
+        return result.Match<IActionResult>(Ok, Problem);
+    }
+    
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginCommand request)
     {

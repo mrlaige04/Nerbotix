@@ -4,6 +4,7 @@ using Nerbotix.Application.Common.Abstractions;
 using Nerbotix.Application.Common.Errors;
 using Nerbotix.Application.Roles.Permissions;
 using Nerbotix.Application.Roles.Roles;
+using Nerbotix.Application.Services;
 using Nerbotix.Domain.Repositories.Abstractions;
 using Nerbotix.Domain.Services;
 using Nerbotix.Domain.Tenants;
@@ -13,6 +14,7 @@ namespace Nerbotix.Application.User.CurrentUser;
 public class GetCurrentUserHandler(
     ICurrentUser currentUser,
     ITenantRepository<Role> roleRepository,
+    IUrlService urlService,
     ITenantRepository<Domain.Tenants.User> userRepository) : IQueryHandler<GetCurrentUserQuery, CurrentUserResponse>
 {
     public async Task<ErrorOr<CurrentUserResponse>> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
@@ -59,6 +61,7 @@ public class GetCurrentUserHandler(
             return Error.Unauthorized(UserErrors.NotFound, UserErrors.NotFoundDescription);
         }
 
+        user.AvatarUrl = urlService.GetCurrentUserProfilePictureUrl(user.Id);
         user.Permissions = user.Permissions
             .DistinctBy(p => p.Name)
             .ToList();

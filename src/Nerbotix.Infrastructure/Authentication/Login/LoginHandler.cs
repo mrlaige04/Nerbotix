@@ -5,6 +5,7 @@ using Nerbotix.Application.Common.Abstractions;
 using Nerbotix.Application.Common.Errors;
 using Nerbotix.Application.Roles.Permissions;
 using Nerbotix.Application.Roles.Roles;
+using Nerbotix.Application.Services;
 using Nerbotix.Application.User;
 using Nerbotix.Domain.Repositories.Abstractions;
 using Nerbotix.Domain.Tenants;
@@ -14,7 +15,7 @@ namespace Nerbotix.Infrastructure.Authentication.Login;
 
 public class LoginHandler(
     UserManager<User> userManager, TokenService tokenService,
-    ITenantRepository<Role> roleRepository,
+    IUrlService urlService,
     ITenantRepository<User> userRepository) 
     : ICommandHandler<LoginCommand, LoginResponse>
 {
@@ -66,6 +67,7 @@ public class LoginHandler(
             TenantId = user.TenantId,
             TenantName = user.Tenant.Name,
             Email = user.Email!,
+            AvatarUrl = urlService.GetCurrentUserProfilePictureUrl(user.Id),
             Roles = user.Roles.Select(ur => new RoleBaseResponse
             {
                 Id = ur.RoleId,

@@ -8,9 +8,7 @@ import {MenuItem} from 'primeng/api';
 import {Ripple} from 'primeng/ripple';
 import {NavigationEnd, RouterLink, RouterLinkActive} from '@angular/router';
 import {PermissionsNames} from '../../../models/tenants/permissions/permissions-names';
-import {HasPermissionDirective} from '../../../utils/directives/has-permission.directive';
 import {JsonPipe} from '@angular/common';
-import {CurrentUserService} from '../../../services/user/current-user.service';
 import {RoleNames} from '../../../models/tenants/roles/roles-names';
 import {HasRoleDirective} from '../../../utils/directives/has-role.directive';
 import {ExpandableMenuComponent} from '../../common/expandable-menu/expandable-menu.component';
@@ -25,7 +23,6 @@ import {filter, tap} from 'rxjs';
     Ripple,
     RouterLink,
     RouterLinkActive,
-    HasPermissionDirective,
     JsonPipe,
     HasRoleDirective,
     ExpandableMenuComponent
@@ -36,7 +33,6 @@ import {filter, tap} from 'rxjs';
 export class SidebarComponent extends BaseComponent implements OnInit {
   private layoutService = inject(LayoutService);
   private authService = inject(AuthService);
-  private currentUser = inject(CurrentUserService);
   private destroyRef = inject(DestroyRef);
 
   public sidebarOpened = this.layoutService.sidebarOpened;
@@ -210,7 +206,7 @@ export class SidebarComponent extends BaseComponent implements OnInit {
 
   override hasPermission(permission?: string) {
     if (!permission) return true;
-    const user = this.currentUser.currentUser();
+    const user = this.currentUser();
     return user?.permissions.some(p => p.name === permission) ?? false;
   }
 
