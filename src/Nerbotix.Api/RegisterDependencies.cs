@@ -49,10 +49,9 @@ public static class RegisterDependencies
             cors.AddDefaultPolicy(policy =>
             {
                 policy
-                    .WithOrigins("http://localhost:4200")
+                    .AllowAnyOrigin()
                     .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
+                    .AllowAnyMethod();
             });
         });
 
