@@ -22,7 +22,7 @@ jobs:
 
       - name: Create volume and set permissions
         run: |
-          docker volume create api-storage || true  # Create volume if it doesn't exist
+          docker volume create api-storage || true
           sudo chown -R illia:illia /var/lib/docker/volumes/api-storage/_data
     
       - name: Build images
