@@ -1,4 +1,5 @@
 ﻿using Nerbotix.Application.Common.Abstractions;
+using Nerbotix.Domain.Robots;
 
 namespace Nerbotix.Application.Robots.Robots.CreateRobot;
 
@@ -10,6 +11,11 @@ public class CreateRobotCommand : ITenantCommand<RobotBaseResponse>
     public IList<CreateRobotCommandPropertyItem> Properties { get; set; } = null!;
     public IList<CreateRobotCommandCustomPropertyItem>? CustomProperties { get; set; }
     public IList<CreateRobotCommandCapability>? Capabilities { get; set; }
+    
+    public RobotCommunicationType CommunicationType { get; set; }
+    
+    public CreateRobotHttpCommunication? HttpCommunication { get; set; }
+    public CreateRobotMqttCommunication? MqttCommunication { get; set; }
 }
 
 public class CreateRobotCommandPropertyItem
@@ -28,4 +34,25 @@ public class CreateRobotCommandCapability
 {
     public Guid GroupId { get; set; }
     public Guid Id { get; set; }
+}
+
+public class CreateRobotHttpCommunication
+{
+    public string Url { get; set; } = null!;
+    public string Method { get; set; } = null!;
+    public IList<CreateCommunicationHttpHeader>? Headers { get; set; }
+}
+
+public class CreateCommunicationHttpHeader
+{
+    public string Name { get; set; } = null!;
+    public string Value { get; set; } = null!;
+}
+
+public class CreateRobotMqttCommunication
+{
+    public string Address { get; set; } = null!;
+    public string Username { get; set; } = null!;
+    public string Password { get; set; } = null!;
+    public string Topic { get; set; } = null!;
 }

@@ -1,6 +1,14 @@
 import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
 import {BaseComponent} from '../../../common/base/base.component';
-import {FormArray, FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 import {RobotsService} from '../../../../services/robots/robots.service';
 import {CategoriesService} from '../../../../services/robots/categories.service';
 import {CategoryBase} from '../../../../models/robots/categories/category-base';
@@ -31,6 +39,9 @@ import {Category} from '../../../../models/robots/categories/category';
 import {CapabilitiesService} from '../../../../services/robots/capabilities.service';
 import {Tree} from 'primeng/tree';
 import {Capability} from '../../../../models/robots/capabilities/capability';
+import {EnumHelper} from '../../../../utils/helpers/enum-helper';
+import {CommunicationType} from '../../../../enums/communication-type.enum';
+import {HttpMethod} from '../../../../enums/http.method';
 
 @Component({
   selector: 'nb-robot-add-or-update',
@@ -72,12 +83,16 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
     categoryId: this.fb.control('', Validators.required),
     properties: this.fb.array([]),
     customProperties: this.fb.array([]),
-    capabilities: this.fb.array([])
+    capabilities: this.fb.array([]),
+    communicationType: this.fb.control(CommunicationType.MQTT),
+    communication: this.fb.group<any>({})
   });
 
   categoryIdControl = this.form.get('categoryId') as FormControl;
   propertiesArray = this.form.get('properties') as FormArray;
   customPropertiesArray = this.form.get('customProperties') as FormArray;
+
+  communicationGroup = this.form.get('communication') as FormGroup;
 
   properties = signal<CategoryProperty[] | null>(null);
 
@@ -91,12 +106,25 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
 
   selectedCapabilityItems = signal<CreateRobotCapabilityRequest[]>([]);
 
+  communicationTypes = EnumHelper.toArray(CommunicationType);
+  httpMethods = EnumHelper.toArray(HttpMethod);
+
+  public get httpCommunicationHeadersArray() {
+    return this.form.get('communication')?.get('headers') as FormArray;
+  }
+
   ngOnInit() {
     this.detectViewMode();
-
     this.getCategories();
     this.getCapabilities();
     this.listenForCategoryIdChange();
+
+    this.form.setControl('communication', this.fb.group({
+      mqttBrokerAddress: this.fb.control('', [Validators.required]),
+      mqttBrokerUsername: this.fb.control('', [Validators.required]),
+      mqttBrokerPassword: this.fb.control('', [Validators.required]),
+      mqttTopic: this.fb.control('', [Validators.required])
+    }));
   }
 
   private detectViewMode() {
@@ -287,6 +315,38 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
     });
   }
 
+  onCommunicationTypeChange(event: SelectChangeEvent) {
+    const type = event.value as CommunicationType;
+    if (type === CommunicationType.HTTP) {
+      this.form.setControl('communication', this.fb.group({
+          url: this.fb.control('', Validators.required),
+          method: this.fb.control('', Validators.required),
+          headers: this.fb.array([]),
+        })
+      );
+    } else if (type === CommunicationType.MQTT) {
+      this.form.setControl('communication', this.fb.group({
+        mqttBrokerAddress: this.fb.control('', [Validators.required]),
+        mqttBrokerUsername: this.fb.control('', [Validators.required]),
+        mqttBrokerPassword: this.fb.control('', [Validators.required]),
+        mqttTopic: this.fb.control('', [Validators.required])
+      }));
+    }
+  }
+
+  addHttpCommunicationHeader() {
+    const control = this.fb.group({
+      name: this.fb.control('', [Validators.required]),
+      value: this.fb.control('', [Validators.required])
+    });
+
+    (this.form.get('communication')?.get('headers') as FormArray)?.push(control);
+  }
+
+  removeHttpCommunicationHeader(i: number) {
+    (this.form.get('communication')?.get('headers') as FormArray)?.removeAt(i);
+  }
+
   submit() {
     if (!this.form.valid) {
       return;
@@ -329,7 +389,11 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
       categoryId: Guid.parse(formValue.categoryId!).toString(),
       properties: properties,
       customProperties: customProperties,
-      capabilities: this.selectedCapabilityItems()
+      capabilities: this.selectedCapabilityItems(),
+      communicationType: formValue.communicationType!,
+      [formValue.communicationType === CommunicationType.HTTP ? 'httpCommunication' : 'mqttCommunication']: {
+        ...formValue.communication
+      }
     };
 
     return this.robotsService.createRobot(request);
@@ -381,4 +445,5 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
   }
 
   protected readonly CategoryPropertyType = CategoryPropertyType;
+  protected readonly CommunicationType = CommunicationType;
 }

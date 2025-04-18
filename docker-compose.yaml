@@ -1,6 +1,7 @@
 ﻿services:
   nerbotix.api:
     image: nerbotix.api
+    container_name: nerbotix.api
     build:
       context: .
       dockerfile: src/Nerbotix.Api/Dockerfile
@@ -22,6 +23,7 @@
   
   nerbotix.ui:
     image: nerbotix.ui
+    container_name: nerbotix.ui
     build:
       context: ./src/Nerbotix.UI
       dockerfile: Dockerfile
@@ -34,6 +36,7 @@
 
   nerbotix.db:
     image: postgis/postgis
+    container_name: nerbotix.db
     restart: always
     networks:
       - nerbotix_network

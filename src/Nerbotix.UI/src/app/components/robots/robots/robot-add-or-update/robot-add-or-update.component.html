@@ -7,7 +7,7 @@
           <p-tab value="1" [disabled]="properties() === null && !currentRobotId()">Properties</p-tab>
           <p-tab value="2">Custom Properties</p-tab>
           <p-tab value="3">Capabilities</p-tab>
-          <p-tab value="4" disabled>Communication</p-tab>
+          <p-tab value="4">Communication</p-tab>
         </p-tablist>
         <p-tabpanels>
           <p-tabpanel value="0">
@@ -102,7 +102,75 @@
             </div>
           </p-tabpanel>
           <p-tabpanel value="4">
-            Communication
+            <div class="communication">
+              <div class="type flex flex-column gap-1">
+                <label for="communication_type">Type</label>
+                <p-select appendTo="body" [options]="communicationTypes"
+                          formControlName="communicationType"
+                          optionValue="key"
+                          (onChange)="onCommunicationTypeChange($event)"
+                          id="communication_type" class="w-full"/>
+              </div>
+
+              <div class="configuration mt-2" formGroupName="communication">
+                @let type = form.get('communicationType')?.value!;
+                @switch (type) {
+                  @case (CommunicationType.MQTT) {
+                    <div class="mqtt-type">
+                      <div class="address flex flex-column gap-1">
+                        <label for="mqtt_address">Address</label>
+                        <input pInputText type="text" id="mqtt_address" formControlName="mqttBrokerAddress">
+                      </div>
+                      <div class="username flex flex-column gap-1 mt-2">
+                        <label for="mqtt_username">Username</label>
+                        <input pInputText type="text" id="mqtt_username" formControlName="mqttBrokerUsername">
+                      </div>
+                      <div class="password flex flex-column gap-1 mt-2">
+                        <label for="mqtt_password">Password</label>
+                        <input pInputText type="text" id="mqtt_password" formControlName="mqttBrokerPassword">
+                      </div>
+                      <div class="topic flex flex-column gap-1 mt-2">
+                        <label for="mqtt_topic">Topic</label>
+                        <input pInputText type="text" id="mqtt_topic" formControlName="mqttTopic">
+                      </div>
+                    </div>
+                  }
+                  @case (CommunicationType.HTTP) {
+                    <div class="http-type">
+                      <div class="url flex flex-column gap-1">
+                        <label for="http_url">URL</label>
+                        <input pInputText type="text" id="http_url" formControlName="url">
+                      </div>
+                      <div class="method flex flex-column gap-1 mt-2">
+                        <label for="http_method">Method</label>
+                        <p-select [options]="httpMethods" id="http_method"
+                                  optionValue="label"
+                                  formControlName="method"/>
+                      </div>
+                      <div class="headers flex flex-column gap-1 mt-2">
+                        <label for="http_headers">Headers</label>
+                        <p-button outlined styleClass="w-full" label="Add" (onClick)="addHttpCommunicationHeader()"/>
+                        <div id="http_headers" formArrayName="headers">
+                          @for (header of httpCommunicationHeadersArray?.controls; let i = $index; track i) {
+                            <div class="header flex flex-column md:flex-row align-items-end gap-1 w-full" [formGroupName]="i">
+                              <div class="name flex flex-column gap-1 mt-2 w-full">
+                                <label for="header_name">Name</label>
+                                <input pInputText type="text" id="header_name" formControlName="name">
+                              </div>
+                              <div class="value flex flex-column gap-1 w-full">
+                                <label for="header_value">Value</label>
+                                <input pInputText type="text" id="header_value" formControlName="value">
+                              </div>
+                              <p-button severity="danger" icon="pi pi-trash" (onClick)="removeHttpCommunicationHeader(i)"/>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  }
+                }
+              </div>
+            </div>
           </p-tabpanel>
         </p-tabpanels>
       </p-tabs>

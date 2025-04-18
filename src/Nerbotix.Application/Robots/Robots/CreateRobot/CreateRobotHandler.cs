@@ -7,6 +7,7 @@ using Nerbotix.Application.Robots.Categories;
 using Nerbotix.Domain.Capabilities;
 using Nerbotix.Domain.Repositories.Abstractions;
 using Nerbotix.Domain.Robots;
+using Nerbotix.Domain.Robots.Communications;
 using Nerbotix.Domain.Services;
 using Nerbotix.Domain.Tenants;
 
@@ -103,9 +104,28 @@ public class CreateRobotHandler(
             
             robot.Capabilities.Add(robotCapability);
         }
-        
-        var createdRobot = await robotRepository.AddAsync(robot, cancellationToken);
 
+        robot.Communication = request switch
+        {
+            { CommunicationType: RobotCommunicationType.Http, HttpCommunication: not null } => new HttpCommunication
+            {
+                ApiEndpoint = request.HttpCommunication.Url,
+                HttpMethod = HttpMethod.Parse(request.HttpCommunication.Method).ToString(),
+                Headers = request.HttpCommunication.Headers?.ToDictionary(
+                    h => h.Name, h => h.Value) ?? [],
+            },
+            { CommunicationType: RobotCommunicationType.Mqtt, MqttCommunication: not null } => new MqttCommunication
+            {
+                MqttBrokerAddress = request.MqttCommunication.Address,
+                MqttBrokerUsername = request.MqttCommunication.Username,
+                MqttBrokerPassword = request.MqttCommunication.Password,
+                MqttTopic = request.MqttCommunication.Topic,
+            },
+            _ => robot.Communication
+        };
+
+        var createdRobot = await robotRepository.AddAsync(robot, cancellationToken);
+        
         return new RobotBaseResponse
         {
             Id = createdRobot.Id,
