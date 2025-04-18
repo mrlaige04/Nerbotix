@@ -17,7 +17,7 @@
     depends_on:
       - nerbotix.db
     volumes:
-      - api-storage:/app/storage
+      - /home/illia/diploma/data:/app/storage
     restart: always
   
   nerbotix.ui:
