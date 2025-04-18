@@ -17,8 +17,8 @@ jobs:
         SUPERADMINPASSWORD: ${{ secrets.SUPERADMINPASSWORD }}
         
     steps:
-      - uses: actions/checkout@v3
       - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Build images
         run: docker-compose build
