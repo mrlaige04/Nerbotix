@@ -1,10 +1,10 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
+USER illia
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-RUN mkdir -p /app/storage && chown -R app:app /app/storage
+RUN mkdir -p /app/storage && chown -R illia:illia /app/storage
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
