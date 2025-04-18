@@ -13,8 +13,8 @@ jobs:
         NERBOTIX_DB: ${{ secrets.NERBOTIX_DB }}
         NERBOTIX_DB_PASSWORD: ${{ secrets.NERBOTIX_DB_PASSWORD }}
         NERBOTIX_DB_USER: ${{ secrets.NERBOTIX_DB_USER }}
-        SUPERADMINEMAIL: ${{ secrets.SUPERADMINEMAIL }}
-        SUPERADMINPASSWORD: ${{ secrets.SUPERADMINPASSWORD }}
+        SuperAdminEmail : ${{ secrets.SUPERADMINEMAIL }}
+        SuperAdminPassword: ${{ secrets.SUPERADMINPASSWORD }}
         
     steps:
       - name: Checkout code
