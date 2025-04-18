@@ -19,11 +19,8 @@ var app = builder.Build();
 await app.MigrateDatabase();
 await app.EnsureSuperAdminCreated();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseCors();
