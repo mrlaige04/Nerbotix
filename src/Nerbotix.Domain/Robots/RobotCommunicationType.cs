@@ -3,7 +3,5 @@
 public enum RobotCommunicationType
 {
     Mqtt,
-    Http,
-    Tcp,
-    WebSocket
+    Http
 }

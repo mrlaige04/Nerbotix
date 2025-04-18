@@ -14,8 +14,6 @@ public class RobotCommunicationConfiguration : IEntityTypeConfiguration<RobotCom
         
         builder.HasDiscriminator<RobotCommunicationType>(nameof(RobotCommunication.Type))
             .HasValue<MqttCommunication>(RobotCommunicationType.Mqtt)
-            .HasValue<HttpCommunication>(RobotCommunicationType.Http)
-            .HasValue<TcpCommunication>(RobotCommunicationType.Tcp)
-            .HasValue<WebSocketCommunication>(RobotCommunicationType.WebSocket);
+            .HasValue<HttpCommunication>(RobotCommunicationType.Http);
     }
 }

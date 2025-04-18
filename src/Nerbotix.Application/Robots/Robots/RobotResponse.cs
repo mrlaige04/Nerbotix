@@ -5,4 +5,5 @@ public class RobotResponse : RobotBaseResponse
     public IList<RobotPropertyResponse> Properties { get; set; } = [];
     public IList<RobotCustomPropertyResponse>? CustomProperties { get; set; }
     public IList<RobotCapabilityResponse> Capabilities { get; set; } = [];
+    public RobotCommunicationResponse Communication { get; set; } = null!;
 }
