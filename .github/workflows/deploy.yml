@@ -20,6 +20,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Create volume and set permissions
+        run: |
+          docker volume create api-storage || true  # Create volume if it doesn't exist
+          sudo chown -R illia:illia /var/lib/docker/volumes/api-storage/_data
+    
       - name: Build images
         run: docker-compose build
 
