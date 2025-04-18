@@ -1,4 +1,6 @@
 import {Guid} from 'guid-typescript';
+import {CommunicationType} from '../../../../enums/communication-type.enum';
+import {HttpMethod} from '../../../../enums/http.method';
 
 export interface CreateRobotRequest {
   name: string;
@@ -6,6 +8,9 @@ export interface CreateRobotRequest {
   properties: CreateRobotPropertyRequest[];
   customProperties?: CreateRobotCustomPropertyRequest[] | undefined;
   capabilities?: CreateRobotCapabilityRequest[] | undefined;
+  communicationType: CommunicationType;
+  httpCommunication?: CreateRobotHttpCommunicationRequest;
+  mqttCommunication?: CreateRobotMqttCommunicationRequest;
 }
 
 export interface CreateRobotPropertyRequest {
@@ -21,4 +26,17 @@ export interface CreateRobotCustomPropertyRequest {
 export interface CreateRobotCapabilityRequest {
   groupId: Guid;
   id: Guid;
+}
+
+export interface CreateRobotHttpCommunicationRequest {
+  url: string;
+  method: HttpMethod;
+  headers: Record<string, string>;
+}
+
+export interface CreateRobotMqttCommunicationRequest {
+  mqttBrokerAddress: string;
+  mqttBrokerUsername: string;
+  mqttBrokerPassword: string;
+  mqttTopic: string;
 }
