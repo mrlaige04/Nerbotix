@@ -1,0 +1,30 @@
+name: 'Deploy'
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to Hetnzer
+    runs-on: self-hosted
+    env:
+        NERBOTIX_DB: ${{ secrets.NERBOTIX_DB }}
+        NERBOTIX_DB_PASSWORD: ${{ secrets.NERBOTIX_DB_PASSWORD }}
+        NERBOTIX_DB_USER: ${{ secrets.NERBOTIX_DB_USER }}
+        SUPERADMINEMAIL: ${{ secrets.SUPERADMINEMAIL }}
+        SUPERADMINPASSWORD: ${{ secrets.SUPERADMINPASSWORD }}
+        
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build images
+        run: docker-compose build
+
+      - name: Deploy with Docker Compose
+        run: |
+          docker-compose down
+          docker-compose up -d
+      
