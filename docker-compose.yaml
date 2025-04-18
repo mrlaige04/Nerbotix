@@ -64,4 +64,4 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: home/illia/diploma/data
+      device: diploma/data
