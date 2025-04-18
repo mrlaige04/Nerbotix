@@ -60,8 +60,4 @@ networks:
 volumes:
   pgdata:
   api-storage:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: diploma/data
+    external: true
