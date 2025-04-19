@@ -1,5 +1,6 @@
 ﻿using Nerbotix.Domain.Abstractions;
 using Nerbotix.Domain.Capabilities;
+using Nerbotix.Domain.Logging;
 using Nerbotix.Domain.Robots.Enums;
 using Nerbotix.Domain.Tasks;
 
@@ -25,4 +26,6 @@ public class Robot : TenantEntity
     public IList<RobotPropertyValue> Properties { get; set; } = [];
     public IList<RobotCustomProperty> CustomProperties { get; set; } = [];
     public IList<RobotCapability> Capabilities { get; set; } = [];
+    
+    public IList<Log> Logs { get; set; } = [];
 }

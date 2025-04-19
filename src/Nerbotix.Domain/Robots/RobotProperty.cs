@@ -8,6 +8,8 @@ public class RobotProperty : TenantEntity
     
     public RobotPropertyType Type { get; set; }
 
+    public string? Unit { get; set; } = string.Empty;
+    
     public IList<RobotPropertyValue> Values { get; set; } = [];
 
     public double Factor { get; set; } = 1.0;

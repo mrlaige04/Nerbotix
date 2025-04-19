@@ -13,4 +13,5 @@ public class CreateCategoryCommandPropertyItem
 {
     public string Name { get; set; } = null!;
     public RobotPropertyType Type { get; set; }
+    public string? Unit { get; set; }
 }

@@ -11,15 +11,22 @@
             [showToolbar]="true">
     <ng-template #body let-rowData="rowData">
       <tr>
+        @let completedAt = rowData['completedAt'];
         <td>{{ rowData['name'] }}</td>
         <td>{{ rowData['description'] }}</td>
-        <td>{{ TaskStatus[rowData['status']] }}</td>
         <td>
-          @let completedAt = rowData['completedAt'];
           @if (completedAt) {
-            <i class="pi pi-check-circle text-green-500"></i> {{completedAt}}
+            <i class="pi pi-check-circle text-green-500"></i>
           } @else {
             <i class="pi pi-times-circle text-red-500"></i>
+          }
+          {{ TaskStatus[rowData['status']] }}
+        </td>
+        <td>
+          @if (completedAt) {
+            {{ completedAt | date:'short' }}
+          } @else {
+            -
           }
         </td>
         <td pTooltip="dd:HH:mm" tooltipPosition="top">{{ rowData['estimatedDuration'] }}</td>
@@ -27,22 +34,30 @@
         <td>{{ rowData['complexity'] }}</td>
         <td>
           @let robotId = rowData['assignedRobotId'];
+          @let robotName = rowData['assignedRobot'];
           @if (robotId) {
             <a routerLink="/robots/{{robotId}}">
-              <i class="pi pi-external-link"></i>
+              @if (robotName) {
+                {{ robotName }}
+              } @else {
+                <i class="pi pi-external-link"></i>
+              }
             </a>
           } @else { - }
         </td>
         <td>
           <div class="actions flex gap-1">
-            <p-button icon="pi pi-pencil" (onClick)="openEditTask(rowData.id)" *nbHasPermission="PermissionsNames.TasksUpdate"/>
-
-            @if (rowData.status === TaskStatus.Pending || rowData.status === TaskStatus.WaitingForEnqueue) {
+            @if (rowData.status === TaskStatus.Pending) {
               <p-button icon="pi pi-sync" severity="info" (onClick)="reEnqueue(rowData.id)" *nbHasPermission="PermissionsNames.TasksUpdate"/>
             }
 
-            @if (rowData.status !== TaskStatus.Canceled) {
-              <p-button icon="pi pi-times" severity="danger" (onClick)="openCancelConfirmation(rowData.id, $event)" *nbHasPermission="PermissionsNames.TasksDelete"/>
+            @if (rowData.status !== TaskStatus.Canceled && rowData.status !== TaskStatus.InProgress && rowData.status !== TaskStatus.Completed && rowData.status !== TaskStatus.Failed) {
+              <p-button icon="pi pi-times" severity="danger" (onClick)="cancelTask(rowData.id)" *nbHasPermission="PermissionsNames.TasksDelete"/>
+            }
+
+            @if (rowData.status !== TaskStatus.InProgress) {
+              <p-button icon="pi pi-pencil" (onClick)="openEditTask(rowData.id)" *nbHasPermission="PermissionsNames.TasksUpdate"/>
+              <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)" *nbHasPermission="PermissionsNames.TasksDelete"/>
             }
           </div>
         </td>

@@ -1,5 +1,10 @@
 import {Guid} from 'guid-typescript';
-import {CreateRobotCapabilityRequest, CreateRobotCustomPropertyRequest} from './create-robot-request';
+import {
+  CreateRobotCapabilityRequest,
+  CreateRobotCustomPropertyRequest,
+  CreateRobotHttpCommunicationRequest, CreateRobotMqttCommunicationRequest
+} from './create-robot-request';
+import {CommunicationType} from '../../../../enums/communication-type.enum';
 
 export interface UpdateRobotRequest {
   name?: string | undefined;
@@ -9,6 +14,9 @@ export interface UpdateRobotRequest {
   newCustomProperties?: CreateRobotCustomPropertyRequest[] | undefined;
   deletedCapabilities?: CreateRobotCapabilityRequest[] | undefined;
   newCapabilities?: CreateRobotCapabilityRequest[] | undefined;
+  communicationType?: CommunicationType;
+  httpCommunication?: CreateRobotHttpCommunicationRequest;
+  mqttCommunication?: CreateRobotMqttCommunicationRequest;
 }
 
 interface UpdateRobotPropertyRequest {

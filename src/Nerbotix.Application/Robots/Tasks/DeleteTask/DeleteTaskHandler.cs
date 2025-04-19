@@ -22,8 +22,7 @@ public class DeleteTaskHandler(
             return Error.NotFound(TaskErrors.NotFound, TaskErrors.NotFoundDescription);
         }
         
-        task.Status = RobotTaskStatus.Canceled;
-        await taskRepository.UpdateAsync(task, cancellationToken);
+        await taskRepository.DeleteAsync(task, cancellationToken);
 
         if (task.Archive != null)
         {

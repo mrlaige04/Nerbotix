@@ -116,6 +116,11 @@ export class TasksService {
     return this.base.put<FormData, TaskBase>(url, formData);
   }
 
+  cancelTask(id: Guid): Observable<Success> {
+    const url = `${this.baseUrl}/${id}/status`;
+    return this.base.delete<Success>(url);
+  }
+
   deleteTask(id: Guid): Observable<Success> {
     const url = `${this.baseUrl}/${id}`;
     return this.base.delete<Success>(url);

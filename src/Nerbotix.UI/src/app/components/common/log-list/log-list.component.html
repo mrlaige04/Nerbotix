@@ -1,0 +1,8 @@
+<div class="logs">
+  @for (log of logs(); track log) {
+    <div class="log {{ LogLevel[log.logLevel]?.toLowerCase() }}">
+      [{{ log.timestamp | date:'dd/MM/YYYY HH:mm' }}]
+      [{{ LogLevel[log.logLevel] }}]: {{ log.message }}
+    </div>
+  }
+</div>

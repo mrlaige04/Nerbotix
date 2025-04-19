@@ -3,7 +3,10 @@ using System.Net;
 using System.Net.Mail;
 using Hangfire;
 using Hangfire.PostgreSql;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -18,11 +21,13 @@ using Nerbotix.Application.Services;
 using Nerbotix.Domain.Algorithms;
 using Nerbotix.Domain.Repositories;
 using Nerbotix.Domain.Repositories.Abstractions;
+using Nerbotix.Domain.Robots;
 using Nerbotix.Domain.Tenants;
 using Nerbotix.Infrastructure.Algorithms.Classical;
 using Nerbotix.Infrastructure.Algorithms.Heuristic;
 using Nerbotix.Infrastructure.Algorithms.MathBased;
 using Nerbotix.Infrastructure.Authentication;
+using Nerbotix.Infrastructure.Authentication.ApiKeys;
 using Nerbotix.Infrastructure.Authentication.Providers;
 using Nerbotix.Infrastructure.Authentication.Services;
 using Nerbotix.Infrastructure.Chatting;
@@ -32,6 +37,7 @@ using Nerbotix.Infrastructure.Data.Prefill;
 using Nerbotix.Infrastructure.Emailing;
 using Nerbotix.Infrastructure.Hangfire;
 using Nerbotix.Infrastructure.Hangfire.Jobs;
+using Nerbotix.Infrastructure.Robots;
 using Nerbotix.Infrastructure.Storage;
 
 namespace Nerbotix.Infrastructure;
@@ -69,7 +75,9 @@ public static class RegisterDependencies
         services.AddKeyedScoped<ITaskDistributionAlgorithm, SimulatedAnnealingTaskDistributionAlgorithm>(AlgorithmNames.SimulatedAnnealing);
         
         // AI-based
-        
+
+
+        services.AddKeyedScoped<ITaskAssignerService, HttpTaskAssignerService>(RobotCommunicationType.Http);
     }
 
     private static void AddStorage(this IServiceCollection services, IConfiguration configuration)
@@ -146,7 +154,9 @@ public static class RegisterDependencies
             {
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = jwtOptions.ToTokenValidationParameters();
-            });
+            })
+            .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(
+                "ApiKey", options => { });
         
         services.AddIdentityCore<User>(options =>
             {
@@ -189,7 +199,7 @@ public static class RegisterDependencies
         
         services.AddHangfireServer();
 
-        services.AddScoped<TaskAssignJob>();
+        services.AddScoped<TaskDistributeJob>();
         services.AddScoped<IJobsService, JobsService>();
     }
 }

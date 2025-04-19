@@ -34,7 +34,8 @@ public class GetRobotsHandler(
                     TenantId = r.TenantId,
                     CreatedAt = r.CreatedAt,
                     UpdatedAt = r.UpdatedAt,
-                }
+                },
+                LastActivity = r.LastActivity,
             },
             include: q => q
                 .Include(r => r.Category)

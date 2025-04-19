@@ -23,12 +23,18 @@
             <i class="pi pi-map"></i>
           </a>
         </td>
-        <td>{{rowData['location']['timestamp'] | date }}</td>
-        <td>{{rowData['lastActivity'] ?? '-'}}</td>
+
+        <td>
+          @if (rowData['lastActivity']) {
+            {{rowData['lastActivity'] | date:'short' }}
+          } @else {
+            -
+          }
+        </td>
         <td>
           <div class="actions flex gap-1">
             <p-button icon="pi pi-pencil" (onClick)="openEditRobot(rowData.id)" *nbHasPermission="PermissionsNames.RobotsUpdate"/>
-            <p-button icon="pi pi-trash" severity="danger" (onClick)="openCancelConfirmation(rowData.id, $event)" *nbHasPermission="PermissionsNames.RobotsDelete"/>
+            <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)" *nbHasPermission="PermissionsNames.RobotsDelete"/>
           </div>
         </td>
       </tr>

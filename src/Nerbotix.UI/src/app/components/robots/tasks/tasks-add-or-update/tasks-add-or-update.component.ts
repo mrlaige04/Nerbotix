@@ -34,6 +34,7 @@ import {TaskFile} from '../../../../models/robots/tasks/task-file';
 import {Message} from 'primeng/message';
 import {Checkbox} from 'primeng/checkbox';
 import {PropertyTypeHelper} from '../../../../utils/helpers/property-type-helper';
+import {LogListComponent} from '../../../common/log-list/log-list.component';
 
 @Component({
   selector: 'nb-tasks-add-or-update',
@@ -57,6 +58,7 @@ import {PropertyTypeHelper} from '../../../../utils/helpers/property-type-helper
     Divider,
     Message,
     Checkbox,
+    LogListComponent,
   ],
   templateUrl: './tasks-add-or-update.component.html',
   styleUrl: './tasks-add-or-update.component.scss'

@@ -29,11 +29,6 @@ public class RobotConfiguration : IEntityTypeConfiguration<Robot>
             .HasForeignKey(p => p.RobotId)
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.HasOne(r => r.Location)
-            .WithOne(l => l.Robot)
-            .HasForeignKey<RobotLocation>(l => l.RobotId)
-            .OnDelete(DeleteBehavior.Cascade);
-        
         builder.HasMany(r => r.Capabilities)
             .WithOne(p => p.Robot)
             .HasForeignKey(p => p.RobotId)
@@ -44,5 +39,13 @@ public class RobotConfiguration : IEntityTypeConfiguration<Robot>
             .HasForeignKey(t => t.AssignedRobotId)
             .OnDelete(DeleteBehavior.SetNull)
             .IsRequired(false);
+        
+        builder.HasMany(r => r.Logs)
+            .WithOne(l => l.Robot)
+            .HasForeignKey(l => l.RobotId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
+
+        builder.OwnsOne(r => r.Location);
     }
 }
