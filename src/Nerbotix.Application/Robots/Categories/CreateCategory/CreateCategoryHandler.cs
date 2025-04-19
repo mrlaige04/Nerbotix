@@ -34,6 +34,7 @@ public class CreateCategoryHandler(
             {
                 Name = p.Name,
                 Type = p.Type,
+                Unit = p.Unit,
             })
             .ToList();
         

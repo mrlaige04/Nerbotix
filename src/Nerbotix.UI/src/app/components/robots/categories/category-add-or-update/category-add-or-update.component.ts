@@ -85,6 +85,7 @@ export class CategoryAddOrUpdateComponent extends BaseComponent implements OnIni
               const property = this.fb.group({
                 name: this.fb.control(p.name, Validators.required),
                 type: this.fb.control(p.type, Validators.required),
+                unit: this.fb.control(p.unit),
                 existingId: this.fb.control(p.id)
               });
               this.propertiesArray.push(property);
@@ -98,6 +99,7 @@ export class CategoryAddOrUpdateComponent extends BaseComponent implements OnIni
     const group = this.fb.group({
       name: this.fb.control('', Validators.required),
       type: this.fb.control('', Validators.required),
+      unit: this.fb.control(null),
       existingId: this.fb.control(null)
     });
 
@@ -160,8 +162,7 @@ export class CategoryAddOrUpdateComponent extends BaseComponent implements OnIni
 
   private updateCategory() {
     const formValue = this.form.value;
-    const newProperties = this.propertiesArray.value
-      ?.filter((p: any) => p.existingId === null);
+    const newProperties = this.propertiesArray.value;
 
     return this.categoriesService.updateCategory(this.currentCategoryId()!, {
       name: formValue.name!,

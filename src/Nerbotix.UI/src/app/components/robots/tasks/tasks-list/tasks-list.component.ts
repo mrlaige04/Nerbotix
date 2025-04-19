@@ -13,6 +13,7 @@ import {RouterLink} from '@angular/router';
 import {PermissionsNames} from '../../../../models/tenants/permissions/permissions-names';
 import {HasPermissionDirective} from '../../../../utils/directives/has-permission.directive';
 import {HttpErrorResponse} from '@angular/common/http';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'nb-tasks-list',
@@ -21,7 +22,8 @@ import {HttpErrorResponse} from '@angular/common/http';
     Button,
     Tooltip,
     RouterLink,
-    HasPermissionDirective
+    HasPermissionDirective,
+    DatePipe
   ],
   templateUrl: './tasks-list.component.html',
   styleUrl: './tasks-list.component.scss'
@@ -91,6 +93,37 @@ export class TasksListComponent extends BaseTableListComponent<any> implements O
         this.isLoading.set(false);
       })
     ).subscribe();
+  }
+
+  cancelTask(id: Guid) {
+    this.confirmationService.confirm({
+      header: 'Confirmation',
+      icon: 'pi pi-info-circle',
+      rejectLabel: 'Cancel',
+      rejectButtonProps: {
+        label: 'Cancel',
+        outlined: true,
+        severity: 'secondary'
+      },
+      acceptButtonProps: {
+        label: 'Confirm',
+        severity: 'danger'
+      },
+      message: 'Are you sure you want to cancel this task?',
+      accept: () => {
+        this.tasksService.cancelTask(id).pipe(
+          tap(result => {
+            if (result) {
+              this.getData();
+            }
+          }),
+          takeUntilDestroyed(this.destroyRef),
+          finalize(() => {
+            this.isLoading.set(false);
+          })
+        ).subscribe();
+      }
+    });
   }
 
   override deleteItem(id: Guid): Observable<Success> {

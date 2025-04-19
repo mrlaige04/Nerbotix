@@ -26,6 +26,7 @@ public class GetCategoryByIdHandler(
                         Name = p.Name,
                         Type = p.Type,
                         Factor = p.Factor,
+                        Unit = p.Unit,
                         CreatedAt = p.CreatedAt,
                         UpdatedAt = p.UpdatedAt,
                     }).ToList(),

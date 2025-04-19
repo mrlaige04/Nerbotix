@@ -11,7 +11,7 @@
           <p-button (onClick)="addNewProperty()" styleClass="my-2" label="Add" icon="pi pi-plus" outlined/>
           @for (prop of propertiesArray.controls; track prop; let i = $index) {
             <div class="new-prop-wrapper grid align-items-end" [formGroupName]="i">
-              <div class="prop-name flex flex-column gap-1 col-6 gap-1">
+              <div class="prop-name flex flex-column gap-1 col-4 gap-1">
                 <label for="prop-name">Name</label>
                 <input pInputText type="text" id="prop-name" formControlName="name">
               </div>
@@ -23,6 +23,10 @@
                           appendTo="body"
                           class="w-full md:w-56 z-auto"
                           formControlName="type" id="prop-type"></p-select>
+              </div>
+              <div class="prop-unit flex flex-column gap-1 col-2">
+                <label for="prop-unit">Unit</label>
+                <input pInputText type="text" id="prop-unit" formControlName="unit">
               </div>
               <p-button (onClick)="removeProperty(i)" text icon="pi pi-trash" class="col-2"/>
             </div>

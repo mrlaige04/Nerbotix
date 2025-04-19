@@ -42,15 +42,33 @@ public class UpdateCategoryHandler(
         var newProperties = new List<RobotProperty>();
         foreach (var newProperty in request.NewProperties ?? [])
         {
-            var property = new RobotProperty
+            if (newProperty.ExistingId.HasValue)
             {
-                Name = newProperty.Name,
-                Type = newProperty.Type,
-                CategoryId = category.Id,
-            };
+                var existingProperty = category.Properties
+                    .FirstOrDefault(p => p.Id == newProperty.ExistingId.Value);
+
+                if (existingProperty == null)
+                {
+                    continue;
+                }
+                
+                existingProperty.Name = newProperty.Name;
+                existingProperty.Type = newProperty.Type;
+                existingProperty.Unit = newProperty.Unit;
+            }
+            else
+            {
+                var property = new RobotProperty
+                {
+                    Name = newProperty.Name,
+                    Type = newProperty.Type,
+                    CategoryId = category.Id,
+                    Unit = newProperty.Unit,
+                };
             
-            newProperties.Add(property);
-            category.Properties.Add(property);
+                newProperties.Add(property);
+                category.Properties.Add(property);
+            }
         }
         
         var updatedCategory = await categoryRepository.UpdateAsync(category, cancellationToken);

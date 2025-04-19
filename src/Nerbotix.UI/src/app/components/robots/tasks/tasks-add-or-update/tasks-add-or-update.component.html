@@ -7,6 +7,9 @@
           <p-tab value="1">Requirements</p-tab>
           <p-tab value="2">Data</p-tab>
           <p-tab value="3">Files</p-tab>
+          @if (isEdit()) {
+            <p-tab value="5">Logs</p-tab>
+          }
         </p-tablist>
         <p-tabpanels>
           <p-tabpanel value="0">
@@ -179,10 +182,10 @@
                             @let isChecked = dataArray.at(i).get('value')?.value === 'True';
                             <p-checkbox [falseValue]="false" [trueValue]="true" binary formControlName="value"/>                          }
                           @case (TaskDataType.DateTime) {
-                            <p-date-picker formControlName="value" class="w-full"/>
+                            <p-date-picker formControlName="value" styleClass="w-full"/>
                           }
                           @case (TaskDataType.Number) {
-                            <p-input-number formControlName="value" class="w-full"/>
+                            <p-input-number formControlName="value" styleClass="w-full"/>
                           }
                         }
                         @if (dataValueControlTouched && dataValueControlHasRequiredError) {
@@ -231,6 +234,11 @@
               </p-fileupload>
             </div>
           </p-tabpanel>
+          @if (isEdit()) {
+            <p-tabpanel value="5">
+              <nb-log-list [logs]="currentTask()?.logs ?? []"/>
+            </p-tabpanel>
+          }
         </p-tabpanels>
       </p-tabs>
     </div>

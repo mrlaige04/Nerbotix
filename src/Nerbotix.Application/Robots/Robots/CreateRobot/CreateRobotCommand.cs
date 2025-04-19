@@ -13,7 +13,6 @@ public class CreateRobotCommand : ITenantCommand<RobotBaseResponse>
     public IList<CreateRobotCommandCapability>? Capabilities { get; set; }
     
     public RobotCommunicationType CommunicationType { get; set; }
-    
     public CreateRobotHttpCommunication? HttpCommunication { get; set; }
     public CreateRobotMqttCommunication? MqttCommunication { get; set; }
 }
@@ -51,8 +50,8 @@ public class CreateCommunicationHttpHeader
 
 public class CreateRobotMqttCommunication
 {
-    public string Address { get; set; } = null!;
-    public string Username { get; set; } = null!;
-    public string Password { get; set; } = null!;
-    public string Topic { get; set; } = null!;
+    public string MqttBrokerAddress { get; set; } = null!;
+    public string MqttBrokerUsername { get; set; } = null!;
+    public string MqttBrokerPassword { get; set; } = null!;
+    public string MqttTopic { get; set; } = null!;
 }

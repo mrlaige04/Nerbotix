@@ -1,4 +1,5 @@
 ﻿using Nerbotix.Domain.Abstractions;
+using Nerbotix.Domain.Logging;
 using Nerbotix.Domain.Robots;
 using Nerbotix.Domain.Tasks.Data;
 
@@ -9,13 +10,14 @@ public class RobotTask : TenantEntity
     public string Name { get; set; } = null!;
     public string? Description { get; set; }
     
-
     public DateTime? StartedAt { get; set; }
     public RobotTaskStatus Status { get; set; } = RobotTaskStatus.Pending;
     public DateTimeOffset? CompletedAt { get; set; }
     
     public Robot? AssignedRobot { get; set; }
     public Guid? AssignedRobotId { get; set; }
+    public string? AssignedRobotName { get; set; } 
+    public Guid? CompletedRobotId { get; set; }
     
     public DateTime AssignedAt { get; set; }
     
@@ -29,4 +31,6 @@ public class RobotTask : TenantEntity
     public IList<RobotTaskData> TaskData { get; set; } = [];
     public IList<RobotTaskRequirement> Requirements { get; set; } = [];
     public RobotTaskFiles? Archive { get; set; }
+    
+    public IList<Log> Logs { get; set; } = [];
 }

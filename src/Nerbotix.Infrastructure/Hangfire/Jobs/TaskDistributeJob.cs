@@ -2,16 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Nerbotix.Application.Algorithms;
+using Nerbotix.Application.Services;
 using Nerbotix.Domain.Algorithms;
 using Nerbotix.Domain.Repositories.Abstractions;
 using Nerbotix.Domain.Robots;
-using Nerbotix.Domain.Robots.Enums;
 using Nerbotix.Domain.Tasks;
 using Nerbotix.Domain.Tenants.Settings;
 
 namespace Nerbotix.Infrastructure.Hangfire.Jobs;
 
-public class TaskAssignJob(
+public class TaskDistributeJob(
     IServiceProvider serviceProvider,
     ITenantRepository<TenantSettings> tenantSettingsRepository,
     ITenantRepository<Robot> robotRepository,
@@ -28,13 +28,10 @@ public class TaskAssignJob(
                 .Include(t => t.AssignedRobot)
                 .Include(t => t.TaskData));
 
-        if (task is not { Status: RobotTaskStatus.Pending or RobotTaskStatus.WaitingForEnqueue })
+        if (task is not { Status: RobotTaskStatus.Pending })
         {
             return;
         }
-        
-        task.Status = RobotTaskStatus.WaitingForEnqueue;
-        await taskRepository.UpdateAsync(task);
         
         // TODO: Implement assignment here
         using var scope = serviceProvider.CreateScope();
@@ -53,21 +50,19 @@ public class TaskAssignJob(
         
         var query = await robotRepository.GetQuery();
 
-        var idleRobots = query
+        var categoryRobots = query
             .Include(r => r.Capabilities)
             .Include(r => r.Properties)
                 .ThenInclude(rp => rp.Property)
             .Include(c => c.CustomProperties)
             .Include(r => r.TasksQueue)
-            .Where(r => 
-                r.Status == RobotStatus.Idle && 
+            .Include(r => r.Communication)
+            .Where(r =>
                 r.TenantId == task.TenantId && 
                 r.CategoryId == task.CategoryId);
 
-        if (!await idleRobots.AnyAsync())
+        if (!await categoryRobots.AnyAsync())
         {
-            task.Status = RobotTaskStatus.Pending;
-            await taskRepository.UpdateAsync(task);
             return;
         }
         
@@ -81,14 +76,13 @@ public class TaskAssignJob(
             .Select(req => req.CapabilityId)
             .ToList();
         
-        var capableRobots = idleRobots
+        var capableRobots = categoryRobots
             .Where(r => requiredCapabilitiesIds
-                .All(c => r.Capabilities.Any(ca => ca.CapabilityId == c)));
+                .All(c => r.Capabilities
+                    .Any(ca => ca.CapabilityId == c)));
         
         if (!await capableRobots.AnyAsync())
         {
-            task.Status = RobotTaskStatus.Pending;
-            await taskRepository.UpdateAsync(task);
             return;
         }
 
@@ -110,11 +104,32 @@ public class TaskAssignJob(
             return;
         }
         
-        task.AssignedRobotId = robot.Id;
-        task.Status = RobotTaskStatus.InProgress;
-        await taskRepository.UpdateAsync(task);
+        var shouldStartImmediately = !robot.TasksQueue
+            .Any(t => t.Status != RobotTaskStatus.Completed && t.Status != RobotTaskStatus.Failed);
         
-        robot.Status = RobotStatus.Busy;
+        robot.TasksQueue.Add(task);
         await robotRepository.UpdateAsync(robot);
+        
+        task.AssignedRobotId = robot.Id;
+        task.AssignedAt = DateTime.UtcNow;
+        task.Status = RobotTaskStatus.WaitingForEnqueue;
+        task.AssignedRobotName = robot.Name;
+        await taskRepository.UpdateAsync(task);
+
+        if (shouldStartImmediately)
+        {
+            var assigner = serviceProvider.GetRequiredKeyedService<ITaskAssignerService>(robot.Communication.Type);
+            var assigned = await assigner.AssignTask(task.Id);
+
+            if (assigned)
+            {
+                task.Status = RobotTaskStatus.InProgress;
+                task.StartedAt = DateTime.UtcNow;
+                await taskRepository.UpdateAsync(task);
+                
+                robot.LastActivity = DateTime.UtcNow;
+                await robotRepository.UpdateAsync(robot);
+            }
+        }
     }
 }

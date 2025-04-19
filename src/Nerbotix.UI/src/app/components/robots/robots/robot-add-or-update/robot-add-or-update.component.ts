@@ -34,14 +34,16 @@ import {
 import {HttpErrorResponse} from '@angular/common/http';
 import {Robot} from '../../../../models/robots/robots/robot';
 import {PropertyTypeHelper} from '../../../../utils/helpers/property-type-helper';
-import {AsyncPipe, JsonPipe} from '@angular/common';
 import {Category} from '../../../../models/robots/categories/category';
 import {CapabilitiesService} from '../../../../services/robots/capabilities.service';
-import {Tree} from 'primeng/tree';
 import {Capability} from '../../../../models/robots/capabilities/capability';
 import {EnumHelper} from '../../../../utils/helpers/enum-helper';
 import {CommunicationType} from '../../../../enums/communication-type.enum';
 import {HttpMethod} from '../../../../enums/http.method';
+import {HttpCommunication} from '../../../../models/robots/robots/robot-communication';
+import {LogLevel} from '../../../../enums/log-level';
+import {DatePipe} from '@angular/common';
+import {LogListComponent} from '../../../common/log-list/log-list.component';
 
 @Component({
   selector: 'nb-robot-add-or-update',
@@ -59,10 +61,9 @@ import {HttpMethod} from '../../../../enums/http.method';
     InputNumber,
     Textarea,
     DatePicker,
-    JsonPipe,
-    AsyncPipe,
-    Tree,
-    FormsModule
+    FormsModule,
+    DatePipe,
+    LogListComponent
   ],
   templateUrl: './robot-add-or-update.component.html',
   styleUrl: './robot-add-or-update.component.scss'
@@ -169,13 +170,30 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
   }
 
   private initializeFormFromRobot(robot: Robot) {
+    this.onCommunicationTypeChange({
+      value: robot.communication.communicationType,
+      originalEvent: null as unknown as Event
+    });
+
     this.form.patchValue({
       name: robot.name,
       categoryId: robot.category.id.toString(),
+      communicationType: robot.communication.communicationType,
+      communication: { ...robot.communication, headers: null },
     });
 
+    if (robot.communication.communicationType === CommunicationType.HTTP) {
+      const httpCommunication = robot.communication as HttpCommunication;
+      for (let headersKey in httpCommunication.headers) {
+        this.httpCommunicationHeadersArray.push(this.fb.group({
+          name: this.fb.control(headersKey, [Validators.required]),
+          value: this.fb.control(httpCommunication.headers[headersKey] ?? '', [Validators.required]),
+        }));
+      }
+    }
+
     this.propertiesArray.clear();
-    robot.properties.forEach(p => {
+    robot.properties?.forEach(p => {
       const group = this.fb.group({
         propertyId: this.fb.control(p.propertyId, Validators.required),
         value: this.fb.control(PropertyTypeHelper.ConvertToExactType(p.type, p.value.toLowerCase()), Validators.required)
@@ -186,7 +204,7 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
 
     this.customPropertiesArray.clear();
     const customProperties = robot.customProperties ?? [];
-    customProperties.forEach(cp => {
+    customProperties?.forEach(cp => {
       const customProperty = this.fb.group({
         name: this.fb.control(cp.name, Validators.required),
         value: this.fb.control(cp.value, Validators.required),
@@ -423,6 +441,10 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
       updatedProperties,
       deletedCapabilities,
       newCapabilities,
+      communicationType: formValue.communicationType!,
+      [formValue.communicationType === CommunicationType.HTTP ? 'httpCommunication' : 'mqttCommunication']: {
+        ...formValue.communication
+      }
     });
   }
 
@@ -446,4 +468,5 @@ export class RobotAddOrUpdateComponent extends BaseComponent implements OnInit {
 
   protected readonly CategoryPropertyType = CategoryPropertyType;
   protected readonly CommunicationType = CommunicationType;
+  protected readonly LogLevel = LogLevel;
 }

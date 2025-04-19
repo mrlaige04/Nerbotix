@@ -23,7 +23,8 @@ public class GetRobotByIdHandler(
                 .Include(r => r.Category)
                 .Include(r => r.Capabilities)
                 .ThenInclude(c => c.Capability)
-                .Include(r => r.Communication),
+                .Include(r => r.Communication)
+                .Include(r => r.Logs),
             cancellationToken);
         
         if (robot == null)
@@ -67,86 +68,44 @@ public class GetRobotByIdHandler(
                     Id = c.CapabilityId,
                     GroupId = c.Capability.GroupId,
                 }).ToList(),
+            Logs = robot.Logs
+                .OrderBy(l => l.Timestamp)
+                .Select(l => new LogResponse
+                {
+                    LogLevel = l.Level,
+                    Message = l.Message,
+                    Timestamp = l.Timestamp.DateTime,
+                }).ToList(),
             CreatedAt = robot.CreatedAt,
             UpdatedAt = robot.UpdatedAt,
         };
 
         response.Communication = new RobotCommunicationResponse();
-        if (robot.Communication.Type == RobotCommunicationType.Http)
+        switch (robot.Communication.Type)
         {
-            var httpCommunication = robot.Communication as HttpCommunication;
+            case RobotCommunicationType.Http:
+            {
+                var httpCommunication = robot.Communication as HttpCommunication;
             
-            response.Communication.CommunicationType = RobotCommunicationType.Http;
-            response.Communication.ApiEndpoint = httpCommunication!.ApiEndpoint;
-            response.Communication.HttpMethod = httpCommunication!.HttpMethod;
-            response.Communication.Headers = httpCommunication!.Headers;
-        } else if (robot.Communication.Type == RobotCommunicationType.Mqtt)
-        {
-            var mqttCommunication = robot.Communication as MqttCommunication;
+                response.Communication.CommunicationType = RobotCommunicationType.Http;
+                response.Communication.Url = httpCommunication!.ApiEndpoint;
+                response.Communication.Method = httpCommunication!.HttpMethod;
+                response.Communication.Headers = httpCommunication!.Headers;
+                break;
+            }
+            case RobotCommunicationType.Mqtt:
+            {
+                var mqttCommunication = robot.Communication as MqttCommunication;
             
-            response.Communication.CommunicationType = RobotCommunicationType.Mqtt;
-            response.Communication.MqttBrokerAddress = mqttCommunication!.MqttBrokerAddress;
-            response.Communication.MqttBrokerUsername = mqttCommunication!.MqttBrokerUsername;
-            response.Communication.MqttBrokerPassword = mqttCommunication!.MqttBrokerPassword;
-            response.Communication.MqttTopic = mqttCommunication!.MqttTopic;
+                response.Communication.CommunicationType = RobotCommunicationType.Mqtt;
+                response.Communication.MqttBrokerAddress = mqttCommunication!.MqttBrokerAddress;
+                response.Communication.MqttBrokerUsername = mqttCommunication!.MqttBrokerUsername;
+                response.Communication.MqttBrokerPassword = mqttCommunication!.MqttBrokerPassword;
+                response.Communication.MqttTopic = mqttCommunication!.MqttTopic;
+                break;
+            }
         }
         
-        /*var robot = await robotRepository.GetWithSelectorAsync(
-            r => new RobotResponse
-            {
-                Id = r.Id,
-                Name = r.Name,
-                TenantId = r.TenantId,
-                Category = new CategoryBaseResponse
-                {
-                    Id = r.CategoryId,
-                    Name = r.Category.Name,
-                    TenantId = r.Category.TenantId,
-                },
-                Properties = r.Properties
-                    .Select(p => new RobotPropertyResponse
-                    {
-                        Id = p.Id,
-                        PropertyId = p.PropertyId,
-                        Name = p.Property.Name,
-                        Value = p.Value.ToString()!,
-                        Type = p.Property.Type,
-                    }).ToList(),
-                CustomProperties = r.CustomProperties
-                    .Select(cp => new RobotCustomPropertyResponse()
-                    {
-                        Id = cp.Id,
-                        Name = cp.Name,
-                        Value = cp.Value.ToString()!,
-                        TenantId = cp.TenantId,
-                        CreatedAt = cp.CreatedAt,
-                        UpdatedAt = cp.UpdatedAt,
-                    }).ToList(),
-                Capabilities = r.Capabilities
-                    .Select(c => new RobotCapabilityResponse
-                    {
-                        Id = c.CapabilityId,
-                        GroupId = c.Capability.GroupId,
-                    }).ToList(),
-                CreatedAt = r.CreatedAt,
-                UpdatedAt = r.UpdatedAt,
-            },
-            r => r.Id == request.Id,
-            q => q
-                .Include(r => r.Properties)
-                    .ThenInclude(p => p.Property)
-                .Include(r => r.CustomProperties)
-                .Include(r => r.Category)
-                .Include(r => r.Capabilities)
-                    .ThenInclude(c => c.Capability)
-                .Include(r => r.Communication),
-            cancellationToken);
-
-        if (robot == null)
-        {
-            return Error.NotFound(RobotErrors.NotFound, RobotErrors.NotFoundDescription);
-        }*/
-
         return response;
     }
 }

@@ -285,6 +285,49 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("chats_users", (string)null);
                 });
 
+            modelBuilder.Entity("Nerbotix.Domain.Logging.Log", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("RobotId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Scope")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("TaskId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RobotId");
+
+                    b.HasIndex("TaskId");
+
+                    b.ToTable("logs", (string)null);
+                });
+
             modelBuilder.Entity("Nerbotix.Domain.Robots.Robot", b =>
                 {
                     b.Property<Guid>("Id")
@@ -423,41 +466,6 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.ToTable("robot_custom_properties", (string)null);
                 });
 
-            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotLocation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("double precision");
-
-                    b.Property<Guid>("RobotId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset>("Timestamp")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RobotId")
-                        .IsUnique();
-
-                    b.ToTable("RobotLocation");
-                });
-
             modelBuilder.Entity("Nerbotix.Domain.Robots.RobotProperty", b =>
                 {
                     b.Property<Guid>("Id")
@@ -482,6 +490,9 @@ namespace Nerbotix.Infrastructure.Migrations
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Unit")
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -613,11 +624,17 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Property<Guid?>("AssignedRobotId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("AssignedRobotName")
+                        .HasColumnType("text");
+
                     b.Property<Guid?>("CategoryId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset?>("CompletedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("CompletedRobotId")
+                        .HasColumnType("uuid");
 
                     b.Property<double>("Complexity")
                         .HasColumnType("double precision");
@@ -1119,6 +1136,23 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Nerbotix.Domain.Logging.Log", b =>
+                {
+                    b.HasOne("Nerbotix.Domain.Robots.Robot", "Robot")
+                        .WithMany("Logs")
+                        .HasForeignKey("RobotId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Nerbotix.Domain.Tasks.RobotTask", "Task")
+                        .WithMany("Logs")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Robot");
+
+                    b.Navigation("Task");
+                });
+
             modelBuilder.Entity("Nerbotix.Domain.Robots.Robot", b =>
                 {
                     b.HasOne("Nerbotix.Domain.Robots.RobotCategory", "Category")
@@ -1127,7 +1161,32 @@ namespace Nerbotix.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.OwnsOne("Nerbotix.Domain.Robots.RobotLocation", "Location", b1 =>
+                        {
+                            b1.Property<Guid>("RobotId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<double>("Latitude")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("Longitude")
+                                .HasColumnType("double precision");
+
+                            b1.Property<DateTimeOffset>("Timestamp")
+                                .HasColumnType("timestamp with time zone");
+
+                            b1.HasKey("RobotId");
+
+                            b1.ToTable("robots");
+
+                            b1.WithOwner()
+                                .HasForeignKey("RobotId");
+                        });
+
                     b.Navigation("Category");
+
+                    b.Navigation("Location")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Nerbotix.Domain.Robots.RobotCommunication", b =>
@@ -1146,17 +1205,6 @@ namespace Nerbotix.Infrastructure.Migrations
                     b.HasOne("Nerbotix.Domain.Robots.Robot", "Robot")
                         .WithMany("CustomProperties")
                         .HasForeignKey("RobotId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Robot");
-                });
-
-            modelBuilder.Entity("Nerbotix.Domain.Robots.RobotLocation", b =>
-                {
-                    b.HasOne("Nerbotix.Domain.Robots.Robot", "Robot")
-                        .WithOne("Location")
-                        .HasForeignKey("Nerbotix.Domain.Robots.RobotLocation", "RobotId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1507,8 +1555,7 @@ namespace Nerbotix.Infrastructure.Migrations
 
                     b.Navigation("CustomProperties");
 
-                    b.Navigation("Location")
-                        .IsRequired();
+                    b.Navigation("Logs");
 
                     b.Navigation("Properties");
 
@@ -1530,6 +1577,8 @@ namespace Nerbotix.Infrastructure.Migrations
             modelBuilder.Entity("Nerbotix.Domain.Tasks.RobotTask", b =>
                 {
                     b.Navigation("Archive");
+
+                    b.Navigation("Logs");
 
                     b.Navigation("Requirements");
 

@@ -37,10 +37,6 @@ export class ExpandableMenuComponent {
       return;
     }
 
-    if (this.activeMenu()?.routerLink === item.routerLink) {
-      return;
-    }
-
     this.onNavigated.emit(item);
 
     if (!this.layoutService.isDesktop) {
