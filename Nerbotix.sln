@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yaml = docker-compose.yaml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerbotix.TestRobotApi", "src\Nerbotix.TestRobotApi\Nerbotix.TestRobotApi.csproj", "{EB3F3288-4400-4E7A-8FC4-3764BAA837E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,5 +37,9 @@ Global
 		{161D998E-A5DD-4846-8D77-43AA27D12FBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{161D998E-A5DD-4846-8D77-43AA27D12FBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{161D998E-A5DD-4846-8D77-43AA27D12FBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB3F3288-4400-4E7A-8FC4-3764BAA837E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB3F3288-4400-4E7A-8FC4-3764BAA837E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB3F3288-4400-4E7A-8FC4-3764BAA837E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB3F3288-4400-4E7A-8FC4-3764BAA837E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

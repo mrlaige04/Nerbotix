@@ -13,7 +13,7 @@
     <ng-template #rowActions let-rowData="rowData">
       <div class="actions flex gap-1">
         <p-button icon="pi pi-pencil" (onClick)="openEditCapability(rowData.id)" *nbHasPermission="PermissionsNames.CapabilitiesUpdate"/>
-        <p-button icon="pi pi-trash" severity="danger" (onClick)="openCancelConfirmation(rowData.id, $event)" *nbHasPermission="PermissionsNames.CapabilitiesDelete"/>
+        <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)" *nbHasPermission="PermissionsNames.CapabilitiesDelete"/>
       </div>
     </ng-template>
   </nb-table>

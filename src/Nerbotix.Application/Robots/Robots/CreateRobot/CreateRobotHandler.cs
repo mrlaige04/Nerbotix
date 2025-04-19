@@ -116,10 +116,10 @@ public class CreateRobotHandler(
             },
             { CommunicationType: RobotCommunicationType.Mqtt, MqttCommunication: not null } => new MqttCommunication
             {
-                MqttBrokerAddress = request.MqttCommunication.Address,
-                MqttBrokerUsername = request.MqttCommunication.Username,
-                MqttBrokerPassword = request.MqttCommunication.Password,
-                MqttTopic = request.MqttCommunication.Topic,
+                MqttBrokerAddress = request.MqttCommunication.MqttBrokerAddress,
+                MqttBrokerUsername = request.MqttCommunication.MqttBrokerUsername,
+                MqttBrokerPassword = request.MqttCommunication.MqttBrokerPassword,
+                MqttTopic = request.MqttCommunication.MqttTopic,
             },
             _ => robot.Communication
         };

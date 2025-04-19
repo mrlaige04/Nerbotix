@@ -56,6 +56,7 @@ public static class RegisterDependencies
         });
 
         services.AddHttpContextAccessor();
+        services.AddHttpClient();
 
         services.AddExceptionHandler<RoboExceptionHandler>();
 

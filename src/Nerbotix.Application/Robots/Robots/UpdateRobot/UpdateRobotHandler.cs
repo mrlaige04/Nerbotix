@@ -6,6 +6,7 @@ using Nerbotix.Application.Robots.Categories;
 using Nerbotix.Domain.Capabilities;
 using Nerbotix.Domain.Repositories.Abstractions;
 using Nerbotix.Domain.Robots;
+using Nerbotix.Domain.Robots.Communications;
 
 namespace Nerbotix.Application.Robots.Robots.UpdateRobot;
 
@@ -22,7 +23,8 @@ public class UpdateRobotHandler(
                 .Include(r => r.Properties)
                 .Include(r => r.CustomProperties)
                 .Include(r => r.Capabilities)
-                    .ThenInclude(c => c.Capability),
+                    .ThenInclude(c => c.Capability)
+                .Include(r => r.Communication),
             cancellationToken: cancellationToken);
         
         if (robot == null)
@@ -158,7 +160,29 @@ public class UpdateRobotHandler(
                 
             robot.Capabilities.Add(newCapability);
         }
-        
+
+        if (request.CommunicationType.HasValue)
+        {
+            robot.Communication = request switch
+            {
+                { CommunicationType: RobotCommunicationType.Http, HttpCommunication: not null } => new HttpCommunication
+                {
+                    ApiEndpoint = request.HttpCommunication.Url,
+                    HttpMethod = HttpMethod.Parse(request.HttpCommunication.Method).ToString(),
+                    Headers = request.HttpCommunication.Headers?.ToDictionary(
+                        h => h.Name, h => h.Value) ?? [],
+                },
+                { CommunicationType: RobotCommunicationType.Mqtt, MqttCommunication: not null } => new MqttCommunication
+                {
+                    MqttBrokerAddress = request.MqttCommunication.MqttBrokerAddress,
+                    MqttBrokerUsername = request.MqttCommunication.MqttBrokerUsername,
+                    MqttBrokerPassword = request.MqttCommunication.MqttBrokerPassword,
+                    MqttTopic = request.MqttCommunication.MqttTopic,
+                },
+                _ => robot.Communication
+            };
+        }
+
         var updatedRobot = await robotRepository.UpdateAsync(robot, cancellationToken);
         
         return new RobotBaseResponse

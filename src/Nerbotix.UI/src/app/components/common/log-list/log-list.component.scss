@@ -1,0 +1,24 @@
+.logs {
+  padding: 1rem;
+  border: 1px solid gray;
+  border-radius: 5px;
+  background: black;
+  max-height: 40vh;
+  overflow-y: auto;
+
+  & .log {
+    line-height: 1.5rem;
+
+    &.warning {
+      color: orange;
+    }
+
+    &.info {
+      color: lawngreen;
+    }
+
+    &.error {
+      color: red;
+    }
+  }
+}

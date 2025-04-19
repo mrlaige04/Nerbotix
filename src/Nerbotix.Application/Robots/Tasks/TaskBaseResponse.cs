@@ -11,6 +11,7 @@ public class TaskBaseResponse : TenantEntityResponse
     public DateTimeOffset? CompletedAt { get; set; }
     
     public Guid? AssignedRobotId { get; set; }
+    public string? AssignedRobot { get; set; }
     
     public TimeSpan? EstimatedDuration { get; set; }
     public int Priority { get; set; }

@@ -1,5 +1,6 @@
 ﻿using Nerbotix.Application.Common.Abstractions;
 using Nerbotix.Application.Robots.Robots.CreateRobot;
+using Nerbotix.Domain.Robots;
 
 namespace Nerbotix.Application.Robots.Robots.UpdateRobot;
 
@@ -13,6 +14,10 @@ public class UpdateRobotCommand : ITenantCommand<RobotBaseResponse>
     public IList<CreateRobotCommandCustomPropertyItem>? NewCustomProperties { get; set; }
     public IList<UpdateRobotCapabilityItem>? DeletedCapabilities { get; set; }
     public IList<UpdateRobotCapabilityItem>? NewCapabilities { get; set; }
+    
+    public RobotCommunicationType? CommunicationType { get; set; }
+    public CreateRobotHttpCommunication? HttpCommunication { get; set; }
+    public CreateRobotMqttCommunication? MqttCommunication { get; set; }
 }
 
 public class UpdateRobotCommandPropertyValue

@@ -12,7 +12,7 @@
     <ng-template #rowActions let-rowData="rowData">
       <div class="actions flex gap-1">
         <p-button icon="pi pi-pencil"/>
-        <p-button icon="pi pi-trash" severity="danger" (onClick)="openCancelConfirmation(rowData.id, $event)"/>
+        <p-button icon="pi pi-trash" severity="danger" (onClick)="openDeleteConfirmation(rowData.id, $event)"/>
       </div>
     </ng-template>
   </nb-table>

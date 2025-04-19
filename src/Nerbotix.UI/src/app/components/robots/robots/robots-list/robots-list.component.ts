@@ -48,7 +48,6 @@ export class RobotsListComponent extends BaseTableListComponent<RobotBase> imple
       { label: 'Category', propName: (robot) => robot['category']['name'] },
       { label: 'Status', propName: 'status' },
       { label: 'Location', propName: 'location' },
-      { label: 'Location timestamp', propName: '' },
       { label: 'Last activity', propName: 'lastActivity' }
     ];
   }

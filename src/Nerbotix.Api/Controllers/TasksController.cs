@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nerbotix.Api.Models.Tasks;
+using Nerbotix.Application.Robots.Tasks.CancelTask;
 using Nerbotix.Application.Robots.Tasks.CreateTask;
 using Nerbotix.Application.Robots.Tasks.DeleteTask;
 using Nerbotix.Application.Robots.Tasks.GetTaskById;
@@ -53,6 +54,14 @@ public class TasksController(IMediator mediator) : BaseController
     public async Task<IActionResult> EnqueueTask(Guid id)
     {
         var command = new ReEnqueueTaskCommand(id);
+        var result = await mediator.Send(command);
+        return result.Match(Ok, Problem);
+    }
+
+    [HttpDelete("{id:guid}/status")]
+    public async Task<IActionResult> CancelTask(Guid id)
+    {
+        var command = new CancelTaskCommand(id);
         var result = await mediator.Send(command);
         return result.Match(Ok, Problem);
     }

@@ -8,6 +8,7 @@ export class TaskBase extends TenantEntity {
   status!: TaskStatus;
   completedAt?: Date;
   assignedRobotId?: Guid;
+  assignedRobot?: string;
   estimatedDuration?: Date;
   priority!: number;
   complexity!: number;

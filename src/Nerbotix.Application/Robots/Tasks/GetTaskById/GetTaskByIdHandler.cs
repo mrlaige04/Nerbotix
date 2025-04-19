@@ -30,7 +30,7 @@ public class GetTaskByIdHandler(
                         CapabilityId = r.CapabilityId,
                         Level = r.RequiredLevel
                     }).ToList(),
-                AssignedRobotId = t.AssignedRobotId,
+                AssignedRobotId = t.AssignedRobotId ?? t.CompletedRobotId,
                 Complexity = t.Complexity,
                 Priority = t.Priority,
                 Status = t.Status,
@@ -42,13 +42,22 @@ public class GetTaskByIdHandler(
                     Type = d.Type,
                     Id = d.Id,
                     Value = d.Value
-                }).ToList()
+                }).ToList(),
+                Logs = t.Logs
+                    .OrderBy(l => l.Timestamp)
+                    .Select(l => new LogResponse
+                    {
+                        LogLevel = l.Level,
+                        Message = l.Message,
+                        Timestamp = l.Timestamp.DateTime,
+                    }).ToList(),
             },
             r => r.Id == request.Id,
             q => q
                 .Include(r => r.Requirements)
                 .Include(r => r.TaskData)
-                .Include(r => r.Archive),
+                .Include(r => r.Archive)
+                .Include(r => r.Logs),
             cancellationToken);
         
         if (task == null)
